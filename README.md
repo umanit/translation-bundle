@@ -121,7 +121,6 @@ use Umanit\TranslationBundle\Doctrine\Annotation\EmptyOnTranslate;
  * HomePage
  *
  * @ORM\Table(name="page")
- * @ORM\HasLifecycleCallbacks() // <-- this is required too
  */
 class Page implements TranslatableInterface
 {
