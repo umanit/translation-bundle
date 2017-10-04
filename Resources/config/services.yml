@@ -1,0 +1,21 @@
+services:
+    umanit_translation.translator.entity_translator:
+        class: Umanit\TranslationBundle\Translator\EntityTranslator
+        arguments: ['%locales%', '@doctrine.orm.entity_manager', '@annotations.reader', '@event_dispatcher']
+
+    umanit_translation.twig.umanit_translation_extension:
+        class: Umanit\TranslationBundle\Twig\UmanitTranslationExtension
+        tags:
+            - { name: twig.extension }
+
+    umanit_translation.doctrine.event_subscriber.translatable_event_subscriber:
+        class: Umanit\TranslationBundle\Doctrine\EventSubscriber\TranslatableEventSubscriber
+        arguments: ['@annotation_reader', '%locale%']
+        tags:
+            - { name: doctrine.event_subscriber }
+
+    umanit_translation.event_subscriber.locale_filter_configurator:
+        class: Umanit\TranslationBundle\EventSubscriber\LocaleFilterConfigurator
+        arguments: ['@doctrine.orm.entity_manager', '%locale%']
+        tags:
+            - { name: kernel.event_subscriber }
