@@ -129,13 +129,13 @@ class EntityTranslator
                 continue;
             }
 
-            if (is_iterable($propValue)) {
+            if (is_array($propValue) || $propValue instanceof \ArrayAccess) {
                 $propTrans = clone $propValue;
                 foreach ($propTrans as $key => $subProp) {
-                    $propTrans[$key] = $this->translate($subProp, $locale);
+                    $propTrans[$key] = $this->translate($subProp, $locale, $child);
                 }
             } else {
-                $propTrans = $this->translate($propValue, $locale);
+                $propTrans = $this->translate($propValue, $locale, $child);
             }
 
             // Then set the value to the main using property access

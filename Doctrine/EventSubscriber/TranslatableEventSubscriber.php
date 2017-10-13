@@ -181,7 +181,8 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
             // Update the translations if any property is to be shared
             if (!empty($sharedAmongstTranslationsProperties)) {
                 // Finds all translations
-                $repo             = $args->getEntityManager()->getRepository(get_class($translatable));
+                $em = $args->getEntityManager();
+                $repo             = $em->getRepository(get_class($translatable));
                 $propertyAccessor = PropertyAccess::createPropertyAccessor();
                 $translations     = $repo->findBy(['oid' => $translatable->getOid()]);
 
@@ -209,11 +210,12 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
                                 }
 
                                 $propertyAccessor->setValue($translation, $property->name, $sourceValue);
+                                $em->persist($translation);
+                                $em->flush($translation);
                             }
                         }
                     }
-                    $args->getEntityManager()->persist($translation);
-                    $args->getEntityManager()->flush();
+
                 }
             }
         }
