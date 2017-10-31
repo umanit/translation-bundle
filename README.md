@@ -48,7 +48,7 @@ class Page implements TranslatableInterface
 
 ### Translate your entity
 
-Use the service `umanit_translation.translator.entity_translator` to translate an source entity to a target language.
+Use the service `umanit_translation.translator.entity_translator` to translate a source entity to a target language.
 
 ```php
 $translatedEntity = $this->get('umanit_translation.translator.entity_translator')->getEntityTranslation($entity, 'fr');
@@ -185,7 +185,7 @@ abstract class AbstractTranslatableAdmin extends AbstractAdmin
 
 ```
 
-**/!\ Every admin of a translatable entity must extent this class instead of Sonata's one.**
+**/!\ Every admin of a translatable entity must extend this class instead of Sonata's one.**
 
 
 1. Create a custom CRUD Controller.
