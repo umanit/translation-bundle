@@ -171,9 +171,10 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
         $translatable = $args->getEntity();
 
         if ($translatable instanceof TranslatableInterface) {
-            $reflection = new \ReflectionClass($translatable);
+            $em = $args->getEntityManager();
+            $properties = $em->getClassMetadata($translatable)->getFieldNames();
 
-            $sharedAmongstTranslationsProperties = array_filter($reflection->getProperties(), function ($property) use ($reflection) {
+            $sharedAmongstTranslationsProperties = array_filter($properties, function ($property) {
                 // @todo AGU : ManyToMany are not supported yet
                 return $this->isSharedAmongstTranslations($property) && $this->isNotManyToMany($property);
             });
