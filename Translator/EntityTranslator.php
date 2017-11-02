@@ -106,10 +106,9 @@ class EntityTranslator
         }
 
         $accessor = PropertyAccess::createPropertyAccessor();
+        $properties = $this->em->getClassMetadata(get_class($clone))->getFieldNames();
 
-        $reflection = new \ReflectionClass(get_class($clone));
-
-        foreach ($reflection->getProperties(\ReflectionProperty::IS_PRIVATE | \ReflectionProperty::IS_PROTECTED) as $property) {
+        foreach ($properties as $property) {
 
             $propValue = $accessor->getValue($child, $property->name);
 
