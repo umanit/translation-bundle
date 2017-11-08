@@ -1,0 +1,16 @@
+sonata_admin:
+    # Extension for translatable admins
+    extensions:
+        umanit_translation.admin.extension.translatable_admin_extension:
+            implements:
+                - Umanit\TranslationBundle\Doctrine\Model\TranslatableInterface
+services:
+    umanit_translation.admin.extension.translatable_admin_extension:
+        class: Umanit\TranslationBundle\Admin\Extension\TranslatableAdminExtension
+        tags:
+            - { name: sonata.admin.extension, global: true }
+
+    umanit_translation.controller.translatable_crudcontroller:
+        class: Umanit\TranslationBundle\Controller\TranslatableCRUDController
+        tags:
+            - { name: controller.service_arguments }
