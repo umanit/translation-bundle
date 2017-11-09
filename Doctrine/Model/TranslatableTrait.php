@@ -53,26 +53,6 @@ trait TranslatableTrait
     {
         $this->locale = $locale;
 
-        // Set child locale
-        $reflection = new \ReflectionClass(self::class);
-        $accessor   = PropertyAccess::createPropertyAccessor();
-
-        foreach ($reflection->getProperties() as $property) {
-            $propValue = $accessor->getValue($this, $property->name);
-
-            if ($propValue instanceof TranslatableInterface) {
-                $propValue->setLocale($locale);
-            }
-
-            if ($propValue instanceof \iterable) {
-                foreach ($propValue as $subProp) {
-                    if ($subProp instanceof TranslatableInterface) {
-                        $subProp->setLocale($locale);
-                    }
-                }
-            }
-        }
-
         return $this;
     }
 
