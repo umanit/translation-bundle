@@ -1,6 +1,7 @@
 # Translation Bundle
 
-This bundle intends to ease entity translations.
+This bundle intends to ease Doctrine entity translations.
+Sonata Admin friendly with automatic integration. 
 
 ## Install
 
@@ -10,11 +11,10 @@ Register the bundle to your 'app/AppKernel.php'
     new Umanit\TranslationBundle\UmanitTranslationBundle(),
 ```
 
-Configure your available locales in `app/config.yml`
+Configure your available locales
 
 ```yaml
-parameters:
-    locale: en
+umanit_translation:
     locales: [en, fr, ja]
 ```
 
@@ -162,111 +162,16 @@ doctrine:
 
 ## Integrating into SonataAdmin
 
-Use the following guide to integrate TranslationBundle within your SonataAdmin application.
+The bundle will automatically add translations widgets in SonataAdmin if you're using it.
+* The 'list' view will add two columns `locale` and `translations`.
+* The `edit` button on the `list` view will show a dropdown to select the desired language to be edited.
+* The tab menu ont the `edit` view will have an entry to translate the edited content.
 
-1. Create translatable admin class
+If you want to define a default locale for the admin, configure the `default_locale`.
 
-```php
-<?php
-
-namespace AppBundle\Admin;
-
-use Sonata\AdminBundle\Admin\AbstractAdmin;
-use Sonata\AdminBundle\Route\RouteCollection;
-
-abstract class AbstractTranslatableAdmin extends AbstractAdmin
-{
-    protected function configureRoutes(RouteCollection $collection)
-    {
-        $collection->add('translate', $this->getRouterIdParameter() . '/translate/{newLocale}');
-    }
-
-}
-
-```
-
-**/!\ Every admin of a translatable entity must extend this class instead of Sonata's one.**
-
-
-1. Create a custom CRUD Controller.
-
-```php
-<?php
-
-namespace AppBundle\Controller\Admin;
-
-use Sonata\AdminBundle\Controller\CRUDController;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-
-class TranslatableCRUDController extends CRUDController
-{
-    public function translateAction()
-    {
-        $request = $this->getRequest();
-
-        $id     = $request->get($this->admin->getIdParameter());
-        $locale = $request->get('newLocale');
-        $object = $this->admin->getObject($id);
-
-        if (!$object) {
-            throw $this->createNotFoundException(sprintf('unable to find the object with id : %s', $id));
-        }
-
-        $newObject = $this->admin->getModelManager()->findOneBy(get_class($object), ['oid' => $object->getOid(), 'locale' => $locale]);
-
-        if (empty($newObject)) {
-            $this->admin->checkAccess('edit', $object);
-
-            $newObject = $this->get('umanit_translation.translator.entity_translator')->getEntityTranslation($object, $locale);
-            $this->admin->create($newObject);
-
-            $this->addFlash('sonata_flash_success', 'Translated successfully');
-        }
-
-        return new RedirectResponse($this->admin->generateUrl('edit', ['id' => $newObject->getId()]));
-    }
-}
-```
-
-1. Use this controller for all your translatable entites
 ```yaml
-    app.admin.content.home_page:
-        class: AppBundle\Admin\Content\HomePageAdmin
-        arguments: [~, AppBundle\Entity\Content\Page, 'AppBundle:Admin\TranslatableCRUD']
-        tags:
-            - { name: sonata.admin, manager_type: orm, group: 'Content', label: 'Home Page' }
-
+umanit_translation:
+    # ...
+    default_locale: en
 ```
-
-1. Add a locale switcher to SonataAdmin
-
-Start by [overriding Sonata's layout](https://symfony.com/doc/master/bundles/SonataAdminBundle/reference/templates.html#configuring-templates) if you haven't already.
-
-Next add this piece of code:
-
-```twig
-{% block sonata_admin_content_actions_wrappers %}
-    {{ parent() }}
-    {% if object is defined and object is translatable and object.oid is not empty and admin is defined and action is defined and action == 'edit' and locales|length > 1 %}
-        <div class="nav navbar-right btn-group">
-            <ul class="nav navbar-nav navbar-right">
-                <li class="dropdown sonata-actions">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ 'Language'|trans({}, 'SonataAdminBundle') }} {{ object.locale }}
-                        <b class="caret"></b></a>
-                    <ul class="dropdown-menu" role="menu">
-                        {% for locale in locales %}
-                            {% if object.locale != locale %}
-                                <li>
-                                    <a href="{{ admin.generateObjectUrl('translate', object, {'newLocale': locale}) }}" class="sonata-action-element">{{ locale }}</a>
-                                </li>
-                            {% endif %}
-                        {% endfor %}
-                    </ul>
-                </li>
-            </ul>
-        </div>
-    {% endif %}
-{% endblock sonata_admin_content_actions_wrappers %}
-```
-
-A language switcher will appear in your entity's edit form
+The admin will then show only the english contents on the list view.
