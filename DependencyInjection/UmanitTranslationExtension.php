@@ -20,6 +20,14 @@ class UmanitTranslationExtension extends Extension implements PrependExtensionIn
      */
     public function load(array $configs, ContainerBuilder $container)
     {
+        $configuration = new Configuration();
+        $config = $this->processConfiguration($configuration, $configs);
+
+        // Set configuration into params
+        $rootName = 'umanit_translation';
+        $container->setParameter($rootName, $config);
+        $this->setConfigAsParameters($container, $config, $rootName);
+
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yml');
     }
@@ -36,6 +44,24 @@ class UmanitTranslationExtension extends Extension implements PrependExtensionIn
         if (isset($bundles['SonataAdminBundle'])) {
             $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
             $loader->load('sonata_admin.yml');
+        }
+    }
+
+    /**
+     * Add config keys as parameters
+     * @param ContainerBuilder $container
+     * @param array $params
+     * @param string $parent
+     */
+    private function setConfigAsParameters(ContainerBuilder &$container, array $params, $parent)
+    {
+        foreach ($params as $key => $value) {
+            $name = $parent . '.' . $key;
+            $container->setParameter($name, $value);
+
+            if (is_array($value)) {
+                $this->setConfigAsParameters($container, $value, $name);
+            }
         }
     }
 }

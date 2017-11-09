@@ -15,8 +15,16 @@ class TranslatableAdminExtension extends AbstractAdminExtension
 {
     public function configureRoutes(AdminInterface $admin, RouteCollection $collection)
     {
+        // Add the tranlate route
         $collection->add('translate', $admin->getRouterIdParameter() . '/translate/{newLocale}', [
             '_controller' => 'UmanitTranslationBundle:TranslatableCRUD:translate'
         ]);
+    }
+
+    public function preUpdate(AdminInterface $admin, $object)
+    {
+        // Re-set the locale to make sure the children share the same
+        $object->setLocale($object->getLocale());
+        parent::preUpdate($admin, $object);
     }
 }
