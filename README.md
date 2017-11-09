@@ -163,9 +163,9 @@ doctrine:
 ## Integrating into SonataAdmin
 
 The bundle will automatically add translations widgets in SonataAdmin if you're using it.
-* The 'list' view will add two columns `locale` and `translations`.
+* The `list` view will add two columns `locale` and `translations`.
 * The `edit` button on the `list` view will show a dropdown to select the desired language to be edited.
-* The tab menu ont the `edit` view will have an entry to translate the edited content.
+* The tab menu on the `edit` view will have an entry to translate the edited content.
 
 If you want to define a default locale for the admin, configure the `default_locale`.
 
