@@ -19,9 +19,10 @@ class Configuration implements ConfigurationInterface
         $rootNode    = $treeBuilder->root('umanit_translation');
         $rootNode
             ->children()
-            ->arrayNode('locales')
-                ->prototype('scalar')->end()->isRequired()
+                ->arrayNode('locales')
+                    ->prototype('scalar')->end()->isRequired()
                 ->end()
+                ->scalarNode('default_locale')->defaultNull()
             ->end()
         ;
 

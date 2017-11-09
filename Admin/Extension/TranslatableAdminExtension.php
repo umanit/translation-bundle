@@ -4,8 +4,10 @@ namespace Umanit\TranslationBundle\Admin\Extension;
 
 use Sonata\AdminBundle\Admin\AbstractAdminExtension;
 use Sonata\AdminBundle\Admin\AdminInterface;
+use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
+use Sonata\DoctrineORMAdminBundle\Filter\ChoiceFilter;
 
 /**
  * SonataAdmin Extension.
@@ -14,6 +16,72 @@ use Sonata\AdminBundle\Route\RouteCollection;
  */
 class TranslatableAdminExtension extends AbstractAdminExtension
 {
+    /**
+     * @var array
+     */
+    private $locales;
+    /**
+     * @var null
+     */
+    private $defaultAdminLocale;
+
+    /**
+     * TranslatableAdminExtension constructor.
+     *
+     * @param array $locales
+     * @param null  $defaultAdminLocale
+     */
+    public function __construct(array $locales, $defaultAdminLocale = null)
+    {
+        $this->locales            = $locales;
+        $this->defaultAdminLocale = $defaultAdminLocale;
+    }
+
+    /**
+     * @inheritdoc
+     *
+     * @param AdminInterface $admin
+     * @param mixed          $object
+     */
+    public function alterNewInstance(AdminInterface $admin, $object)
+    {
+        $locale = $this->defaultAdminLocale ?: $admin->getRequest()->getLocale();
+
+        if (!$admin->id($object)) {
+            $object->setLocale($locale);
+        }
+    }
+
+    /**
+     * @inheritdoc
+     *
+     * @param AdminInterface $admin
+     * @param array          $filterValues
+     */
+    public function configureDefaultFilterValues(AdminInterface $admin, array &$filterValues)
+    {
+        if ($this->defaultAdminLocale) {
+            $filterValues['locale'] = [
+                'value' => $this->defaultAdminLocale,
+            ];
+        }
+    }
+
+    /**
+     * @inheritdoc
+     *
+     * @param DatagridMapper $datagridMapper
+     */
+    public function configureDatagridFilters(DatagridMapper $datagridMapper)
+    {
+        $datagridMapper->add('locale', ChoiceFilter::class, [
+            'advanced_filter' => false,
+            'show_filter'     => false,
+        ], 'choice', [
+            'choices' => array_combine($this->locales, $this->locales),
+        ]);
+    }
+
     /**
      * @param ListMapper $listMapper
      */
