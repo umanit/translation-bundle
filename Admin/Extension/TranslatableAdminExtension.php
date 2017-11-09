@@ -2,6 +2,7 @@
 
 namespace Umanit\TranslationBundle\Admin\Extension;
 
+use Knp\Menu\ItemInterface as MenuItemInterface;
 use Sonata\AdminBundle\Admin\AbstractAdminExtension;
 use Sonata\AdminBundle\Admin\AdminInterface;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
@@ -45,10 +46,8 @@ class TranslatableAdminExtension extends AbstractAdminExtension
      */
     public function alterNewInstance(AdminInterface $admin, $object)
     {
-        $locale = $this->defaultAdminLocale ?: $admin->getRequest()->getLocale();
-
         if (!$admin->id($object)) {
-            $object->setLocale($locale);
+            $object->setLocale($this->getEditLocale($admin));
         }
     }
 
@@ -138,5 +137,60 @@ class TranslatableAdminExtension extends AbstractAdminExtension
         // Re-set the locale to make sure the children share the same
         $object->setLocale($object->getLocale());
         parent::preUpdate($admin, $object);
+    }
+
+    /**
+     * @inheritdoc
+     *
+     * @param AdminInterface      $admin
+     * @param MenuItemInterface   $menu
+     * @param string              $action
+     * @param AdminInterface|null $childAdmin
+     */
+    public function configureTabMenu(AdminInterface $admin, MenuItemInterface $menu, $action, AdminInterface $childAdmin = null)
+    {
+        // Add the locales switcher dropdown in the edit view
+        if ($action === 'edit' && $admin->id($admin->getSubject())) {
+            $menu->addChild('language', [
+                'label'      => 'Translate',
+                'attributes' => ['dropdown' => true, 'icon' => 'fa fa-language'],
+            ]);
+            foreach ($this->locales as $locale) {
+                $menu['language']->addChild($locale, [
+                    'uri'        => $admin->generateUrl('translate', [
+                        'id'        => $admin->id($admin->getSubject()),
+                        'newLocale' => $locale,
+                    ]),
+                    'attributes' => [
+                        'icon' => isset($admin->getSubject()->getTranslations()[$locale]) ? 'fa fa-check' : 'fa fa-plus',
+                    ],
+                    'current'    => $locale === $this->getEditLocale($admin),
+                ]);
+            }
+        }
+    }
+
+    /**
+     * Return the edit locale.
+     *
+     * @param AdminInterface $admin
+     *
+     * @return null|string
+     */
+    private function getEditLocale(AdminInterface $admin)
+    {
+        if ($admin->id($admin->getSubject())) {
+            return $admin->getSubject()->getLocale();
+        }
+
+        if ($this->defaultAdminLocale) {
+            return $this->defaultAdminLocale;
+        }
+
+        if ($admin->getRequest()) {
+            return $admin->getRequest()->getLocale();
+        }
+
+        return 'en';
     }
 }
