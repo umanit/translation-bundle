@@ -60,12 +60,12 @@ class EntityTranslator
     /**
      * Seeks for an entity in the required locale or creates it.
      *
-     * @param TranslatableInterface $entity
+     * @param object $entity
      * @param string                $locale
      *
      * @return object
      */
-    public function getEntityTranslation(TranslatableInterface $entity, $locale)
+    public function getEntityTranslation($entity, $locale)
     {
         // @todo AGU : Check that locale exists
         return $this->translate($entity, $locale);
@@ -144,7 +144,7 @@ class EntityTranslator
         $this->em->persist($clone);
         $this->em->flush($clone);
 
-        $this->eventDispatcher->dispatch(TranslateEvent::POST_TRANSLATE, new TranslateEvent($child, $clone));
+        $this->eventDispatcher->dispatch(TranslateEvent::POST_TRANSLATE, new TranslateEvent($child, $clone, $locale));
 
         return $clone;
     }

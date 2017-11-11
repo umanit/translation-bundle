@@ -29,15 +29,24 @@ class TranslateEvent extends Event
     protected $translatedEntity;
 
     /**
+     * The target locale
+     *
+     * @var string
+     */
+    private $locale;
+
+    /**
      * TranslateEvent constructor.
      *
      * @param object $sourceEntity
      * @param object $translatedEntity
+     * @param string $locale
      */
-    public function __construct($sourceEntity, $translatedEntity)
+    public function __construct($sourceEntity, $translatedEntity, $locale)
     {
         $this->sourceEntity     = $sourceEntity;
         $this->translatedEntity = $translatedEntity;
+        $this->locale           = $locale;
     }
 
     /**
@@ -54,5 +63,13 @@ class TranslateEvent extends Event
     public function getTranslatedEntity()
     {
         return $this->translatedEntity;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLocale()
+    {
+        return $this->locale;
     }
 }
