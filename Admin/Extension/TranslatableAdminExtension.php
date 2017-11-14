@@ -93,12 +93,12 @@ class TranslatableAdminExtension extends AbstractAdminExtension
             ;
         }
 
-        if ($listMapper->has('_actions')) {
-            $actions = $listMapper->get('_actions')->getOption('actions');
+        if ($listMapper->has('_action')) {
+            $actions = $listMapper->get('_action')->getOption('actions');
             if ($actions && isset($actions['edit'])) {
                 // Overrides edit action
                 $actions['edit'] = ['template' => '@UmanitTranslation/Admin/CRUD/list__action_edit.html.twig'];
-                $listMapper->get('_actions')->setOption('actions', $actions);
+                $listMapper->get('_action')->setOption('actions', $actions);
             }
         }
     }
