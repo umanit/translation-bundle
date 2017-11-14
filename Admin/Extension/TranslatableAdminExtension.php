@@ -75,7 +75,6 @@ class TranslatableAdminExtension extends AbstractAdminExtension
     {
         $datagridMapper->add('locale', ChoiceFilter::class, [
             'advanced_filter' => false,
-            'show_filter'     => false,
         ], 'choice', [
             'choices' => array_combine($this->locales, $this->locales),
         ]);
