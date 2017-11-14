@@ -86,30 +86,21 @@ class TranslatableAdminExtension extends AbstractAdminExtension
      */
     public function configureListFields(ListMapper $listMapper)
     {
-        if (!$listMapper->has('locale')) {
-            $listMapper->add('locale');
+        if ($listMapper->has('translations')) {
+            $listMapper
+                ->get('translations')
+                ->setTemplate('@UmanitTranslation/Admin/CRUD/list_translations.html.twig')
+            ;
         }
 
-        if (!$listMapper->has('translations')) {
-            $listMapper->add('translations', 'array', [
-                'template' => '@UmanitTranslation/Admin/CRUD/list_translations.html.twig',
-            ]);
+        if ($listMapper->has('_actions')) {
+            $actions = $listMapper->get('_actions')->getOption('actions');
+            if ($actions && isset($actions['edit'])) {
+                // Overrides edit action
+                $actions['edit'] = ['template' => '@UmanitTranslation/Admin/CRUD/list__action_edit.html.twig'];
+                $listMapper->get('_actions')->setOption('actions', $actions);
+            }
         }
-
-        if (!$listMapper->has('_action')) {
-            $listMapper->add('_action', null, [
-                'actions' => [
-                    'edit'   => [],
-                    'show'   => [],
-                    'delete' => [],
-                ],
-            ]);
-        }
-
-        // Update the edit template
-        $options         = $listMapper->get('_action')->getOption('actions');
-        $options['edit'] = ['template' => '@UmanitTranslation/Admin/CRUD/list__action_edit.html.twig'];
-        $listMapper->get('_action')->setOption('actions', $options);
     }
 
     /**
