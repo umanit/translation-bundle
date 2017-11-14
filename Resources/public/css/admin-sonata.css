@@ -1,0 +1,8 @@
+/* Fix edit dropdown  */
+.table-responsive {
+    overflow: visible !important;
+}
+
+table.sonata-ba-list td {
+    overflow: visible !important;
+}
