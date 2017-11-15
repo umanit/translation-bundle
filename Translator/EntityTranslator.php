@@ -105,6 +105,8 @@ class EntityTranslator
             $clone->setId(null);
         }
 
+        $this->eventDispatcher->dispatch(TranslateEvent::PRE_TRANSLATE, new TranslateEvent($child, $clone, $locale));
+
         $accessor = PropertyAccess::createPropertyAccessor();
         $properties = $this->em->getClassMetadata(get_class($clone))->getReflectionProperties();
 

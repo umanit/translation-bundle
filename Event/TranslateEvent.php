@@ -10,6 +10,11 @@ use Symfony\Component\EventDispatcher\Event;
 class TranslateEvent extends Event
 {
     /**
+     * Event called before translation is done.
+     */
+    const PRE_TRANSLATE = 'umanit_translation.pre_translate';
+
+    /**
      * Event called after translation is done.
      */
     const POST_TRANSLATE = 'umanit_translation.post_translate';
