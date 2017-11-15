@@ -39,7 +39,7 @@ class TranslatableAdminExtension extends AbstractAdminExtension
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      *
      * @param AdminInterface $admin
      * @param mixed          $object
@@ -52,7 +52,7 @@ class TranslatableAdminExtension extends AbstractAdminExtension
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      *
      * @param AdminInterface $admin
      * @param array          $filterValues
@@ -67,7 +67,7 @@ class TranslatableAdminExtension extends AbstractAdminExtension
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      *
      * @param DatagridMapper $datagridMapper
      */
@@ -103,7 +103,7 @@ class TranslatableAdminExtension extends AbstractAdminExtension
     }
 
     /**
-     * @inheritdoc.
+     * {@inheritdoc}.
      *
      * @param AdminInterface  $admin
      * @param RouteCollection $collection
@@ -111,13 +111,13 @@ class TranslatableAdminExtension extends AbstractAdminExtension
     public function configureRoutes(AdminInterface $admin, RouteCollection $collection)
     {
         // Add the tranlate route
-        $collection->add('translate', $admin->getRouterIdParameter() . '/translate/{newLocale}', [
+        $collection->add('translate', $admin->getRouterIdParameter().'/translate/{newLocale}', [
             '_controller' => 'UmanitTranslationBundle:TranslatableCRUD:translate',
         ]);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      *
      * @param AdminInterface $admin
      * @param mixed          $object
@@ -130,7 +130,7 @@ class TranslatableAdminExtension extends AbstractAdminExtension
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      *
      * @param AdminInterface      $admin
      * @param MenuItemInterface   $menu
@@ -152,7 +152,9 @@ class TranslatableAdminExtension extends AbstractAdminExtension
                         'newLocale' => $locale,
                     ]),
                     'attributes' => [
-                        'icon' => isset($admin->getSubject()->getTranslations()[$locale]) ? 'fa fa-check' : 'fa fa-plus',
+                        'icon' => isset($admin->getSubject()->getTranslations()[$locale]) || $locale === $admin->getSubject()->getLocale()
+                            ? 'fa fa-check'
+                            : 'fa fa-plus',
                     ],
                     'current'    => $locale === $this->getEditLocale($admin),
                 ]);

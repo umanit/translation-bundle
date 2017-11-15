@@ -97,7 +97,14 @@ class EntityTranslator
         // Otherwise, clone the property
         $clone = clone $child;
         if ($clone instanceof TranslatableInterface) {
-            $clone->setOid($child->getOid() ?: $child->geId());
+            if (!$child->getOid()) {
+                $child->setOid($child->getId());
+
+                $this->em->persist($child);
+                $this->em->flush($child);
+            }
+
+            $clone->setOid($child->getOid() ?: $child->getId());
             $clone->setLocale($locale);
         }
 
