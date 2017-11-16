@@ -52,6 +52,11 @@ class UmanitTranslationExtension extends Extension implements PrependExtensionIn
                 ],
             ]);
         }
+
+        if (isset($bundles['UmanitDoctrineSingletonBundle'])) {
+            $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+            $loader->load('doctrine_singleton.yml');
+        }
     }
 
     /**

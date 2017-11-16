@@ -175,3 +175,7 @@ umanit_translation:
     default_locale: en
 ```
 The admin will then show only the english contents on the list view.
+
+## Integration with DoctrineSingletonBundle
+
+The bundle will automatically works with the [Doctrine Singleton Bundle](https://github.com/umanit/doctrine-singleton-bundle). If your singleton has the TranslatableInterface, it will be possible to get one instance per locale. 
