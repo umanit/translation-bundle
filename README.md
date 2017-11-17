@@ -160,13 +160,13 @@ doctrine:
                 enabled: true
 ```  
 
-### Manually translating an entity
 
-Use the service `umanit_translation.translator.entity_translator` and call its `translate` method.
+## Advanced usage
 
-```php
-$this->get('umanit_translation.translator.entity_translator')->translate($myEntity, 'be');
-```
+You can alter the entities to translate or translated, before and after translation using the `Umanit\TranslationBundle\Event\TranslateEvent`
+
+- `TranslateEvent::PRE_TRANSLATE` called before starting to translate the properties. The new translation is just instanciate with the right `oid` and `locale`
+- `TranslateEvent::POST_TRANSLATE` called after saving the translation
 
 ## Integrating into SonataAdmin
 
