@@ -160,6 +160,14 @@ doctrine:
                 enabled: true
 ```  
 
+### Manually translating an entity
+
+Use the service `umanit_translation.translator.entity_translator` and call its `translate` method.
+
+```php
+$this->get('umanit_translation.translator.entity_translator')->translate($myEntity, 'be');
+```
+
 ## Integrating into SonataAdmin
 
 The bundle will automatically add translations widgets in SonataAdmin if you're using it.
