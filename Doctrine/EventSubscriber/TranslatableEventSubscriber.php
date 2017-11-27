@@ -192,7 +192,6 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
                         foreach ($sharedAmongstTranslationsProperties as $property) {
                             $sourceValue      = $propertyAccessor->getValue($translatable, $property->name);
                             $translationValue = $propertyAccessor->getValue($translation, $property->name);
-
                             // Set the value only of it's not already the same
                             if ($translationValue !== $sourceValue) {
                                 // If property is translatable, check for it's translation
@@ -206,12 +205,11 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
                                         ])
                                     ;
                                 }
-
                                 $propertyAccessor->setValue($translation, $property->name, $sourceValue);
-                                $em->persist($translation);
-                                $em->flush($translation);
                             }
                         }
+                        $em->persist($translation);
+                        $em->flush($translation);
                     }
                 }
             }
