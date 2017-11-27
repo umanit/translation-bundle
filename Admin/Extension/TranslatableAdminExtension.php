@@ -141,8 +141,9 @@ class TranslatableAdminExtension extends AbstractAdminExtension
     {
         // Add the locales switcher dropdown in the edit view
         if ($action === 'edit' && $admin->id($admin->getSubject())) {
+
             $menu->addChild('language', [
-                'label'      => 'Translate',
+                'label'      => 'Translate ('.$this->getEditLocale($admin).')',
                 'attributes' => ['dropdown' => true, 'icon' => 'fa fa-language'],
             ]);
             foreach ($this->locales as $locale) {
