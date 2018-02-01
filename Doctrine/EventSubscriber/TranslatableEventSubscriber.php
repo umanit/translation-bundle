@@ -77,7 +77,8 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
      */
     public function postRemove(ORM\Event\LifecycleEventArgs $args)
     {
-        $this->removeAllTranslations($args);
+        // @todo AGU : make this configurable instead
+        // $this->removeAllTranslations($args);
     }
 
     /**
