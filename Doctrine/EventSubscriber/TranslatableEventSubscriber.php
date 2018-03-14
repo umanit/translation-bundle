@@ -173,7 +173,7 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
 
         if ($translatable instanceof TranslatableInterface) {
             $em = $args->getEntityManager();
-            $properties = $em->getClassMetadata($translatable)->getFieldNames();
+            $properties = $em->getClassMetadata(get_class($translatable))->getReflectionProperties();
 
             $sharedAmongstTranslationsProperties = array_filter($properties, function ($property) {
                 // @todo AGU : ManyToMany are not supported yet
