@@ -5,6 +5,8 @@ namespace Umanit\TranslationBundle\Translator;
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Mapping\Embedded;
+use Doctrine\ORM\Mapping\ReflectionEmbeddedProperty;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Umanit\TranslationBundle\Doctrine\Annotation\EmptyOnTranslate;
@@ -118,7 +120,19 @@ class EntityTranslator
         $properties = $this->em->getClassMetadata(get_class($clone))->getReflectionProperties();
 
         foreach ($properties as $property) {
+
+            // No need to translate ReflectionEmbeddedProperty
+            if ($property instanceof ReflectionEmbeddedProperty) {
+                continue;
+            }
+
             $propValue = $accessor->getValue($child, $property->name);
+
+            // Embedded properties are simply copied
+            if ($this->isEmbedded($property)) {
+                $accessor->setValue($clone, $property->name, $propValue);
+                continue;
+            }
 
             if (!is_object($propValue) || $propValue === $parent) {
                 continue;
@@ -159,6 +173,18 @@ class EntityTranslator
     }
 
     /**
+     * Defines if the property is embedded.
+     *
+     * @param \ReflectionProperty $property
+     *
+     * @return bool
+     */
+    protected function isEmbedded(\ReflectionProperty $property)
+    {
+        return null !== $this->reader->getPropertyAnnotation($property, Embedded::class);
+    }
+
+    /**
      * Defines if the property is to be shared amongst parents' translations.
      *
      * @param \ReflectionProperty $property
@@ -196,8 +222,7 @@ class EntityTranslator
         return $this->em->getRepository(get_class($entity))->findOneBy([
             'locale' => $locale,
             'oid'    => $entity->getOid(),
-        ])
-            ;
+        ]);
     }
 
 }
