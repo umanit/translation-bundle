@@ -1,10 +1,11 @@
 services:
     umanit_translation.translator.entity_translator:
         class: Umanit\TranslationBundle\Translator\EntityTranslator
-        arguments: ['%locales%', '@doctrine.orm.entity_manager', '@annotations.reader', '@event_dispatcher']
+        arguments: ['%umanit_translation.locales%', '@doctrine.orm.entity_manager', '@annotations.reader', '@event_dispatcher']
 
     umanit_translation.twig.umanit_translation_extension:
         class: Umanit\TranslationBundle\Twig\UmanitTranslationExtension
+        arguments: ['%umanit_translation.locales%']
         tags:
             - { name: twig.extension }
 

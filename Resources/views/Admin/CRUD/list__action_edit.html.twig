@@ -1,0 +1,33 @@
+{% if admin.hasAccess('edit', object) and admin.hasRoute('edit') %}
+    {% if object.translations is defined %}
+        <div class="btn-group" role="group">
+            <button type="button" class="btn btn-sm btn-default dropdown-toggle edit_link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fa fa-pencil" aria-hidden="true"></i>
+                {{ 'action_edit'|trans({}, 'SonataAdminBundle') }} <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                {% for locale in locales %}
+                    <li>
+                        {% if object.translations[locale] is defined %}
+                            <a href="{{ admin.generateObjectUrl('translate', object, {'newLocale': locale}) }}"
+                            >
+                                <i class="fa fa-check text-green"></i> {{ locale }}
+                            </a>
+                        {% else %}
+                            <a href="{{ admin.generateObjectUrl('translate', object, {'newLocale': locale}) }}"
+                               title="{{ "Add a translation" | trans }}"
+                            >
+                                <i class="fa fa-plus-circle text-primary"></i> {{ locale }}
+                            </a>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% else %}
+        <a href="{{ admin.generateObjectUrl('edit', object) }}" class="btn btn-sm btn-default edit_link" title="{{ 'action_edit'|trans({}, 'SonataAdminBundle') }}">
+            <i class="fa fa-pencil" aria-hidden="true"></i>
+            {{ 'action_edit'|trans({}, 'SonataAdminBundle') }}
+        </a>
+    {% endif %}
+{% endif %}

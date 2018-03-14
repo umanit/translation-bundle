@@ -10,6 +10,11 @@ use Symfony\Component\EventDispatcher\Event;
 class TranslateEvent extends Event
 {
     /**
+     * Event called before translation is done.
+     */
+    const PRE_TRANSLATE = 'umanit_translation.pre_translate';
+
+    /**
      * Event called after translation is done.
      */
     const POST_TRANSLATE = 'umanit_translation.post_translate';
@@ -29,15 +34,24 @@ class TranslateEvent extends Event
     protected $translatedEntity;
 
     /**
+     * The target locale
+     *
+     * @var string
+     */
+    private $locale;
+
+    /**
      * TranslateEvent constructor.
      *
      * @param object $sourceEntity
      * @param object $translatedEntity
+     * @param string $locale
      */
-    public function __construct($sourceEntity, $translatedEntity)
+    public function __construct($sourceEntity, $translatedEntity, $locale)
     {
         $this->sourceEntity     = $sourceEntity;
         $this->translatedEntity = $translatedEntity;
+        $this->locale           = $locale;
     }
 
     /**
@@ -54,5 +68,13 @@ class TranslateEvent extends Event
     public function getTranslatedEntity()
     {
         return $this->translatedEntity;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLocale()
+    {
+        return $this->locale;
     }
 }

@@ -1,0 +1,5 @@
+services:
+    umanit_translation.event_subscriber.doctring_singleton_filter:
+        class: Umanit\TranslationBundle\EventSubscriber\SingletonSubscriber
+        tags:
+            - { name: kernel.event_subscriber }

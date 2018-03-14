@@ -60,12 +60,12 @@ class EntityTranslator
     /**
      * Seeks for an entity in the required locale or creates it.
      *
-     * @param TranslatableInterface $entity
+     * @param object $entity
      * @param string                $locale
      *
      * @return object
      */
-    public function getEntityTranslation(TranslatableInterface $entity, $locale)
+    public function getEntityTranslation($entity, $locale)
     {
         // @todo AGU : Check that locale exists
         return $this->translate($entity, $locale);
@@ -97,7 +97,14 @@ class EntityTranslator
         // Otherwise, clone the property
         $clone = clone $child;
         if ($clone instanceof TranslatableInterface) {
-            $clone->setOid($child->getOid() ?: $child->geId());
+            if (!$child->getOid()) {
+                $child->setOid($child->getId());
+
+                $this->em->persist($child);
+                $this->em->flush($child);
+            }
+
+            $clone->setOid($child->getOid() ?: $child->getId());
             $clone->setLocale($locale);
         }
 
@@ -105,11 +112,12 @@ class EntityTranslator
             $clone->setId(null);
         }
 
+        $this->eventDispatcher->dispatch(TranslateEvent::PRE_TRANSLATE, new TranslateEvent($child, $clone, $locale));
+
         $accessor = PropertyAccess::createPropertyAccessor();
-        $properties = $this->em->getClassMetadata(get_class($clone))->getFieldNames();
+        $properties = $this->em->getClassMetadata(get_class($clone))->getReflectionProperties();
 
         foreach ($properties as $property) {
-
             $propValue = $accessor->getValue($child, $property->name);
 
             if (!is_object($propValue) || $propValue === $parent) {
@@ -145,7 +153,7 @@ class EntityTranslator
         $this->em->persist($clone);
         $this->em->flush($clone);
 
-        $this->eventDispatcher->dispatch(TranslateEvent::POST_TRANSLATE, new TranslateEvent($child, $clone));
+        $this->eventDispatcher->dispatch(TranslateEvent::POST_TRANSLATE, new TranslateEvent($child, $clone, $locale));
 
         return $clone;
     }

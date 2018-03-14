@@ -77,7 +77,8 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
      */
     public function postRemove(ORM\Event\LifecycleEventArgs $args)
     {
-        $this->removeAllTranslations($args);
+        // @todo AGU : make this configurable instead
+        // $this->removeAllTranslations($args);
     }
 
     /**
@@ -182,7 +183,7 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
             // Update the translations if any property is to be shared
             if (!empty($sharedAmongstTranslationsProperties)) {
                 // Finds all translations
-                $em = $args->getEntityManager();
+                $em               = $args->getEntityManager();
                 $repo             = $em->getRepository(get_class($translatable));
                 $propertyAccessor = PropertyAccess::createPropertyAccessor();
                 $translations     = $repo->findBy(['oid' => $translatable->getOid()]);
@@ -191,15 +192,12 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
                     // Make sure we don't update the currently updated entity
                     if ($translation !== $translatable) {
                         foreach ($sharedAmongstTranslationsProperties as $property) {
-
                             $sourceValue      = $propertyAccessor->getValue($translatable, $property->name);
                             $translationValue = $propertyAccessor->getValue($translation, $property->name);
-
                             // Set the value only of it's not already the same
                             if ($translationValue !== $sourceValue) {
                                 // If property is translatable, check for it's translation
                                 if ($translationValue instanceof TranslatableInterface) {
-
                                     $sourceValue = $args
                                         ->getEntityManager()
                                         ->getRepository(get_class($sourceValue))
@@ -209,14 +207,12 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
                                         ])
                                     ;
                                 }
-
                                 $propertyAccessor->setValue($translation, $property->name, $sourceValue);
-                                $em->persist($translation);
-                                $em->flush($translation);
                             }
                         }
+                        $em->persist($translation);
+                        $em->flush($translation);
                     }
-
                 }
             }
         }
