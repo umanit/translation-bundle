@@ -27,6 +27,8 @@ interface TranslatableInterface
      * Set translations ids per locale
      *
      * @param array $translations
+     *
+     * @return TranslatableInterface
      */
-    public function setTranslations(array $translations): this;
+    public function setTranslations(array $translations): self;
 }

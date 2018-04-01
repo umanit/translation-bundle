@@ -51,7 +51,7 @@ trait TranslatableTrait
      *
      * @return $this
      */
-    public function setLocale(string $locale): this
+    public function setLocale(string $locale): self
     {
         $this->locale = $locale;
 
@@ -76,7 +76,7 @@ trait TranslatableTrait
      *
      * @return $this
      */
-    public function setTranslations(array $translations): this
+    public function setTranslations(array $translations): self
     {
         $this->translations = $translations;
 
