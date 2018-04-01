@@ -11,7 +11,7 @@ use Umanit\TranslationBundle\Translation\EntityTranslator;
 /**
  * @author Arthur Guigand <aguigand@umanit.fr>
  */
-class DoctrineObject implements TranslationHandlerInterface
+class DoctrineObjectHandler implements TranslationHandlerInterface
 {
     /** @var EntityManagerInterface */
     protected $em;
@@ -22,7 +22,7 @@ class DoctrineObject implements TranslationHandlerInterface
     protected $translator;
 
     /**
-     * DoctrineObject constructor.
+     * DoctrineObjectHandler constructor.
      *
      * @param EntityManagerInterface $em
      * @param EntityTranslator       $translator

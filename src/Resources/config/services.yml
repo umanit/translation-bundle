@@ -15,23 +15,23 @@ services:
     # Translation Handlers
 
     # Scalar
-    umanit_translation.translation.handlers.scalar:
-        class: Umanit\TranslationBundle\Translation\Handlers\Scalar
+    umanit_translation.translation.handlers.scalar_hander:
+        class: Umanit\TranslationBundle\Translation\Handlers\ScalarHandler
         tags:
             - { name: umanit_translation.translation_handler, priority: 1 }
 
     # Translatable Entity
-    umanit_translation.translation_handlers.translatable_entity:
-        class: Umanit\TranslationBundle\Translation\Handlers\TranslatableEntity
+    umanit_translation.translation_handlers.translatable_entity_handler:
+        class: Umanit\TranslationBundle\Translation\Handlers\TranslatableEntityHandler
         arguments:
             - '@doctrine.orm.entity_manager'
-            - '@umanit_translation.translation_handlers.doctrine_object'
+            - '@umanit_translation.translation_handlers.doctrine_object_handler'
         tags:
             - { name: umanit_translation.translation_handler, priority: 10 }
 
     # Doctrine Object
-    umanit_translation.translation_handlers.doctrine_object:
-        class: Umanit\TranslationBundle\Translation\Handlers\DoctrineObject
+    umanit_translation.translation_handlers.doctrine_object_handler:
+        class: Umanit\TranslationBundle\Translation\Handlers\DoctrineObjectHandler
         arguments:
             - '@doctrine.orm.entity_manager'
             - '@umanit_translation.translation.entity_translator'

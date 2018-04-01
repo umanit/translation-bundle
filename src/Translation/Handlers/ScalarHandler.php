@@ -7,7 +7,7 @@ namespace Umanit\TranslationBundle\Translation\Handlers;
  *
  * @author Arthur Guigand <aguigand@umanit.fr>
  */
-class Scalar implements TranslationHandlerInterface
+class ScalarHandler implements TranslationHandlerInterface
 {
     public function supports($data): bool
     {

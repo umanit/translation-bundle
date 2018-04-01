@@ -9,12 +9,13 @@ use Umanit\TranslationBundle\Doctrine\Model\TranslatableInterface;
 /**
  * @author Arthur Guigand <aguigand@umanit.fr>
  */
-class TranslatableEntity implements TranslationHandlerInterface
+class TranslatableEntityHandler implements TranslationHandlerInterface
 {
     /**
-     * @var DoctrineObject
+     * @var DoctrineObjectHandler
      */
-    private $doctrineObjectTranslationHandler;
+    private $doctrineObjectHandler;
+
     /**
      * @var EntityManagerInterface
      */
@@ -29,12 +30,12 @@ class TranslatableEntity implements TranslationHandlerInterface
      * TranslatableEntity constructor.
      *
      * @param EntityManagerInterface $em
-     * @param DoctrineObject         $doctrineObjectTranslationHandler
+     * @param DoctrineObjectHandler  $doctrineObjectHandler
      */
-    public function __construct(EntityManagerInterface $em, DoctrineObject $doctrineObjectTranslationHandler)
+    public function __construct(EntityManagerInterface $em, DoctrineObjectHandler $doctrineObjectHandler)
     {
-        $this->em                               = $em;
-        $this->doctrineObjectTranslationHandler = $doctrineObjectTranslationHandler;
+        $this->em                    = $em;
+        $this->doctrineObjectHandler = $doctrineObjectHandler;
     }
 
     public function handleSharedAmongstTranslations($data)
@@ -55,7 +56,7 @@ class TranslatableEntity implements TranslationHandlerInterface
         /** @var TranslatableInterface $clone */
         $clone = clone $data;
 
-        $this->doctrineObjectTranslationHandler->translateProperties($clone, $locale);
+        $this->doctrineObjectHandler->translateProperties($clone, $locale);
 
         $clone->setLocale($locale);
 
