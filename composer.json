@@ -20,6 +20,6 @@
     "minimum-stability": "stable",
     "target-dir": "Umanit/TranslationBundle",
     "autoload": {
-        "psr-0": { "Umanit\\TranslationBundle": "" }
+        "psr-4": { "Umanit\\TranslationBundle": "src" }
     }
 }
