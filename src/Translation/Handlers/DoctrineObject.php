@@ -14,12 +14,12 @@ use Umanit\TranslationBundle\Translation\EntityTranslator;
 class DoctrineObject implements TranslationHandlerInterface
 {
     /** @var EntityManagerInterface */
-    private $em;
+    protected $em;
 
     /**
      * @var EntityTranslator
      */
-    private $translator;
+    protected $translator;
 
     /**
      * DoctrineObject constructor.
@@ -61,19 +61,29 @@ class DoctrineObject implements TranslationHandlerInterface
     {
         $clone = clone $data;
 
-        $accessor   = PropertyAccess::createPropertyAccessor();
-        $properties = $this->em->getClassMetadata(get_class($clone))->getReflectionProperties();
-
-        // Loop through all properties
-        foreach ($properties as $property) {
-            $propValue = $accessor->getValue($clone, $property->name);
-            $propertyTranslation = $this->translator->translate($propValue, $locale, $property);
-            $accessor->setValue($clone, $property->name, $propertyTranslation);
-        }
+        $this->translateProperties($clone, $locale);
 
         $this->em->persist($clone);
 
         return $clone;
     }
 
+    /**
+     * Loops through all object properties to translate them.
+     *
+     * @param object $clone
+     * @param string $locale
+     */
+    public function translateProperties($clone, string $locale)
+    {
+        $accessor   = PropertyAccess::createPropertyAccessor();
+        $properties = $this->em->getClassMetadata(get_class($clone))->getReflectionProperties();
+
+        // Loop through all properties
+        foreach ($properties as $property) {
+            $propValue           = $accessor->getValue($clone, $property->name);
+            $propertyTranslation = $this->translator->translate($propValue, $locale, $property);
+            $accessor->setValue($clone, $property->name, $propertyTranslation);
+        }
+    }
 }

@@ -20,6 +20,15 @@ services:
         tags:
             - { name: umanit_translation.translation_handler, priority: 1 }
 
+    # Translatable Entity
+    umanit_translation.translation_handlers.translatable_entity:
+        class: Umanit\TranslationBundle\Translation\Handlers\TranslatableEntity
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@umanit_translation.translation_handlers.doctrine_object'
+        tags:
+            - { name: umanit_translation.translation_handler, priority: 10 }
+
     # Doctrine Object
     umanit_translation.translation_handlers.doctrine_object:
         class: Umanit\TranslationBundle\Translation\Handlers\DoctrineObject

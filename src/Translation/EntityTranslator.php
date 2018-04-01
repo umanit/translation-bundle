@@ -73,6 +73,8 @@ class EntityTranslator
                 return $handler->translate($data, $locale);
             }
         }
+
+        return $data;
     }
 
     /**
