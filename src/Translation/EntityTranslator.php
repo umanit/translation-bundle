@@ -26,25 +26,34 @@ class EntityTranslator
      * @var TranslationHandlerInterface[]
      */
     protected $handlers;
+
     /**
      * @var AnnotationHelper
      */
     private $annotationHelper;
 
     /**
+     * @var EntityManagerInterface
+     */
+    private $em;
+
+    /**
      * EntityTranslator constructor.
      *
      * @param array                    $locales
      * @param EventDispatcherInterface $eventDispatcher
+     * @param EntityManagerInterface   $em
      * @param AnnotationHelper         $annotationHelper
      */
     public function __construct(
         array $locales,
         EventDispatcherInterface $eventDispatcher,
+        EntityManagerInterface $em,
         AnnotationHelper $annotationHelper
     ) {
         $this->locales          = $locales;
         $this->eventDispatcher  = $eventDispatcher;
+        $this->em               = $em;
         $this->annotationHelper = $annotationHelper;
     }
 
@@ -74,6 +83,8 @@ class EntityTranslator
             }
         }
 
+        $this->em->flush();
+
         return $data;
     }
 
@@ -81,7 +92,7 @@ class EntityTranslator
      * Service call.
      *
      * @param TranslationHandlerInterface $handler
-     * @param null                       $priority
+     * @param null                        $priority
      */
     public function addTranslationHandler(TranslationHandlerInterface $handler, $priority = null)
     {
