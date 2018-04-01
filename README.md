@@ -1,7 +1,8 @@
 # Translation Bundle
 
 This bundle intends to ease Doctrine entity translations.
-Sonata Admin friendly with automatic integration. 
+Unlike most translations libraries, every translation is stored in the same table as the source entity.
+The bundle is Sonata Admin friendly with automatic integration.
 
 ## Install
 
@@ -67,7 +68,8 @@ solve this.
 **@SharedAmongstTranslations**
 
 Using this annotation will make the value of your field identical throughout all translations. Also, if you update this 
-field in any translation, all the others will be synchronized.
+field in any translation, all the others will be synchronized. 
+If the attribute is a relation to a translatable entity, it will associate the correct translation to each language.
 
 **Note :** ManyToMany associations are not supported with SharedAmongstTranslations yet.
 
