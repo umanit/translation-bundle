@@ -2,7 +2,11 @@
     "name": "umanit/translation-bundle",
     "description": "Manages Doctrine translations",
     "type": "symfony-bundle",
-    "keywords": ["symfony", "doctrine", "translation"],
+    "keywords": [
+        "symfony",
+        "doctrine",
+        "translation"
+    ],
     "homepage": "https://github.com/umanit/translation-bundle",
     "license": "MIT",
     "authors": [
@@ -20,6 +24,8 @@
     "minimum-stability": "stable",
     "target-dir": "Umanit/TranslationBundle",
     "autoload": {
-        "psr-4": { "Umanit\\TranslationBundle": "src" }
+        "psr-4": {
+            "Umanit\\TranslationBundle\\": "src/"
+        }
     }
 }
