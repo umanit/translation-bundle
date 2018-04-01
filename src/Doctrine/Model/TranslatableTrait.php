@@ -2,17 +2,22 @@
 
 namespace Umanit\TranslationBundle\Doctrine\Model;
 
+use Doctrine\ORM\Mapping as ORM;
+use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
+
 trait TranslatableTrait
 {
     /**
-     * @var int
-     *
-     * @ORM\Column(name="oid", type="integer", nullable=true)
+     * @var UuidInterface
+     * @ORM\Id()
+     * @ORM\Column(name="uuid", type="string", length=36)
      */
-    protected $oid;
+    protected $uuid;
 
     /**
      * @var string
+     * @ORM\Id()
      * @ORM\Column(name="locale", type="string", length=7)
      */
     protected $locale;
@@ -24,19 +29,19 @@ trait TranslatableTrait
     protected $translations;
 
     /**
-     * @return int
+     * TranslatableTrait constructor.
+     *
+     * @param string             $locale
+     * @param UuidInterface|null $uuid
      */
-    public function getOid()
+    public function __construct(string $locale, UuidInterface $uuid = null)
     {
-        return $this->oid;
-    }
+        if (null === $uuid) {
+            $uuid = Uuid::uuid4();
+        }
 
-    /**
-     * @param int $oid
-     */
-    public function setOid($oid)
-    {
-        $this->oid = $oid;
+        $this->locale = $locale;
+        $this->uuid   = $uuid;
     }
 
     /**
@@ -46,34 +51,22 @@ trait TranslatableTrait
      *
      * @return $this
      */
-    public function setLocale($locale)
+    public function setLocale(string $locale): this
     {
         $this->locale = $locale;
 
         return $this;
     }
 
-    public function getLocale()
+    public function getLocale(): string
     {
         return $this->locale;
     }
 
     /**
-     * @param null|int $id
-     *
-     * @return $this
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    /**
      * @return array
      */
-    public function getTranslations()
+    public function getTranslations(): array
     {
         return $this->translations;
     }
@@ -83,7 +76,7 @@ trait TranslatableTrait
      *
      * @return $this
      */
-    public function setTranslations(array $translations)
+    public function setTranslations(array $translations): this
     {
         $this->translations = $translations;
 
