@@ -1,4 +1,35 @@
 services:
+    Umanit\TranslationBundle\Translation\EntityTranslator: '@umanit_translation.translation.entity_translator'
+
+    umanit_translation.translation.entity_translator:
+        class: Umanit\TranslationBundle\Translation\EntityTranslator
+        arguments:
+            - '%umanit_translation.locales%'
+            - '@event_dispatcher'
+            - '@umanit_translation.utils.annotation_helper'
+
+    umanit_translation.utils.annotation_helper:
+        class: Umanit\TranslationBundle\Utils\AnnotationHelper
+        arguments: ['@annotations.reader']
+
+    # Translation Handlers
+
+    # Scalar
+    umanit_translation.translation.handlers.scalar:
+        class: Umanit\TranslationBundle\Translation\Handlers\Scalar
+        tags:
+            - { name: umanit_translation.translation_handler, priority: 1 }
+
+    # Doctrine Object
+    umanit_translation.translation_handlers.doctrine_object:
+        class: Umanit\TranslationBundle\Translation\Handlers\DoctrineObject
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@umanit_translation.translation.entity_translator'
+        tags:
+            - { name: umanit_translation.translation_handler, priority: 100 }
+
+    # Legacy translator
     umanit_translation.translator.entity_translator:
         class: Umanit\TranslationBundle\Translator\EntityTranslator
         arguments: ['%umanit_translation.locales%', '@doctrine.orm.entity_manager', '@annotations.reader', '@event_dispatcher']

@@ -26,7 +26,7 @@ trait TranslatableTrait
      * @var array
      * @ORM\Column(type="array", nullable=true)
      */
-    protected $translations;
+    protected $translations = [];
 
     /**
      * TranslatableTrait constructor.
@@ -41,7 +41,7 @@ trait TranslatableTrait
         }
 
         $this->locale = $locale;
-        $this->uuid   = $uuid;
+        $this->uuid   = (string) $uuid;
     }
 
     /**
@@ -58,9 +58,38 @@ trait TranslatableTrait
         return $this;
     }
 
+    /**
+     * Returns entity's locale.
+     *
+     * @return string
+     */
     public function getLocale(): string
     {
         return $this->locale;
+    }
+
+    /**
+     * Set the UUID
+     *
+     * @param string $uuid
+     *
+     * @return $this
+     */
+    public function setUuid(string $uuid): self
+    {
+        $this->uuid = $uuid;
+
+        return $this;
+    }
+
+    /**
+     * Returns entity's UUID.
+     *
+     * @return string
+     */
+    public function getUuid(): string
+    {
+        return $this->uuid;
     }
 
     /**
@@ -76,7 +105,7 @@ trait TranslatableTrait
      *
      * @return $this
      */
-    public function setTranslations(array $translations): self
+    public function setTranslations(array $translations): TranslatableInterface
     {
         $this->translations = $translations;
 
