@@ -22,7 +22,6 @@
         "doctrine/orm": "^2.5"
     },
     "minimum-stability": "stable",
-    "target-dir": "Umanit/TranslationBundle",
     "autoload": {
         "psr-4": {
             "Umanit\\TranslationBundle\\": "src/"
