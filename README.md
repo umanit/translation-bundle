@@ -2,7 +2,15 @@
 
 This bundle intends to ease Doctrine entity translations.
 Unlike most translations libraries, every translation is stored in the same table as the source entity.
-The bundle is Sonata Admin friendly with automatic integration.
+
+## Features
+
+* Add translations without changing existing entities
+* Translation fields are stored in the same table (no expensive joins)
+* Supports inherited entities
+* Handle more than just text fields
+* Sonata admin integration
+* Auto-population of translated relations
 
 ## Install
 
