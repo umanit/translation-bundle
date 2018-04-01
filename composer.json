@@ -17,15 +17,21 @@
     ],
     "require": {
         "php": ">=7.0",
-        "symfony/symfony": "~2.8",
         "doctrine/doctrine-bundle": "^1.6",
         "doctrine/orm": "^2.5",
-        "ramsey/uuid": "^3.7"
+        "ramsey/uuid": "^3.7",
+        "symfony/framework-bundle": "^3.4",
+        "symfony/yaml": "^3.4",
+        "symfony/property-access": "^3.4"
     },
     "minimum-stability": "stable",
     "autoload": {
         "psr-4": {
             "Umanit\\TranslationBundle\\": "src/"
         }
+    },
+    "require-dev": {
+        "symfony/phpunit-bridge": "^4.0",
+        "phpunit/phpunit": "^6.5"
     }
 }

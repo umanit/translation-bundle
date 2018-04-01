@@ -7,7 +7,9 @@ services:
             - '%umanit_translation.locales%'
             - '@event_dispatcher'
             - '@umanit_translation.utils.annotation_helper'
+        public: true # This is just for testing purpose
 
+    # Utils
     umanit_translation.utils.annotation_helper:
         class: Umanit\TranslationBundle\Utils\AnnotationHelper
         arguments: ['@annotations.reader']
