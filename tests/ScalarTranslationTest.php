@@ -4,6 +4,7 @@ namespace Umanit\TranslationBundle\Test;
 
 use AppTestBundle\Entity\Scalar\ScalarTestEntity;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Umanit\TranslationBundle\Doctrine\Model\TranslatableInterface;
 use Umanit\TranslationBundle\Translation\EntityTranslator;
 
 /**
@@ -42,9 +43,7 @@ class ScalarTranslationTest extends KernelTestCase
         $translation = $this->translator->translate($entity, 'fr');
 
         $this->assertAttributeContains('Test title', 'title', $translation);
-        $this->assertAttributeContains('fr', 'locale', $translation);
-        $this->assertAttributeContains($entity->getUuid(), 'uuid', $translation);
-        $this->assertNotEquals(spl_object_hash($entity), spl_object_hash($translation));
+        $this->assertIsTranslation($entity, $translation);
     }
 
     /** @test */
@@ -59,9 +58,7 @@ class ScalarTranslationTest extends KernelTestCase
         $translation = $this->translator->translate($entity, 'fr');
 
         $this->assertAttributeContains('Shared attribute', 'shared', $translation);
-        $this->assertAttributeContains('fr', 'locale', $translation);
-        $this->assertAttributeContains($entity->getUuid(), 'uuid', $translation);
-        $this->assertNotEquals(spl_object_hash($entity), spl_object_hash($translation));
+        $this->assertIsTranslation($entity, $translation);
     }
 
     /** @test */
@@ -77,8 +74,19 @@ class ScalarTranslationTest extends KernelTestCase
         $translation = $this->translator->translate($entity, 'fr');
 
         $this->assertAttributeEmpty('empty', $translation);
+        $this->assertIsTranslation($entity, $translation);
+    }
+
+    /**
+     * Assert a translation is actually a translation.
+     *
+     * @param TranslatableInterface $source
+     * @param TranslatableInterface $translation
+     */
+    protected function assertIsTranslation(TranslatableInterface $source, TranslatableInterface $translation)
+    {
         $this->assertAttributeContains('fr', 'locale', $translation);
-        $this->assertAttributeContains($entity->getUuid(), 'uuid', $translation);
-        $this->assertNotEquals(spl_object_hash($entity), spl_object_hash($translation));
+        $this->assertAttributeContains($source->getUuid(), 'uuid', $translation);
+        $this->assertNotEquals(spl_object_hash($source), spl_object_hash($translation));
     }
 }
