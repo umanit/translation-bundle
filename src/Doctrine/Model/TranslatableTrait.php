@@ -2,9 +2,6 @@
 
 namespace Umanit\TranslationBundle\Doctrine\Model;
 
-use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\PropertyAccess\PropertyAccess;
-
 trait TranslatableTrait
 {
     /**
