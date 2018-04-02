@@ -47,11 +47,12 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
 
     /**
      * @param ORM\Event\LifecycleEventArgs $args
+     *
+     * @throws ORM\OptimisticLockException
      */
     public function postUpdate(ORM\Event\LifecycleEventArgs $args)
     {
-        // @todo AGU : refactor to remove references to oid
-        // $this->synchronizeTranslatableSharedField($args);
+        $this->synchronizeTranslatableSharedField($args);
     }
 
     /**
@@ -64,11 +65,13 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
 
     /**
      * @param ORM\Event\LifecycleEventArgs $args
+     *
+     * @throws ORM\OptimisticLockException
      */
     public function postPersist(ORM\Event\LifecycleEventArgs $args)
     {
-        // @todo AGU : refactor to remove references to oid
         $this->updateTranslations($args);
+        $this->synchronizeTranslatableSharedField($args);
     }
 
     /**
@@ -92,21 +95,6 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
         $translatable = $args->getEntity();
         if ($translatable instanceof TranslatableInterface && $translatable->getLocale() === null) {
             $translatable->setLocale($this->defaultLocale);
-        }
-    }
-
-    /**
-     * Sets the default OID after persist.
-     *
-     * @param ORM\Event\LifecycleEventArgs $args
-     */
-    public function setDefaultOid(ORM\Event\LifecycleEventArgs $args)
-    {
-        $translatable = $args->getEntity();
-        if ($translatable instanceof TranslatableInterface && $translatable->getOid() === null) {
-            $translatable->setOid($translatable->getId());
-            $args->getEntityManager()->persist($translatable);
-            $args->getEntityManager()->flush($translatable);
         }
     }
 
@@ -169,55 +157,61 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
      * Seeks for the @SharedAmongstTranslations() annotation and sychronize all translations.
      *
      * @param ORM\Event\LifecycleEventArgs $args
+     *
+     * @throws ORM\OptimisticLockException
      */
     protected function synchronizeTranslatableSharedField(ORM\Event\LifecycleEventArgs $args)
     {
         $translatable = $args->getEntity();
+        // Only synchronize TranslatableInterface
+        if (!$translatable instanceof TranslatableInterface) {
+            return;
+        }
+        $em         = $args->getEntityManager();
+        $properties = $em->getClassMetadata(get_class($translatable))->getReflectionProperties();
 
-        if ($translatable instanceof TranslatableInterface) {
-            $em = $args->getEntityManager();
-            $properties = $em->getClassMetadata(get_class($translatable))->getReflectionProperties();
+        $sharedAmongstTranslationsProperties = array_filter($properties, function ($property) {
+            // @todo AGU : ManyToMany are not supported yet
+            return $this->isSharedAmongstTranslations($property) && $this->isNotManyToMany($property);
+        });
 
-            $sharedAmongstTranslationsProperties = array_filter($properties, function ($property) {
-                // @todo AGU : ManyToMany are not supported yet
-                return $this->isSharedAmongstTranslations($property) && $this->isNotManyToMany($property);
-            });
+        // Update the translations if any property is to be shared
+        if (empty($sharedAmongstTranslationsProperties)) {
+            return;
+        }
+        // Finds all translations
+        $em               = $args->getEntityManager();
+        $repo             = $em->getRepository(get_class($translatable));
+        $propertyAccessor = PropertyAccess::createPropertyAccessor();
+        $translations     = $repo->findBy(['uuid' => $translatable->getUuid()]);
 
-            // Update the translations if any property is to be shared
-            if (!empty($sharedAmongstTranslationsProperties)) {
-                // Finds all translations
-                $em               = $args->getEntityManager();
-                $repo             = $em->getRepository(get_class($translatable));
-                $propertyAccessor = PropertyAccess::createPropertyAccessor();
-                $translations     = $repo->findBy(['oid' => $translatable->getOid()]);
-
-                foreach ($translations as $translation) {
-                    // Make sure we don't update the currently updated entity
-                    if ($translation !== $translatable) {
-                        foreach ($sharedAmongstTranslationsProperties as $property) {
-                            $sourceValue      = $propertyAccessor->getValue($translatable, $property->name);
-                            $translationValue = $propertyAccessor->getValue($translation, $property->name);
-                            // Set the value only of it's not already the same
-                            if ($translationValue !== $sourceValue) {
-                                // If property is translatable, check for it's translation
-                                if ($translationValue instanceof TranslatableInterface) {
-                                    $sourceValue = $args
-                                        ->getEntityManager()
-                                        ->getRepository(get_class($sourceValue))
-                                        ->findOneBy([
-                                            'oid'    => $translationValue->getOid(),
-                                            'locale' => $translationValue->getLocale(),
-                                        ])
-                                    ;
-                                }
-                                $propertyAccessor->setValue($translation, $property->name, $sourceValue);
-                            }
-                        }
-                        $em->persist($translation);
-                        $em->flush($translation);
-                    }
-                }
+        foreach ($translations as $translation) {
+            // Make sure we don't update the currently updated entity
+            if ($translation === $translatable) {
+                continue;
             }
+            foreach ($sharedAmongstTranslationsProperties as $property) {
+                $sourceValue      = $propertyAccessor->getValue($translatable, $property->name);
+                $translationValue = $propertyAccessor->getValue($translation, $property->name);
+                // Set the value only of it's not already the same
+                if ($translationValue === $sourceValue) {
+                    continue;
+                }
+                // If property is translatable, check for its translation
+                if ($translationValue instanceof TranslatableInterface) {
+                    $sourceValue = $args
+                        ->getEntityManager()
+                        ->getRepository(get_class($sourceValue))
+                        ->findOneBy([
+                            'uuid'   => $translationValue->getUuid(),
+                            'locale' => $translationValue->getLocale(),
+                        ])
+                    ;
+                }
+                $propertyAccessor->setValue($translation, $property->name, $sourceValue);
+            }
+            $em->persist($translation);
+            $em->flush($translation);
         }
     }
 

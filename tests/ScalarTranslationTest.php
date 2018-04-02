@@ -42,6 +42,7 @@ class ScalarTranslationTest extends KernelTestCase
     {
         $entity      = $this->createEntity();
         $translation = $this->translator->translate($entity, 'fr');
+
         $this->em->flush();
         $this->assertAttributeContains('Test title', 'title', $translation);
         $this->assertIsTranslation($entity, $translation);
@@ -51,11 +52,15 @@ class ScalarTranslationTest extends KernelTestCase
     public function it_can_share_scalar_value_amongst_translations()
     {
         $entity = $this->createEntity();
-
+        /** @var ScalarTestEntity $translation */
         $translation = $this->translator->translate($entity, 'fr');
-
+        $this->em->persist($translation);
         $this->em->flush();
-        $this->assertAttributeContains('Shared attribute', 'shared', $translation);
+        // Update shared attribute
+        $translation->setShared('Updated shared');
+        $this->em->persist($translation);
+        $this->em->flush();
+        $this->assertAttributeContains('Updated shared', 'shared', $entity);
         $this->assertIsTranslation($entity, $translation);
     }
 
@@ -64,8 +69,8 @@ class ScalarTranslationTest extends KernelTestCase
     {
         $entity      = $this->createEntity();
         $translation = $this->translator->translate($entity, 'fr');
-        $this->em->flush();
 
+        $this->em->flush();
         $this->assertAttributeEmpty('empty', $translation);
         $this->assertIsTranslation($entity, $translation);
     }
