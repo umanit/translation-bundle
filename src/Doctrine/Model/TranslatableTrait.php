@@ -34,7 +34,7 @@ trait TranslatableTrait
      * @param string             $locale
      * @param UuidInterface|null $uuid
      */
-    public function __construct(string $locale, UuidInterface $uuid = null)
+    public function __construct(string $locale = null, UuidInterface $uuid = null)
     {
         if (null === $uuid) {
             $uuid = Uuid::uuid4();
@@ -51,7 +51,7 @@ trait TranslatableTrait
      *
      * @return $this
      */
-    public function setLocale(string $locale): self
+    public function setLocale(string $locale = null): self
     {
         $this->locale = $locale;
 
@@ -63,7 +63,7 @@ trait TranslatableTrait
      *
      * @return string
      */
-    public function getLocale(): string
+    public function getLocale()
     {
         return $this->locale;
     }

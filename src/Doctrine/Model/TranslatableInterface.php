@@ -7,14 +7,14 @@ interface TranslatableInterface
     /**
      * Returns entity's locale (fr/en/...)
      */
-    public function getLocale(): string;
+    public function getLocale();
 
     /**
      * Set entity's locale (fr/en/...)
      *
      * @param string $locale
      */
-    public function setLocale(string $locale);
+    public function setLocale(string $locale = null);
 
     /**
      * Set entity's UUID
