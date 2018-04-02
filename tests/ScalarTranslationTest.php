@@ -3,6 +3,7 @@
 namespace Umanit\TranslationBundle\Test;
 
 use AppTestBundle\Entity\Scalar\ScalarTestEntity;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Umanit\TranslationBundle\Doctrine\Model\TranslatableInterface;
 use Umanit\TranslationBundle\Translation\EntityTranslator;
@@ -17,6 +18,9 @@ class ScalarTranslationTest extends KernelTestCase
     /** @var EntityTranslator */
     private $translator;
 
+    /** @var EntityManagerInterface */
+    private $em;
+
     /**
      * {@inheritDoc}
      */
@@ -29,19 +33,16 @@ class ScalarTranslationTest extends KernelTestCase
                 ->getContainer()
                 ->get('umanit_translation.translation.entity_translator')
         ;
+
+        $this->em = $kernel->getContainer()->get('doctrine.orm.entity_manager');
     }
 
     /** @test */
     public function it_can_translate_scalar_value()
     {
-        $entity = new ScalarTestEntity('en');
-        $entity
-            ->setTitle('Test title')
-            ->setShared('Shared attribute')
-        ;
-
+        $entity      = $this->createEntity();
         $translation = $this->translator->translate($entity, 'fr');
-
+        $this->em->flush();
         $this->assertAttributeContains('Test title', 'title', $translation);
         $this->assertIsTranslation($entity, $translation);
     }
@@ -49,14 +50,11 @@ class ScalarTranslationTest extends KernelTestCase
     /** @test */
     public function it_can_share_scalar_value_amongst_translations()
     {
-        $entity = new ScalarTestEntity('en');
-        $entity
-            ->setTitle('Test title')
-            ->setShared('Shared attribute')
-        ;
+        $entity = $this->createEntity();
 
         $translation = $this->translator->translate($entity, 'fr');
 
+        $this->em->flush();
         $this->assertAttributeContains('Shared attribute', 'shared', $translation);
         $this->assertIsTranslation($entity, $translation);
     }
@@ -64,17 +62,31 @@ class ScalarTranslationTest extends KernelTestCase
     /** @test */
     public function it_can_empty_scalar_value_on_translate()
     {
-        $entity = new ScalarTestEntity('en');
-        $entity
-            ->setTitle('Test title')
-            ->setShared('Shared attribute')
-            ->setEmpty('Empty attribute')
-        ;
-
+        $entity      = $this->createEntity();
         $translation = $this->translator->translate($entity, 'fr');
+        $this->em->flush();
 
         $this->assertAttributeEmpty('empty', $translation);
         $this->assertIsTranslation($entity, $translation);
+    }
+
+    /**
+     * Creates test entity.
+     *
+     * @return ScalarTestEntity
+     */
+    protected function createEntity()
+    {
+        $entity =
+            (new ScalarTestEntity())
+                ->setTitle('Test title')
+                ->setShared('Shared attribute')
+                ->setEmpty('Empty attribute')
+        ;
+
+        $this->em->persist($entity);
+
+        return $entity;
     }
 
     /**
