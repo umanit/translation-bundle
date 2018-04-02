@@ -24,7 +24,7 @@ trait TranslatableTrait
 
     /**
      * @var array
-     * @ORM\Column(type="array", nullable=true)
+     * @ORM\Column(type="json")
      */
     protected $translations = [];
 

@@ -68,7 +68,7 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
     public function postPersist(ORM\Event\LifecycleEventArgs $args)
     {
         // @todo AGU : refactor to remove references to oid
-        // $this->updateTranslations($args);
+        $this->updateTranslations($args);
     }
 
     /**
@@ -153,7 +153,7 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
             $translationsArray = [];
 
             foreach ($translations as $translation) {
-                $translationsArray[$translation->getLocale()] = $translation->getId();
+                $translationsArray[] = $translation->getLocale();
             }
 
             foreach ($translations as $translation) {
