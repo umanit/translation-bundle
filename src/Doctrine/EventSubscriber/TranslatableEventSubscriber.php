@@ -179,12 +179,15 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
         if (empty($sharedAmongstTranslationsProperties)) {
             return;
         }
-        // Finds all translations
-        $em               = $args->getEntityManager();
-        $repo             = $em->getRepository(get_class($translatable));
-        $propertyAccessor = PropertyAccess::createPropertyAccessor();
-        $translations     = $repo->findBy(['uuid' => $translatable->getUuid()]);
 
+        $propertyAccessor = PropertyAccess::createPropertyAccessor();
+        $em               = $args->getEntityManager();
+        $translations     = $em
+            ->getRepository(get_class($translatable))
+            ->findBy(['uuid' => $translatable->getUuid()])
+        ;
+
+        // Loops through all translations
         foreach ($translations as $translation) {
             // Make sure we don't update the currently updated entity
             if ($translation === $translatable) {
@@ -199,8 +202,7 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
                 }
                 // If property is translatable, check for its translation
                 if ($translationValue instanceof TranslatableInterface) {
-                    $sourceValue = $args
-                        ->getEntityManager()
+                    $sourceValue = $em
                         ->getRepository(get_class($sourceValue))
                         ->findOneBy([
                             'uuid'   => $translationValue->getUuid(),
