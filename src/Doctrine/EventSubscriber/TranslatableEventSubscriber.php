@@ -112,7 +112,7 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
             $repo = $em->getRepository(get_class($translatable));
 
             /** @var TranslatableInterface[] $translations */
-            $translations = $repo->findBy(['oid' => $translatable->getOid()]);
+            $translations = $repo->findBy(['uuid' => $translatable->getUuid()]);
 
             foreach ($translations as $translation) {
                 $em->remove($translation);
