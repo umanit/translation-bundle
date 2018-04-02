@@ -50,7 +50,8 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
      */
     public function postUpdate(ORM\Event\LifecycleEventArgs $args)
     {
-        $this->synchronizeTranslatableSharedField($args);
+        // @todo AGU : refactor to remove references to oid
+        // $this->synchronizeTranslatableSharedField($args);
     }
 
     /**
@@ -66,8 +67,8 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
      */
     public function postPersist(ORM\Event\LifecycleEventArgs $args)
     {
-        $this->updateTranslations($args);
-        $this->setDefaultOid($args);
+        // @todo AGU : refactor to remove references to oid
+        // $this->updateTranslations($args);
     }
 
     /**
@@ -135,6 +136,8 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
      * Updates the "translations" array of all translations on persist.
      *
      * @param ORM\Event\LifecycleEventArgs $args
+     *
+     * @throws ORM\OptimisticLockException
      */
     public function updateTranslations(ORM\Event\LifecycleEventArgs $args)
     {
@@ -146,7 +149,7 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
             $repo = $em->getRepository(get_class($translatable));
 
             /** @var TranslatableInterface[] $translations */
-            $translations      = $repo->findBy(['oid' => $translatable->getOid()]);
+            $translations      = $repo->findBy(['uuid' => $translatable->getUuid()]);
             $translationsArray = [];
 
             foreach ($translations as $translation) {
