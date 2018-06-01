@@ -2,11 +2,11 @@
 
 namespace Umanit\TranslationBundle\DependencyInjection;
 
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
-use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader;
+use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 /**
  * This is the class that loads and manages your bundle configuration.
@@ -66,7 +66,7 @@ class UmanitTranslationExtension extends Extension implements PrependExtensionIn
      * @param array            $params
      * @param string           $parent
      */
-    private function setConfigAsParameters(ContainerBuilder &$container, array $params, $parent)
+    private function setConfigAsParameters(ContainerBuilder $container, array $params, $parent)
     {
         foreach ($params as $key => $value) {
             $name = $parent.'.'.$key;

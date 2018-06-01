@@ -9,6 +9,8 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 use Umanit\TranslationBundle\Translation\EntityTranslator;
 
 /**
+ * Handles basic Doctrine Object.
+ *
  * @author Arthur Guigand <aguigand@umanit.fr>
  */
 class DoctrineObjectHandler implements TranslationHandlerInterface
@@ -38,7 +40,7 @@ class DoctrineObjectHandler implements TranslationHandlerInterface
         if (is_object($data)) {
             $data = ($data instanceof Proxy)
                 ? get_parent_class($data)
-                : get_class($data);
+                : \get_class($data);
         }
 
         return !$this->em->getMetadataFactory()->isTransient($data);
@@ -46,14 +48,11 @@ class DoctrineObjectHandler implements TranslationHandlerInterface
 
     public function handleSharedAmongstTranslations($data)
     {
-        // TODO: Implement handleSharedAmongstTranslations() method.
-
-        return null;
+        return $data;
     }
 
     public function handleEmptyOnTranslate($data)
     {
-        // TODO: Implement handleEmptyOnTranslate() method.
         return null;
     }
 
@@ -77,7 +76,7 @@ class DoctrineObjectHandler implements TranslationHandlerInterface
     public function translateProperties($clone, string $locale)
     {
         $accessor   = PropertyAccess::createPropertyAccessor();
-        $properties = $this->em->getClassMetadata(get_class($clone))->getReflectionProperties();
+        $properties = $this->em->getClassMetadata(\get_class($clone))->getReflectionProperties();
 
         // Loop through all properties
         foreach ($properties as $property) {

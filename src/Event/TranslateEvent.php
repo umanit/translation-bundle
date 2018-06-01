@@ -44,14 +44,14 @@ class TranslateEvent extends Event
      * TranslateEvent constructor.
      *
      * @param object $sourceEntity
-     * @param object $translatedEntity
      * @param string $locale
+     * @param object $translatedEntity
      */
-    public function __construct($sourceEntity, $translatedEntity, $locale)
+    public function __construct($sourceEntity, $locale, $translatedEntity = null)
     {
         $this->sourceEntity     = $sourceEntity;
-        $this->translatedEntity = $translatedEntity;
         $this->locale           = $locale;
+        $this->translatedEntity = $translatedEntity;
     }
 
     /**

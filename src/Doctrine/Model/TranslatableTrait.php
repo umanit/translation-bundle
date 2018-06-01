@@ -6,6 +6,9 @@ use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
+/**
+ * @author Arthur Guigand <aguigand@umanit.fr>
+ */
 trait TranslatableTrait
 {
     /**

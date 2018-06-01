@@ -3,7 +3,6 @@
 namespace Umanit\TranslationBundle\Translator;
 
 use Doctrine\Common\Annotations\Reader;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\Embedded;
 use Doctrine\ORM\Mapping\ReflectionEmbeddedProperty;
@@ -15,6 +14,7 @@ use Umanit\TranslationBundle\Doctrine\Model\TranslatableInterface;
 use Umanit\TranslationBundle\Event\TranslateEvent;
 
 /**
+ * @deprecated To be removed in 1.0
  * @author Arthur Guigand <aguigand@umanit.fr>
  */
 class EntityTranslator

@@ -31,7 +31,7 @@ class AnnotationHelper
      *
      * @return bool
      */
-    public function isEmbedded(\ReflectionProperty $property)
+    public function isEmbedded(\ReflectionProperty $property): bool
     {
         return null !== $this->reader->getPropertyAnnotation($property, Embedded::class);
     }
@@ -43,7 +43,7 @@ class AnnotationHelper
      *
      * @return bool
      */
-    public function isSharedAmongstTranslations(\ReflectionProperty $property)
+    public function isSharedAmongstTranslations(\ReflectionProperty $property): bool
     {
         return null !== $this->reader->getPropertyAnnotation($property, SharedAmongstTranslations::class);
     }
@@ -55,7 +55,7 @@ class AnnotationHelper
      *
      * @return bool
      */
-    public function isEmptyOnTranslate(\ReflectionProperty $property)
+    public function isEmptyOnTranslate(\ReflectionProperty $property): bool
     {
         return null !== $this->reader->getPropertyAnnotation($property, EmptyOnTranslate::class);
     }

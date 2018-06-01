@@ -11,7 +11,7 @@ class ScalarHandler implements TranslationHandlerInterface
 {
     public function supports($data): bool
     {
-        return (!is_object($data) || $data instanceof \DateTime);
+        return (!\is_object($data) || $data instanceof \DateTime);
     }
 
     public function handleSharedAmongstTranslations($data)

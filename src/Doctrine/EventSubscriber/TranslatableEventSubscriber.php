@@ -2,8 +2,8 @@
 
 namespace Umanit\TranslationBundle\Doctrine\EventSubscriber;
 
-use \Doctrine\ORM;
-use \Doctrine\Common;
+use Doctrine\Common;
+use Doctrine\ORM;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Umanit\TranslationBundle\Doctrine\Annotation\SharedAmongstTranslations;
 use Umanit\TranslationBundle\Doctrine\Model\TranslatableInterface;
@@ -109,7 +109,7 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
         if ($translatable instanceof TranslatableInterface) {
             $em = $args->getEntityManager();
             // Gets all translations
-            $repo = $em->getRepository(get_class($translatable));
+            $repo = $em->getRepository(\get_class($translatable));
 
             /** @var TranslatableInterface[] $translations */
             $translations = $repo->findBy(['uuid' => $translatable->getUuid()]);
@@ -125,6 +125,7 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
      *
      * @param ORM\Event\LifecycleEventArgs $args
      *
+     * @throws ORM\ORMException
      * @throws ORM\OptimisticLockException
      */
     public function updateTranslations(ORM\Event\LifecycleEventArgs $args)
@@ -134,7 +135,7 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
         if ($translatable instanceof TranslatableInterface) {
             $em = $args->getEntityManager();
             // Gets all translations
-            $repo = $em->getRepository(get_class($translatable));
+            $repo = $em->getRepository(\get_class($translatable));
 
             /** @var TranslatableInterface[] $translations */
             $translations      = $repo->findBy(['uuid' => $translatable->getUuid()]);
@@ -168,7 +169,7 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
             return;
         }
         $em         = $args->getEntityManager();
-        $properties = $em->getClassMetadata(get_class($translatable))->getReflectionProperties();
+        $properties = $em->getClassMetadata(\get_class($translatable))->getReflectionProperties();
 
         $sharedAmongstTranslationsProperties = array_filter($properties, function ($property) {
             // @todo AGU : ManyToMany are not supported yet
@@ -183,7 +184,7 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
         $propertyAccessor = PropertyAccess::createPropertyAccessor();
         $em               = $args->getEntityManager();
         $translations     = $em
-            ->getRepository(get_class($translatable))
+            ->getRepository(\get_class($translatable))
             ->findBy(['uuid' => $translatable->getUuid()])
         ;
 
@@ -203,7 +204,7 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
                 // If property is translatable, check for its translation
                 if ($translationValue instanceof TranslatableInterface) {
                     $sourceValue = $em
-                        ->getRepository(get_class($sourceValue))
+                        ->getRepository(\get_class($sourceValue))
                         ->findOneBy([
                             'uuid'   => $translationValue->getUuid(),
                             'locale' => $translationValue->getLocale(),
@@ -224,7 +225,7 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
      *
      * @return bool
      */
-    protected function isSharedAmongstTranslations(\ReflectionProperty $property)
+    protected function isSharedAmongstTranslations(\ReflectionProperty $property): bool
     {
         return null !== $this->reader->getPropertyAnnotation($property, SharedAmongstTranslations::class);
     }
@@ -236,7 +237,7 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
      *
      * @return bool
      */
-    protected function isNotManyToMany(\ReflectionProperty $property)
+    protected function isNotManyToMany(\ReflectionProperty $property): bool
     {
         return null === $this->reader->getPropertyAnnotation($property, ORM\Mapping\ManyToMany::class);
     }
