@@ -2,7 +2,7 @@
 
 namespace Umanit\TranslationBundle\Test;
 
-use AppTestBundle\Entity\Scalar\ScalarTestEntity;
+use AppTestBundle\Entity\Scalar\Scalar;
 use Umanit\TranslationBundle\Doctrine\Model\TranslatableInterface;
 
 /**
@@ -27,7 +27,7 @@ class ScalarTranslationTest extends AbstractBaseTest
     public function it_can_share_scalar_value_amongst_translations()
     {
         $entity = $this->createEntity();
-        /** @var ScalarTestEntity $translation */
+        /** @var Scalar $translation */
         $translation = $this->translator->translate($entity, 'fr');
         $this->em->persist($translation);
         $this->em->flush();
@@ -53,12 +53,12 @@ class ScalarTranslationTest extends AbstractBaseTest
     /**
      * Creates test entity.
      *
-     * @return ScalarTestEntity
+     * @return Scalar
      */
     protected function createEntity()
     {
         $entity =
-            (new ScalarTestEntity())
+            (new Scalar())
                 ->setTitle('Test title')
                 ->setShared('Shared attribute')
                 ->setEmpty('Empty attribute')

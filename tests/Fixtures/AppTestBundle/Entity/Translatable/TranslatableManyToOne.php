@@ -2,7 +2,7 @@
 
 namespace AppTestBundle\Entity\Translatable;
 
-use AppTestBundle\Entity\Scalar\ScalarTestEntity;
+use AppTestBundle\Entity\Scalar\Scalar;
 use Doctrine\ORM\Mapping as ORM;
 use Umanit\TranslationBundle\Doctrine\Annotation\EmptyOnTranslate;
 use Umanit\TranslationBundle\Doctrine\Annotation\SharedAmongstTranslations;
@@ -13,15 +13,15 @@ use Umanit\TranslationBundle\Doctrine\Model\TranslatableTrait;
  * @ORM\Entity
  * @ORM\Table()
  */
-class TranslatableManyToOneEntity implements TranslatableInterface
+class TranslatableManyToOne implements TranslatableInterface
 {
     use TranslatableTrait;
 
     /**
      * Scalar value.
      *
-     * @var ScalarTestEntity
-     * @ORM\ManyToOne(targetEntity="\AppTestBundle\Entity\Scalar\ScalarTestEntity", cascade={"persist"})
+     * @var Scalar
+     * @ORM\ManyToOne(targetEntity="AppTestBundle\Entity\Scalar\Scalar", cascade={"persist"})
      * @ORM\JoinColumn(nullable=true)
      */
     protected $simple;
@@ -29,9 +29,9 @@ class TranslatableManyToOneEntity implements TranslatableInterface
     /**
      * Scalar value.
      *
-     * @var ScalarTestEntity
+     * @var Scalar
      * @SharedAmongstTranslations()
-     * @ORM\ManyToOne(targetEntity="\AppTestBundle\Entity\Scalar\ScalarTestEntity", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="AppTestBundle\Entity\Scalar\Scalar", cascade={"persist"})
      * @ORM\JoinColumn(nullable=true)
      */
     protected $shared;
@@ -39,15 +39,15 @@ class TranslatableManyToOneEntity implements TranslatableInterface
     /**
      * Scalar value.
      *
-     * @var ScalarTestEntity
+     * @var Scalar
      * @EmptyOnTranslate()
-     * @ORM\ManyToOne(targetEntity="\AppTestBundle\Entity\Scalar\ScalarTestEntity", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="AppTestBundle\Entity\Scalar\Scalar", cascade={"persist"})
      * @ORM\JoinColumn(nullable=true)
      */
     protected $empty;
 
     /**
-     * @return ScalarTestEntity
+     * @return Scalar
      */
     public function getSimple()
     {
@@ -55,11 +55,11 @@ class TranslatableManyToOneEntity implements TranslatableInterface
     }
 
     /**
-     * @param ScalarTestEntity $simple
+     * @param Scalar $simple
      *
      * @return $this
      */
-    public function setSimple(ScalarTestEntity $simple)
+    public function setSimple(Scalar $simple)
     {
         $this->simple = $simple;
 
@@ -67,7 +67,7 @@ class TranslatableManyToOneEntity implements TranslatableInterface
     }
 
     /**
-     * @return ScalarTestEntity
+     * @return Scalar
      */
     public function getShared()
     {
@@ -75,11 +75,11 @@ class TranslatableManyToOneEntity implements TranslatableInterface
     }
 
     /**
-     * @param ScalarTestEntity $shared
+     * @param Scalar $shared
      *
      * @return $this
      */
-    public function setShared(ScalarTestEntity $shared)
+    public function setShared(Scalar $shared)
     {
         $this->shared = $shared;
 
@@ -87,7 +87,7 @@ class TranslatableManyToOneEntity implements TranslatableInterface
     }
 
     /**
-     * @return ScalarTestEntity
+     * @return Scalar
      */
     public function getEmpty()
     {
@@ -95,11 +95,11 @@ class TranslatableManyToOneEntity implements TranslatableInterface
     }
 
     /**
-     * @param ScalarTestEntity $empty
+     * @param Scalar $empty
      *
      * @return $this
      */
-    public function setEmpty(ScalarTestEntity $empty = null)
+    public function setEmpty(Scalar $empty = null)
     {
         $this->empty = $empty;
 

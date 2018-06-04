@@ -11,7 +11,7 @@ use Umanit\TranslationBundle\Doctrine\Model\TranslatableTrait;
 /**
  * @ORM\Entity
  */
-class ScalarTestEntity implements TranslatableInterface
+class Scalar implements TranslatableInterface
 {
     use TranslatableTrait;
 
@@ -44,7 +44,7 @@ class ScalarTestEntity implements TranslatableInterface
     /**
      * @param string $title
      *
-     * @return ScalarTestEntity
+     * @return Scalar
      */
     public function setTitle(string $title)
     {
@@ -64,7 +64,7 @@ class ScalarTestEntity implements TranslatableInterface
     /**
      * @param string $shared
      *
-     * @return ScalarTestEntity
+     * @return Scalar
      */
     public function setShared(string $shared)
     {
@@ -84,7 +84,7 @@ class ScalarTestEntity implements TranslatableInterface
     /**
      * @param string $empty
      *
-     * @return ScalarTestEntity
+     * @return Scalar
      */
     public function setEmpty(string $empty = null)
     {

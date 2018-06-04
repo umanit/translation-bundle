@@ -2,8 +2,8 @@
 
 namespace Umanit\TranslationBundle\Test;
 
-use AppTestBundle\Entity\Scalar\ScalarTestEntity;
-use AppTestBundle\Entity\Translatable\TranslatableManyToOneEntity;
+use AppTestBundle\Entity\Scalar\Scalar;
+use AppTestBundle\Entity\Translatable\TranslatableManyToOne;
 use Umanit\TranslationBundle\Doctrine\Model\TranslatableInterface;
 
 /**
@@ -16,15 +16,15 @@ class TranslatableManyToOneEntityTranslationTest extends AbstractBaseTest
     /** @test */
     public function it_can_translate_simple_value()
     {
-        $associatedEntity = (new ScalarTestEntity())->setTitle('simple');
+        $associatedEntity = (new Scalar())->setTitle('simple');
 
         $entity =
-            (new TranslatableManyToOneEntity())
+            (new TranslatableManyToOne())
                 ->setSimple($associatedEntity);
 
         $this->em->persist($entity);
 
-        /** @var TranslatableManyToOneEntity $translation */
+        /** @var TranslatableManyToOne $translation */
         $translation = $this->translator->translate($entity, self::TARGET_LOCALE);
 
         $this->em->flush();
@@ -36,7 +36,7 @@ class TranslatableManyToOneEntityTranslationTest extends AbstractBaseTest
     /** @test */
     public function it_can_share_translatable_entity_value_amongst_translations()
     {
-        $associatedEntity = (new ScalarTestEntity())->setTitle('shared');
+        $associatedEntity = (new Scalar())->setTitle('shared');
         // Pre-set the translation to confirm that it'll
         // be picked up by the parent's translation.
         $translationAssociatedEntity = $this->translator->translate($associatedEntity, self::TARGET_LOCALE);
@@ -45,11 +45,11 @@ class TranslatableManyToOneEntityTranslationTest extends AbstractBaseTest
         $this->em->flush();
 
         $entity =
-            (new TranslatableManyToOneEntity())
+            (new TranslatableManyToOne())
                 ->setShared($associatedEntity);
 
 
-        /** @var TranslatableManyToOneEntity $translation */
+        /** @var TranslatableManyToOne $translation */
         $translation = $this->translator->translate($entity, self::TARGET_LOCALE);
 
         $this->em->persist($translation);
@@ -62,13 +62,13 @@ class TranslatableManyToOneEntityTranslationTest extends AbstractBaseTest
     /** @test */
     public function it_can_empty_translatable_entity_value()
     {
-        $associatedEntity = (new ScalarTestEntity())->setTitle('empty');
+        $associatedEntity = (new Scalar())->setTitle('empty');
 
         $entity =
-            (new TranslatableManyToOneEntity())
+            (new TranslatableManyToOne())
                 ->setEmpty($associatedEntity);
 
-        /** @var TranslatableManyToOneEntity $translation */
+        /** @var TranslatableManyToOne $translation */
         $translation = $this->translator->translate($entity, self::TARGET_LOCALE);
 
         $this->em->persist($translation);
