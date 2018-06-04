@@ -99,7 +99,7 @@ class TranslatableManyToOneEntity implements TranslatableInterface
      *
      * @return $this
      */
-    public function setEmpty(ScalarTestEntity $empty)
+    public function setEmpty(ScalarTestEntity $empty = null)
     {
         $this->empty = $empty;
 
