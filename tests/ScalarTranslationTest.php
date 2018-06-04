@@ -3,40 +3,15 @@
 namespace Umanit\TranslationBundle\Test;
 
 use AppTestBundle\Entity\Scalar\ScalarTestEntity;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Umanit\TranslationBundle\Doctrine\Model\TranslatableInterface;
-use Umanit\TranslationBundle\Translation\EntityTranslator;
 
 /**
  * Test for scalar value.
  *
  * @author Arthur Guigand <aguigand@umanit.fr>
  */
-class ScalarTranslationTest extends KernelTestCase
+class ScalarTranslationTest extends AbstractBaseTest
 {
-    /** @var EntityTranslator */
-    private $translator;
-
-    /** @var EntityManagerInterface */
-    private $em;
-
-    /**
-     * {@inheritDoc}
-     */
-    protected function setUp()
-    {
-        $kernel = self::bootKernel();
-
-        $this->translator =
-            $kernel
-                ->getContainer()
-                ->get('umanit_translation.translation.entity_translator')
-        ;
-
-        $this->em = $kernel->getContainer()->get('doctrine.orm.entity_manager');
-    }
-
     /** @test */
     public function it_can_translate_scalar_value()
     {

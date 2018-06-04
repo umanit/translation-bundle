@@ -32,12 +32,18 @@ if (is_dir($buildDir = __DIR__.'/../build')) {
     }
 }
 include __DIR__.'/Fixtures/App/AppKernel.php';
+
 $application = new Application(new AppKernel('test', true));
 $application->setAutoExit(false);
+
+// Drop database schema
+$input = new ArrayInput(['command' => 'doctrine:database:drop', '--force' => true]);
+$application->run($input, new ConsoleOutput());
+
 // Create database
 $input = new ArrayInput(['command' => 'doctrine:database:create']);
 $application->run($input, new ConsoleOutput());
+
 // Create database schema
 $input = new ArrayInput(['command' => 'doctrine:schema:create']);
 $application->run($input, new ConsoleOutput());
-unset($input, $application);

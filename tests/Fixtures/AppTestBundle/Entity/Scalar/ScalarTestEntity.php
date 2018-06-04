@@ -10,7 +10,6 @@ use Umanit\TranslationBundle\Doctrine\Model\TranslatableTrait;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="scalar")
  */
 class ScalarTestEntity implements TranslatableInterface
 {
@@ -20,7 +19,7 @@ class ScalarTestEntity implements TranslatableInterface
      * Scalar value.
      *
      * @var string
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", nullable=true)
      */
     protected $title;
 
@@ -29,7 +28,7 @@ class ScalarTestEntity implements TranslatableInterface
      *
      * @var string
      * @SharedAmongstTranslations()
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", nullable=true)
      */
     protected $shared;
 
