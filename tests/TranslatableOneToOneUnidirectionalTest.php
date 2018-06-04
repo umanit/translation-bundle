@@ -3,13 +3,13 @@
 namespace Umanit\TranslationBundle\Test;
 
 use AppTestBundle\Entity\Scalar\Scalar;
-use AppTestBundle\Entity\Translatable\TranslatableManyToOne;
+use AppTestBundle\Entity\Translatable\TranslatableOneToOneUnidirectional;
 use Umanit\TranslationBundle\Doctrine\Model\TranslatableInterface;
 
 /**
  * @author Arthur Guigand <aguigand@umanit.fr>
  */
-class TranslatableManyToOneEntityTranslationTest extends AbstractBaseTest
+class TranslatableOneToOneUnidirectionalTest extends AbstractBaseTest
 {
     const TARGET_LOCALE = 'fr';
 
@@ -19,12 +19,12 @@ class TranslatableManyToOneEntityTranslationTest extends AbstractBaseTest
         $associatedEntity = (new Scalar())->setTitle('simple');
 
         $entity =
-            (new TranslatableManyToOne())
+            (new TranslatableOneToOneUnidirectional())
                 ->setSimple($associatedEntity);
 
         $this->em->persist($entity);
 
-        /** @var TranslatableManyToOne $translation */
+        /** @var TranslatableOneToOneUnidirectional $translation */
         $translation = $this->translator->translate($entity, self::TARGET_LOCALE);
 
         $this->em->flush();
@@ -45,14 +45,13 @@ class TranslatableManyToOneEntityTranslationTest extends AbstractBaseTest
         $this->em->flush();
 
         $entity =
-            (new TranslatableManyToOne())
+            (new TranslatableOneToOneUnidirectional())
                 ->setShared($associatedEntity);
 
         $this->em->persist($entity);
 
-        /** @var TranslatableManyToOne $translation */
+        /** @var TranslatableOneToOneUnidirectional $translation */
         $translation = $this->translator->translate($entity, self::TARGET_LOCALE);
-
         $this->em->persist($translation);
 
         $this->em->flush();
@@ -66,12 +65,12 @@ class TranslatableManyToOneEntityTranslationTest extends AbstractBaseTest
         $associatedEntity = (new Scalar())->setTitle('empty');
 
         $entity =
-            (new TranslatableManyToOne())
+            (new TranslatableOneToOneUnidirectional())
                 ->setEmpty($associatedEntity);
 
         $this->em->persist($entity);
 
-        /** @var TranslatableManyToOne $translation */
+        /** @var TranslatableOneToOneUnidirectional $translation */
         $translation = $this->translator->translate($entity, self::TARGET_LOCALE);
 
         $this->em->persist($translation);
