@@ -37,7 +37,7 @@ class DoctrineObjectHandler implements TranslationHandlerInterface
 
     public function supports($data): bool
     {
-        if (is_object($data)) {
+        if (\is_object($data)) {
             $data = ($data instanceof Proxy)
                 ? get_parent_class($data)
                 : \get_class($data);
@@ -46,12 +46,12 @@ class DoctrineObjectHandler implements TranslationHandlerInterface
         return !$this->em->getMetadataFactory()->isTransient($data);
     }
 
-    public function handleSharedAmongstTranslations($data)
+    public function handleSharedAmongstTranslations($data, string $locale)
     {
         return $data;
     }
 
-    public function handleEmptyOnTranslate($data)
+    public function handleEmptyOnTranslate($data, string $locale)
     {
         return null;
     }
@@ -81,6 +81,9 @@ class DoctrineObjectHandler implements TranslationHandlerInterface
         // Loop through all properties
         foreach ($properties as $property) {
             $propValue           = $accessor->getValue($clone, $property->name);
+            if (null === $propValue) {
+                continue;
+            }
             $propertyTranslation = $this->translator->translate($propValue, $locale, $property);
             $accessor->setValue($clone, $property->name, $propertyTranslation);
         }

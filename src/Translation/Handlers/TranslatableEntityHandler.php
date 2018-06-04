@@ -21,11 +21,6 @@ class TranslatableEntityHandler implements TranslationHandlerInterface
      */
     private $em;
 
-    public function supports($data): bool
-    {
-        return $data instanceof TranslatableInterface;
-    }
-
     /**
      * TranslatableEntity constructor.
      *
@@ -38,16 +33,29 @@ class TranslatableEntityHandler implements TranslationHandlerInterface
         $this->doctrineObjectHandler = $doctrineObjectHandler;
     }
 
-    public function handleSharedAmongstTranslations($data)
+    public function supports($data): bool
     {
-        // TODO: Implement handleSharedAmongstTranslations() method.
-
-        return null;
+        return $data instanceof TranslatableInterface;
     }
 
-    public function handleEmptyOnTranslate($data)
+    public function handleSharedAmongstTranslations($data, string $locale)
     {
-        // TODO: Implement handleEmptyOnTranslate() method.
+        // Search in database if the content
+        // exists, otherwise translate it.
+        $existingTranslation = $this->em->getRepository(\get_class($data))->findOneBy([
+            'locale' => $locale,
+            $data->getUuid(),
+        ]);
+
+        if (null !== $existingTranslation) {
+            return $existingTranslation;
+        }
+
+        return $this->translate($data, $locale);
+    }
+
+    public function handleEmptyOnTranslate($data, string $locale)
+    {
         return null;
     }
 

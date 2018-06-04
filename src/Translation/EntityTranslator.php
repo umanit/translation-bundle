@@ -72,10 +72,10 @@ class EntityTranslator
             if ($handler->supports($data)) {
                 if (null !== $property) {
                     if ($this->annotationHelper->isSharedAmongstTranslations($property)) {
-                        return $handler->handleSharedAmongstTranslations($data);
+                        return $handler->handleSharedAmongstTranslations($data, $locale);
                     }
                     if ($this->annotationHelper->isEmptyOnTranslate($property)) {
-                        return $handler->handleEmptyOnTranslate($data);
+                        return $handler->handleEmptyOnTranslate($data, $locale);
                     }
                 }
 

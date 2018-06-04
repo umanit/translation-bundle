@@ -19,20 +19,22 @@ interface TranslationHandlerInterface
     /**
      * Handles a SharedAmongstTranslations data translation.
      *
-     * @param mixed $data
+     * @param mixed  $data
+     * @param string $locale
      *
      * @return mixed
      */
-    public function handleSharedAmongstTranslations($data);
+    public function handleSharedAmongstTranslations($data, string $locale);
 
     /**
      * Handles an EmptyOnTranslate data translation.
      *
-     * @param mixed $data
+     * @param mixed  $data
+     * @param string $locale
      *
      * @return mixed
      */
-    public function handleEmptyOnTranslate($data);
+    public function handleEmptyOnTranslate($data, string $locale);
 
     /**
      * Handles translation.

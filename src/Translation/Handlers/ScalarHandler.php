@@ -14,12 +14,12 @@ class ScalarHandler implements TranslationHandlerInterface
         return (!\is_object($data) || $data instanceof \DateTime);
     }
 
-    public function handleSharedAmongstTranslations($data)
+    public function handleSharedAmongstTranslations($data, string $locale)
     {
         return $data;
     }
 
-    public function handleEmptyOnTranslate($data)
+    public function handleEmptyOnTranslate($data, string $locale)
     {
         return null;
     }
