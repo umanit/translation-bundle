@@ -8,6 +8,22 @@ namespace Umanit\TranslationBundle\Doctrine\Model;
 interface TranslatableInterface
 {
     /**
+     * Returns entity's id.
+     *
+     * @return int|null
+     */
+    public function getId();
+
+    /**
+     * Set entity's id.
+     *
+     * @param int|null $id
+     *
+     * @return TranslatableInterface
+     */
+    public function setId(int $id = null): TranslatableInterface;
+
+    /**
      * Returns entity's locale (fr/en/...)
      */
     public function getLocale();

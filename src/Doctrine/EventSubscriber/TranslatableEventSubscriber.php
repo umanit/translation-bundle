@@ -42,7 +42,44 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
      */
     public function getSubscribedEvents()
     {
-        return [ORM\Events::postUpdate, ORM\Events::postPersist, ORM\Events::postRemove, ORM\Events::prePersist];
+        return [
+            ORM\Events::postUpdate,
+            ORM\Events::postPersist,
+            ORM\Events::postRemove,
+            ORM\Events::prePersist,
+            Orm\Events::loadClassMetadata,
+        ];
+    }
+
+    /**
+     * Adds a unique constraint on uuid and
+     * locale for every translatable entity.
+     *
+     * @param ORM\Event\LoadClassMetadataEventArgs $eventArgs
+     *
+     * @throws \ReflectionException
+     */
+    public function loadClassMetadata(ORM\Event\LoadClassMetadataEventArgs $eventArgs)
+    {
+        $entityName = $eventArgs->getClassMetadata()->rootEntityName;
+
+        // Create reflection from entity name
+        $r = new \ReflectionClass($entityName);
+        if ($r->implementsInterface(TranslatableInterface::class)) {
+            $classMetadata = $eventArgs->getClassMetadata();
+            $table         = $classMetadata->table;
+
+            if (isset($table['uniqueConstraints'])) {
+                return;
+            }
+
+            $table['uniqueConstraints'] = [
+                $classMetadata->getTableName().'_unique_translation' => [
+                    'columns' => ['uuid', 'locale'],
+                ],
+            ];
+            $classMetadata->table       = $table;
+        }
     }
 
     /**
