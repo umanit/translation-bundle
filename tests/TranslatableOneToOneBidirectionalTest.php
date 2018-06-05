@@ -41,6 +41,23 @@ class TranslatableOneToOneBidirectionalTest extends AbstractBaseTest
     /** @test */
     public function it_can_empty_translatable_entity_value()
     {
+        $child  = new TranslatableOneToOneBidirectionalChild();
+        $parent = new TranslatableOneToOneBidirectionalParent();
+
+        $parent->setEmptyChild($child);
+        $child->setEmptyParent($parent);
+
+        $this->em->persist($parent);
+        $this->em->persist($child);
+
+        $parentTranslation = $this->translator->translate($parent, self::TARGET_LOCALE);
+
+        $this->em->persist($parentTranslation);
+        $this->em->flush();
+
+        $this->assertIsTranslation($parent, $parentTranslation);
+
+        $this->assertEquals(null, $parentTranslation->getEmptyChild());
     }
 
     /**

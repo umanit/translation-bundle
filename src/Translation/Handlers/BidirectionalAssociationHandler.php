@@ -66,7 +66,7 @@ class BidirectionalAssociationHandler implements TranslationHandlerInterface
 
     public function handleEmptyOnTranslate(TranslationArgs $args)
     {
-        // @todo implement
+        return null;
     }
 
     public function translate(TranslationArgs $args)

@@ -3,6 +3,8 @@
 namespace AppTestBundle\Entity\Translatable;
 
 use Doctrine\ORM\Mapping as ORM;
+use Umanit\TranslationBundle\Doctrine\Annotation\EmptyOnTranslate;
+use Umanit\TranslationBundle\Doctrine\Annotation\SharedAmongstTranslations;
 use Umanit\TranslationBundle\Doctrine\Model\TranslatableInterface;
 use Umanit\TranslationBundle\Doctrine\Model\TranslatableTrait;
 
@@ -22,23 +24,23 @@ class TranslatableOneToOneBidirectionalParent implements TranslatableInterface
      */
     private $simpleChild;
 
-    // /**
-    //  * @var mixed
-    //  *
-    //  * @ORM\OneToOne(targetEntity="AppTestBundle\Entity\Translatable\TranslatableOneToOneBidirectionalChild", mappedBy="sharedParent")
-    //  * @ORM\JoinColumn(nullable=true)
-    //  * @SharedAmongstTranslations()
-    //  */
-    // private $sharedChild;
-    //
-    // /**
-    //  * @var mixed
-    //  *
-    //  * @ORM\OneToOne(targetEntity="AppTestBundle\Entity\Translatable\TranslatableOneToOneBidirectionalChild", mappedBy="emptyParent")
-    //  * @ORM\JoinColumn(nullable=true)
-    //  * @EmptyOnTranslate()
-    //  */
-    // private $emptyChild;
+    /**
+     * @var mixed
+     *
+     * @ORM\OneToOne(targetEntity="AppTestBundle\Entity\Translatable\TranslatableOneToOneBidirectionalChild", mappedBy="sharedParent")
+     * @ORM\JoinColumn(nullable=true)
+     * @SharedAmongstTranslations()
+     */
+    private $sharedChild;
+
+    /**
+     * @var mixed
+     *
+     * @ORM\OneToOne(targetEntity="AppTestBundle\Entity\Translatable\TranslatableOneToOneBidirectionalChild", mappedBy="emptyParent")
+     * @ORM\JoinColumn(nullable=true)
+     * @EmptyOnTranslate()
+     */
+    private $emptyChild;
 
     /**
      * @return mixed
