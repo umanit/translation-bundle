@@ -2,6 +2,8 @@
 
 namespace Umanit\TranslationBundle\Translation\Handlers;
 
+use Umanit\TranslationBundle\Translation\Args\TranslationArgs;
+
 /**
  * Handles scalar type translation.
  *
@@ -9,23 +11,25 @@ namespace Umanit\TranslationBundle\Translation\Handlers;
  */
 class ScalarHandler implements TranslationHandlerInterface
 {
-    public function supports($data, \ReflectionProperty $property = null): bool
+    public function supports(TranslationArgs $args): bool
     {
+        $data = $args->getDataToBeTranslated();
+
         return (!\is_object($data) || $data instanceof \DateTime);
     }
 
-    public function handleSharedAmongstTranslations($data, string $locale)
+    public function handleSharedAmongstTranslations(TranslationArgs $args)
     {
-        return $data;
+        return $args->getDataToBeTranslated();
     }
 
-    public function handleEmptyOnTranslate($data, string $locale)
+    public function handleEmptyOnTranslate(TranslationArgs $args)
     {
         return null;
     }
 
-    public function translate($data, string $locale, \ReflectionProperty $property = null, $parent = null)
+    public function translate(TranslationArgs $args)
     {
-        return $data;
+        return $args->getDataToBeTranslated();
     }
 }

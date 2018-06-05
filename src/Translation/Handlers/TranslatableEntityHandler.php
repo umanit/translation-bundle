@@ -5,6 +5,7 @@ namespace Umanit\TranslationBundle\Translation\Handlers;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Umanit\TranslationBundle\Doctrine\Model\TranslatableInterface;
+use Umanit\TranslationBundle\Translation\Args\TranslationArgs;
 
 /**
  * @author Arthur Guigand <aguigand@umanit.fr>
@@ -33,17 +34,18 @@ class TranslatableEntityHandler implements TranslationHandlerInterface
         $this->doctrineObjectHandler = $doctrineObjectHandler;
     }
 
-    public function supports($data, \ReflectionProperty $property = null): bool
+    public function supports(TranslationArgs $args): bool
     {
-        return $data instanceof TranslatableInterface;
+        return $args->getDataToBeTranslated() instanceof TranslatableInterface;
     }
 
-    public function handleSharedAmongstTranslations($data, string $locale)
+    public function handleSharedAmongstTranslations(TranslationArgs $args)
     {
+        $data = $args->getDataToBeTranslated();
         // Search in database if the content
         // exists, otherwise translate it.
         $existingTranslation = $this->em->getRepository(\get_class($data))->findOneBy([
-            'locale' => $locale,
+            'locale' => $args->getTargetLocale(),
             'uuid'   => $data->getUuid(),
         ]);
 
@@ -51,22 +53,22 @@ class TranslatableEntityHandler implements TranslationHandlerInterface
             return $existingTranslation;
         }
 
-        return $this->translate($data, $locale);
+        return $this->translate($args);
     }
 
-    public function handleEmptyOnTranslate($data, string $locale)
+    public function handleEmptyOnTranslate(TranslationArgs $args)
     {
         return null;
     }
 
-    public function translate($data, string $locale, \ReflectionProperty $property = null, $parent = null)
+    public function translate(TranslationArgs $args)
     {
         /** @var TranslatableInterface $clone */
-        $clone = clone $data;
+        $clone = clone $args->getDataToBeTranslated();
 
-        $this->doctrineObjectHandler->translateProperties($clone, $locale, $clone);
+        $this->doctrineObjectHandler->translateProperties((new TranslationArgs($clone, $clone->getLocale(), $args->getTargetLocale())));
 
-        $clone->setLocale($locale);
+        $clone->setLocale($args->getTargetLocale());
 
         $this->em->persist($clone);
 

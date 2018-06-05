@@ -6,8 +6,8 @@ namespace Umanit\TranslationBundle\Translation\Handlers;
 use Doctrine\Common\Persistence\Proxy;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
+use Umanit\TranslationBundle\Translation\Args\TranslationArgs;
 use Umanit\TranslationBundle\Translation\EntityTranslator;
-use Umanit\TranslationBundle\Translation\Pool\TranslationPool;
 
 /**
  * Handles basic Doctrine Object.
@@ -30,7 +30,6 @@ class DoctrineObjectHandler implements TranslationHandlerInterface
      *
      * @param EntityManagerInterface $em
      * @param EntityTranslator       $translator
-     * @param TranslationPool        $pool
      */
     public function __construct(EntityManagerInterface $em, EntityTranslator $translator)
     {
@@ -38,8 +37,10 @@ class DoctrineObjectHandler implements TranslationHandlerInterface
         $this->translator = $translator;
     }
 
-    public function supports($data, \ReflectionProperty $property = null): bool
+    public function supports(TranslationArgs $args): bool
     {
+        $data = $args->getDataToBeTranslated();
+
         if (\is_object($data)) {
             $data = ($data instanceof Proxy)
                 ? get_parent_class($data)
@@ -49,47 +50,53 @@ class DoctrineObjectHandler implements TranslationHandlerInterface
         return !$this->em->getMetadataFactory()->isTransient($data);
     }
 
-    public function handleSharedAmongstTranslations($data, string $locale)
+    public function handleSharedAmongstTranslations(TranslationArgs $args)
     {
-        return $data;
+        return $args->getDataToBeTranslated();
     }
 
-    public function handleEmptyOnTranslate($data, string $locale)
+    public function handleEmptyOnTranslate(TranslationArgs $args)
     {
         return null;
     }
 
-    public function translate($data, string $locale, \ReflectionProperty $property = null, $parent = null)
+    public function translate(TranslationArgs $args)
     {
-        $clone = clone $data;
+        $clone = clone $args->getDataToBeTranslated();
 
-        $this->translateProperties($clone, $locale, $clone);
+        $args->setDataToBeTranslated($clone);
 
-        $this->em->persist($clone);
+        $this->translateProperties($args);
 
-        return $clone;
+        return $args->getDataToBeTranslated();
     }
 
     /**
      * Loops through all object properties to translate them.
      *
-     * @param object $clone
-     * @param string $locale
-     * @param null   $parent
+     * @param TranslationArgs $args
      */
-    public function translateProperties($clone, string $locale, $parent = null)
+    public function translateProperties(TranslationArgs $args)
     {
-        $accessor     = PropertyAccess::createPropertyAccessor();
-        $properties   = $this->em->getClassMetadata(\get_class($clone))->getReflectionProperties();
+        $translation = $args->getDataToBeTranslated();
+        $accessor    = PropertyAccess::createPropertyAccessor();
+        $properties  = $this->em->getClassMetadata(\get_class($args->getDataToBeTranslated()))->getReflectionProperties();
 
         // Loop through all properties
         foreach ($properties as $property) {
-            $propValue = $accessor->getValue($clone, $property->name);
+            $propValue = $accessor->getValue($args->getDataToBeTranslated(), $property->name);
             if (null === $propValue) {
                 continue;
             }
-            $propertyTranslation = $this->translator->translate($propValue, $locale, $property, $parent);
-            $accessor->setValue($clone, $property->name, $propertyTranslation);
+            $subTranslationArgs =
+                (new TranslationArgs($propValue, $args->getSourceLocale(), $args->getTargetLocale()))
+                    ->setTranslatedParent($translation)
+                    ->setProperty($property)
+            ;
+
+            $propertyTranslation = $this->translator->processTranslation($subTranslationArgs);
+
+            $accessor->setValue($translation, $property->name, $propertyTranslation);
         }
     }
 }

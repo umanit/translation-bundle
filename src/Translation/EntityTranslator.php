@@ -4,6 +4,8 @@ namespace Umanit\TranslationBundle\Translation;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Umanit\TranslationBundle\Doctrine\Model\TranslatableInterface;
+use Umanit\TranslationBundle\Translation\Args\TranslationArgs;
 use Umanit\TranslationBundle\Translation\Handlers\TranslationHandlerInterface;
 use Umanit\TranslationBundle\Utils\AnnotationHelper;
 
@@ -60,33 +62,43 @@ class EntityTranslator
     /**
      * Translate an entity.
      *
-     * @param mixed                    $data
-     * @param string                   $locale
-     * @param \ReflectionProperty|null $property
-     * @param mixed|null               $parent
+     * @param TranslatableInterface $data
+     * @param string                $locale
      *
      * @return mixed
      */
-    public function translate($data, string $locale, \ReflectionProperty $property = null, $parent = null)
+    public function translate(TranslatableInterface $data, string $locale)
+    {
+        return $this->processTranslation(new TranslationArgs($data, $data->getLocale(), $locale));
+    }
+
+    /**
+     * Process the translation.
+     *
+     * @internal
+     *
+     * @param TranslationArgs $args
+     *
+     * @return mixed
+     */
+    public function processTranslation(TranslationArgs $args)
     {
         foreach ($this->handlers as $handler) {
-            if ($handler->supports($data, $property)) {
-                if (null !== $property) {
-                    if ($this->annotationHelper->isSharedAmongstTranslations($property)) {
-                        return $handler->handleSharedAmongstTranslations($data, $locale);
+            if ($handler->supports($args)) {
+                if (null !== $args->getProperty()) {
+                    if ($this->annotationHelper->isSharedAmongstTranslations($args->getProperty())) {
+                        return $handler->handleSharedAmongstTranslations($args);
                     }
-                    if ($this->annotationHelper->isEmptyOnTranslate($property)) {
-                        return $handler->handleEmptyOnTranslate($data, $locale);
+                    if ($this->annotationHelper->isEmptyOnTranslate($args->getProperty())) {
+                        return $handler->handleEmptyOnTranslate($args);
                     }
                 }
 
-                return $handler->translate($data, $locale, $property, $parent);
+                return $handler->translate($args);
             }
         }
 
-        $this->em->flush();
-
-        return $data;
+        return $args->getDataToBeTranslated();
     }
 
     /**

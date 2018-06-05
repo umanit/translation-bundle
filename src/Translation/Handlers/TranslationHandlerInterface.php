@@ -2,6 +2,8 @@
 
 namespace Umanit\TranslationBundle\Translation\Handlers;
 
+use Umanit\TranslationBundle\Translation\Args\TranslationArgs;
+
 /**
  * @author Arthur Guigand <aguigand@umanit.fr>
  */
@@ -10,42 +12,36 @@ interface TranslationHandlerInterface
     /**
      * Defines if the handler supports the data to be translated.
      *
-     * @param mixed                    $data
-     * @param \ReflectionProperty|null $property
+     * @param TranslationArgs $args
      *
      * @return bool
      */
-    public function supports($data, \ReflectionProperty $property = null): bool;
+    public function supports(TranslationArgs $args): bool;
 
     /**
      * Handles a SharedAmongstTranslations data translation.
      *
-     * @param mixed  $data
-     * @param string $locale
+     * @param TranslationArgs $args
      *
      * @return mixed
      */
-    public function handleSharedAmongstTranslations($data, string $locale);
+    public function handleSharedAmongstTranslations(TranslationArgs $args);
 
     /**
      * Handles an EmptyOnTranslate data translation.
      *
-     * @param mixed  $data
-     * @param string $locale
+     * @param TranslationArgs $args
      *
      * @return mixed
      */
-    public function handleEmptyOnTranslate($data, string $locale);
+    public function handleEmptyOnTranslate(TranslationArgs $args);
 
     /**
      * Handles translation.
      *
-     * @param mixed                    $data
-     * @param string                   $locale
-     * @param \ReflectionProperty|null $property
-     * @param mixed|null                     $parent
+     * @param TranslationArgs $args
      *
      * @return mixed
      */
-    public function translate($data, string $locale, \ReflectionProperty $property = null, $parent = null);
+    public function translate(TranslationArgs $args);
 }

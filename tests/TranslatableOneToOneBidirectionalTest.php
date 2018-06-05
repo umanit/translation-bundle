@@ -33,15 +33,15 @@ class TranslatableOneToOneBidirectionalTest extends AbstractBaseTest
         $this->assertAttributeContains(self::TARGET_LOCALE, 'locale', $parentTranslation->getSimpleChild());
     }
 
-    // /** @test */
-    // public function it_can_share_translatable_entity_value_amongst_translations()
-    // {
-    // }
+    /** @test */
+    public function it_cannot_share_translatable_entity_value_amongst_translations()
+    {
+    }
 
-    // /** @test */
-    // public function it_can_empty_translatable_entity_value()
-    // {
-    // }
+    /** @test */
+    public function it_can_empty_translatable_entity_value()
+    {
+    }
 
     /**
      * Assert a translation is actually a translation.
