@@ -33,6 +33,7 @@
     },
     "require-dev": {
         "symfony/phpunit-bridge": "^4.0",
-        "phpunit/phpunit": "^6.5"
+        "phpunit/phpunit": "^6.5",
+        "symfony/var-dumper": "^3.4"
     }
 }

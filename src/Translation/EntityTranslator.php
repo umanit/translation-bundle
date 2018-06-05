@@ -63,13 +63,14 @@ class EntityTranslator
      * @param mixed                    $data
      * @param string                   $locale
      * @param \ReflectionProperty|null $property
+     * @param mixed|null               $parent
      *
      * @return mixed
      */
-    public function translate($data, string $locale, \ReflectionProperty $property = null)
+    public function translate($data, string $locale, \ReflectionProperty $property = null, $parent = null)
     {
         foreach ($this->handlers as $handler) {
-            if ($handler->supports($data)) {
+            if ($handler->supports($data, $property)) {
                 if (null !== $property) {
                     if ($this->annotationHelper->isSharedAmongstTranslations($property)) {
                         return $handler->handleSharedAmongstTranslations($data, $locale);
@@ -79,7 +80,7 @@ class EntityTranslator
                     }
                 }
 
-                return $handler->translate($data, $locale);
+                return $handler->translate($data, $locale, $property, $parent);
             }
         }
 

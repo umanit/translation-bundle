@@ -7,9 +7,11 @@ use Doctrine\Common\Persistence\Proxy;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Umanit\TranslationBundle\Translation\EntityTranslator;
+use Umanit\TranslationBundle\Translation\Pool\TranslationPool;
 
 /**
  * Handles basic Doctrine Object.
+ * Usual the entry point of a translation.
  *
  * @author Arthur Guigand <aguigand@umanit.fr>
  */
@@ -28,6 +30,7 @@ class DoctrineObjectHandler implements TranslationHandlerInterface
      *
      * @param EntityManagerInterface $em
      * @param EntityTranslator       $translator
+     * @param TranslationPool        $pool
      */
     public function __construct(EntityManagerInterface $em, EntityTranslator $translator)
     {
@@ -35,7 +38,7 @@ class DoctrineObjectHandler implements TranslationHandlerInterface
         $this->translator = $translator;
     }
 
-    public function supports($data): bool
+    public function supports($data, \ReflectionProperty $property = null): bool
     {
         if (\is_object($data)) {
             $data = ($data instanceof Proxy)
@@ -56,11 +59,11 @@ class DoctrineObjectHandler implements TranslationHandlerInterface
         return null;
     }
 
-    public function translate($data, string $locale)
+    public function translate($data, string $locale, \ReflectionProperty $property = null, $parent = null)
     {
         $clone = clone $data;
 
-        $this->translateProperties($clone, $locale);
+        $this->translateProperties($clone, $locale, $clone);
 
         $this->em->persist($clone);
 
@@ -72,19 +75,20 @@ class DoctrineObjectHandler implements TranslationHandlerInterface
      *
      * @param object $clone
      * @param string $locale
+     * @param null   $parent
      */
-    public function translateProperties($clone, string $locale)
+    public function translateProperties($clone, string $locale, $parent = null)
     {
-        $accessor   = PropertyAccess::createPropertyAccessor();
-        $properties = $this->em->getClassMetadata(\get_class($clone))->getReflectionProperties();
+        $accessor     = PropertyAccess::createPropertyAccessor();
+        $properties   = $this->em->getClassMetadata(\get_class($clone))->getReflectionProperties();
 
         // Loop through all properties
         foreach ($properties as $property) {
-            $propValue           = $accessor->getValue($clone, $property->name);
+            $propValue = $accessor->getValue($clone, $property->name);
             if (null === $propValue) {
                 continue;
             }
-            $propertyTranslation = $this->translator->translate($propValue, $locale, $property);
+            $propertyTranslation = $this->translator->translate($propValue, $locale, $property, $parent);
             $accessor->setValue($clone, $property->name, $propertyTranslation);
         }
     }

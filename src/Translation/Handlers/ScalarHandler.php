@@ -9,7 +9,7 @@ namespace Umanit\TranslationBundle\Translation\Handlers;
  */
 class ScalarHandler implements TranslationHandlerInterface
 {
-    public function supports($data): bool
+    public function supports($data, \ReflectionProperty $property = null): bool
     {
         return (!\is_object($data) || $data instanceof \DateTime);
     }
@@ -24,7 +24,7 @@ class ScalarHandler implements TranslationHandlerInterface
         return null;
     }
 
-    public function translate($data, string $locale)
+    public function translate($data, string $locale, \ReflectionProperty $property = null, $parent = null)
     {
         return $data;
     }

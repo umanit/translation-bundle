@@ -23,6 +23,16 @@ services:
         tags:
             - { name: umanit_translation.translation_handler, priority: 1 }
 
+    # Bidirectional Association
+    umanit_translation.translation_handlers.bidirectional_association_handler:
+        class: Umanit\TranslationBundle\Translation\Handlers\BidirectionalAssociationHandler
+        arguments:
+            - '@annotations.reader'
+            - '@doctrine.orm.entity_manager'
+            - '@property_accessor'
+        tags:
+            - { name: umanit_translation.translation_handler, priority: 10 }
+
     # Translatable Entity
     umanit_translation.translation_handlers.translatable_entity_handler:
         class: Umanit\TranslationBundle\Translation\Handlers\TranslatableEntityHandler
@@ -30,7 +40,7 @@ services:
             - '@doctrine.orm.entity_manager'
             - '@umanit_translation.translation_handlers.doctrine_object_handler'
         tags:
-            - { name: umanit_translation.translation_handler, priority: 10 }
+            - { name: umanit_translation.translation_handler, priority: 20 }
 
     # Doctrine Object
     umanit_translation.translation_handlers.doctrine_object_handler:

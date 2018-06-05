@@ -10,6 +10,7 @@ use Umanit\TranslationBundle\Doctrine\Model\TranslatableTrait;
 
 /**
  * @ORM\Entity
+ * @ORM\Table()
  */
 class Scalar implements TranslatableInterface
 {

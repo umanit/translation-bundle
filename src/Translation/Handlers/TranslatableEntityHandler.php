@@ -33,7 +33,7 @@ class TranslatableEntityHandler implements TranslationHandlerInterface
         $this->doctrineObjectHandler = $doctrineObjectHandler;
     }
 
-    public function supports($data): bool
+    public function supports($data, \ReflectionProperty $property = null): bool
     {
         return $data instanceof TranslatableInterface;
     }
@@ -47,7 +47,6 @@ class TranslatableEntityHandler implements TranslationHandlerInterface
             'uuid'   => $data->getUuid(),
         ]);
 
-
         if (null !== $existingTranslation) {
             return $existingTranslation;
         }
@@ -60,12 +59,12 @@ class TranslatableEntityHandler implements TranslationHandlerInterface
         return null;
     }
 
-    public function translate($data, string $locale)
+    public function translate($data, string $locale, \ReflectionProperty $property = null, $parent = null)
     {
         /** @var TranslatableInterface $clone */
         $clone = clone $data;
 
-        $this->doctrineObjectHandler->translateProperties($clone, $locale);
+        $this->doctrineObjectHandler->translateProperties($clone, $locale, $clone);
 
         $clone->setLocale($locale);
 

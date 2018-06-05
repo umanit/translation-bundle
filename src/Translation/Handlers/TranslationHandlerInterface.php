@@ -10,11 +10,12 @@ interface TranslationHandlerInterface
     /**
      * Defines if the handler supports the data to be translated.
      *
-     * @param mixed $data
+     * @param mixed                    $data
+     * @param \ReflectionProperty|null $property
      *
      * @return bool
      */
-    public function supports($data): bool;
+    public function supports($data, \ReflectionProperty $property = null): bool;
 
     /**
      * Handles a SharedAmongstTranslations data translation.
@@ -39,11 +40,12 @@ interface TranslationHandlerInterface
     /**
      * Handles translation.
      *
-     * @param mixed  $data
-     *
-     * @param string $locale
+     * @param mixed                    $data
+     * @param string                   $locale
+     * @param \ReflectionProperty|null $property
+     * @param mixed|null                     $parent
      *
      * @return mixed
      */
-    public function translate($data, string $locale);
+    public function translate($data, string $locale, \ReflectionProperty $property = null, $parent = null);
 }
