@@ -197,7 +197,6 @@ class EntityTranslator
     }
 
     /**
-     *
      * Defines if the property should be emptied on translate.
      *
      * @param \ReflectionProperty $property

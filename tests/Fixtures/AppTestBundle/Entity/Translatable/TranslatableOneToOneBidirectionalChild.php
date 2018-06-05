@@ -20,17 +20,17 @@ class TranslatableOneToOneBidirectionalChild implements TranslatableInterface
      */
     private $simpleParent;
 
-    // /**
-    //  * @ORM\OneToOne(targetEntity="AppTestBundle\Entity\Translatable\TranslatableOneToOneBidirectionalParent", inversedBy="sharedChild")
-    //  * @ORM\JoinColumn(nullable=true)
-    //  */
-    // private $sharedParent;
-    //
-    // /**
-    //  * @ORM\OneToOne(targetEntity="AppTestBundle\Entity\Translatable\TranslatableOneToOneBidirectionalParent", inversedBy="emptyChild")
-    //  * @ORM\JoinColumn(nullable=true)
-    //  */
-    // private $emptyParent;
+    /**
+     * @ORM\OneToOne(targetEntity="AppTestBundle\Entity\Translatable\TranslatableOneToOneBidirectionalParent", inversedBy="sharedChild")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $sharedParent;
+
+    /**
+     * @ORM\OneToOne(targetEntity="AppTestBundle\Entity\Translatable\TranslatableOneToOneBidirectionalParent", inversedBy="emptyChild")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $emptyParent;
 
     /**
      * @return mixed

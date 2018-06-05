@@ -66,7 +66,7 @@ class TranslatableEntityHandler implements TranslationHandlerInterface
         /** @var TranslatableInterface $clone */
         $clone = clone $args->getDataToBeTranslated();
 
-        $this->doctrineObjectHandler->translateProperties((new TranslationArgs($clone, $clone->getLocale(), $args->getTargetLocale())));
+        $this->doctrineObjectHandler->translateProperties(new TranslationArgs($clone, $clone->getLocale(), $args->getTargetLocale()));
 
         $clone->setLocale($args->getTargetLocale());
 

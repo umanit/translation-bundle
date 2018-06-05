@@ -4,6 +4,7 @@ namespace Umanit\TranslationBundle\Utils;
 
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\ORM\Mapping\Embedded;
+use Doctrine\ORM\Mapping\OneToOne;
 use Umanit\TranslationBundle\Doctrine\Annotation\EmptyOnTranslate;
 use Umanit\TranslationBundle\Doctrine\Annotation\SharedAmongstTranslations;
 
@@ -60,4 +61,15 @@ class AnnotationHelper
         return null !== $this->reader->getPropertyAnnotation($property, EmptyOnTranslate::class);
     }
 
+    /**
+     * Defines if the property is a OneToOne.
+     *
+     * @param \ReflectionProperty $property
+     *
+     * @return bool
+     */
+    public function isOneToOne(\ReflectionProperty $property)
+    {
+        return null !== $this->reader->getPropertyAnnotation($property, OneToOne::class);
+    }
 }

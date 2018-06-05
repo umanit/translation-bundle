@@ -30,6 +30,7 @@ services:
             - '@annotations.reader'
             - '@doctrine.orm.entity_manager'
             - '@property_accessor'
+            - '@umanit_translation.utils.annotation_helper'
         tags:
             - { name: umanit_translation.translation_handler, priority: 10 }
 

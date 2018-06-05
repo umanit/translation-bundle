@@ -36,6 +36,15 @@ class TranslatableOneToOneBidirectionalTest extends AbstractBaseTest
     /** @test */
     public function it_cannot_share_translatable_entity_value_amongst_translations()
     {
+        $this->expectException(\ErrorException::class);
+
+        $child  = new TranslatableOneToOneBidirectionalChild();
+        $parent = new TranslatableOneToOneBidirectionalParent();
+
+        $parent->setSharedChild($child);
+        $child->setSharedParent($parent);
+
+        $this->translator->translate($parent, self::TARGET_LOCALE);
     }
 
     /** @test */

@@ -6,6 +6,7 @@ use Doctrine\Common\Annotations\Reader;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 use Umanit\TranslationBundle\Translation\Args\TranslationArgs;
+use Umanit\TranslationBundle\Utils\AnnotationHelper;
 
 /**
  * Handles translation of one-to-one-bidirectional association.
@@ -28,6 +29,10 @@ class BidirectionalAssociationHandler implements TranslationHandlerInterface
      * @var PropertyAccessor
      */
     private $propertyAccessor;
+    /**
+     * @var AnnotationHelper
+     */
+    private $annotationHelper;
 
     /**
      * DoctrineObjectHandler constructor.
@@ -35,12 +40,18 @@ class BidirectionalAssociationHandler implements TranslationHandlerInterface
      * @param Reader                 $reader
      * @param EntityManagerInterface $em
      * @param PropertyAccessor       $propertyAccessor
+     * @param AnnotationHelper       $annotationHelper
      */
-    public function __construct(Reader $reader, EntityManagerInterface $em, PropertyAccessor $propertyAccessor)
-    {
+    public function __construct(
+        Reader $reader,
+        EntityManagerInterface $em,
+        PropertyAccessor $propertyAccessor,
+        AnnotationHelper $annotationHelper
+    ) {
         $this->reader           = $reader;
         $this->em               = $em;
         $this->propertyAccessor = $propertyAccessor;
+        $this->annotationHelper = $annotationHelper;
     }
 
     public function supports(TranslationArgs $args): bool
@@ -61,7 +72,20 @@ class BidirectionalAssociationHandler implements TranslationHandlerInterface
 
     public function handleSharedAmongstTranslations(TranslationArgs $args)
     {
-        // @todo implement
+        if (true === $this->annotationHelper->isOneToOne($args->getProperty())) {
+            $data    = $args->getDataToBeTranslated();
+            $message =
+                '%class%::%prop% is a Bidirectional OneToOne, it cannot be shared '.
+                'amongst translations. Either remove the @SharedAmongstTranslation '.
+                'annotation or choose another association type.';
+
+            throw new \ErrorException(strtr($message, [
+                '%class%' => \get_class($data),
+                '%prop%'  => $args->getProperty()->name,
+            ]));
+        }
+
+        return $args->getDataToBeTranslated();
     }
 
     public function handleEmptyOnTranslate(TranslationArgs $args)
