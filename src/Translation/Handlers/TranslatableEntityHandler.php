@@ -42,6 +42,11 @@ class TranslatableEntityHandler implements TranslationHandlerInterface
     public function handleSharedAmongstTranslations(TranslationArgs $args)
     {
         $data = $args->getDataToBeTranslated();
+
+        if (null === $data->getUuid()) {
+            return $this->translate($args);
+        }
+
         // Search in database if the content
         // exists, otherwise translate it.
         $existingTranslation = $this->em->getRepository(\get_class($data))->findOneBy([

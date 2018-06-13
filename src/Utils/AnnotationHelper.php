@@ -4,6 +4,7 @@ namespace Umanit\TranslationBundle\Utils;
 
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\ORM\Mapping\Embedded;
+use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\OneToOne;
 use Umanit\TranslationBundle\Doctrine\Annotation\EmptyOnTranslate;
 use Umanit\TranslationBundle\Doctrine\Annotation\SharedAmongstTranslations;
@@ -71,5 +72,17 @@ class AnnotationHelper
     public function isOneToOne(\ReflectionProperty $property)
     {
         return null !== $this->reader->getPropertyAnnotation($property, OneToOne::class);
+    }
+
+    /**
+     * Defines if the property is an Id.
+     *
+     * @param \ReflectionProperty $property
+     *
+     * @return bool
+     */
+    public function isId(\ReflectionProperty $property)
+    {
+        return null !== $this->reader->getPropertyAnnotation($property, Id::class);
     }
 }

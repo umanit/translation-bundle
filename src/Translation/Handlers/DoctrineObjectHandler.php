@@ -96,7 +96,9 @@ class DoctrineObjectHandler implements TranslationHandlerInterface
 
             $propertyTranslation = $this->translator->processTranslation($subTranslationArgs);
 
-            $accessor->setValue($translation, $property->name, $propertyTranslation);
+            $reflection = new \ReflectionProperty(\get_class($translation), $property->name);
+            $reflection->setAccessible(true);
+            $reflection->setValue($translation, $propertyTranslation);
         }
     }
 }
