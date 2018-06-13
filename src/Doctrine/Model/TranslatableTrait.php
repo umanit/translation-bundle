@@ -12,13 +12,6 @@ use Ramsey\Uuid\UuidInterface;
 trait TranslatableTrait
 {
     /**
-     * @ORM\Id()
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue()
-     */
-    protected $id;
-
-    /**
      * @var UuidInterface
      * @ORM\Column(name="uuid", type="guid", length=36)
      */
@@ -116,28 +109,6 @@ trait TranslatableTrait
     public function setTranslations(array $translations): TranslatableInterface
     {
         $this->translations = $translations;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param int $id
-     *
-     * @return $this
-     */
-    public function setId(int $id = null): TranslatableInterface
-    {
-        // Set Id is only called on a new translation, we
-        // need the id to be null so it'll be inserted in DB.
-        $this->id = null;
 
         return $this;
     }

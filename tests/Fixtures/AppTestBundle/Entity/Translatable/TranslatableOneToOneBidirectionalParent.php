@@ -17,6 +17,13 @@ class TranslatableOneToOneBidirectionalParent implements TranslatableInterface
     use TranslatableTrait;
 
     /**
+     * @ORM\Id()
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue()
+     */
+    protected $id;
+
+    /**
      * @var mixed
      *
      * @ORM\OneToOne(targetEntity="AppTestBundle\Entity\Translatable\TranslatableOneToOneBidirectionalChild", mappedBy="simpleParent", cascade={"all"})
@@ -100,5 +107,13 @@ class TranslatableOneToOneBidirectionalParent implements TranslatableInterface
         $this->emptyChild = $emptyChild;
 
         return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 }

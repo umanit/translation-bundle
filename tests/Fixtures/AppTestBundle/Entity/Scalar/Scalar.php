@@ -17,6 +17,13 @@ class Scalar implements TranslatableInterface
     use TranslatableTrait;
 
     /**
+     * @ORM\Id()
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue()
+     */
+    protected $id;
+
+    /**
      * Scalar value.
      *
      * @var string
@@ -100,5 +107,13 @@ class Scalar implements TranslatableInterface
     public function getEmpty()
     {
         return $this->empty;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 }
