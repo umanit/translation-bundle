@@ -4,6 +4,7 @@ namespace Umanit\TranslationBundle\Doctrine\EventSubscriber;
 
 use Doctrine\Common;
 use Doctrine\ORM;
+use Ramsey\Uuid\Uuid;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Umanit\TranslationBundle\Doctrine\Annotation\SharedAmongstTranslations;
 use Umanit\TranslationBundle\Doctrine\Model\TranslatableInterface;
@@ -97,7 +98,7 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
      */
     public function prePersist(ORM\Event\LifecycleEventArgs $args)
     {
-        $this->setDefaultLocale($args);
+        $this->setDefaultValues($args);
     }
 
     /**
@@ -127,11 +128,14 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
      *
      * @param ORM\Event\LifecycleEventArgs $args
      */
-    public function setDefaultLocale(ORM\Event\LifecycleEventArgs $args)
+    public function setDefaultValues(ORM\Event\LifecycleEventArgs $args)
     {
         $translatable = $args->getEntity();
-        if ($translatable instanceof TranslatableInterface && $translatable->getLocale() === null) {
+        if ($translatable instanceof TranslatableInterface && null === $translatable->getLocale()) {
             $translatable->setLocale($this->defaultLocale);
+        }
+        if ($translatable instanceof TranslatableInterface && null === $translatable->getUuid()) {
+            $translatable->setUuid((string) Uuid::uuid4());
         }
     }
 

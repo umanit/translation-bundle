@@ -37,6 +37,9 @@ class TranslatableOneToOneUnidirectionalTest extends AbstractBaseTest
     public function it_can_share_translatable_entity_value_amongst_translations()
     {
         $associatedEntity = (new Scalar())->setTitle('shared');
+        $this->em->persist($associatedEntity);
+        $this->em->flush();
+
         // Pre-set the translation to confirm that it'll
         // be picked up by the parent's translation.
         $translationAssociatedEntity = $this->translator->translate($associatedEntity, self::TARGET_LOCALE);
@@ -52,9 +55,10 @@ class TranslatableOneToOneUnidirectionalTest extends AbstractBaseTest
 
         /** @var TranslatableOneToOneUnidirectional $translation */
         $translation = $this->translator->translate($entity, self::TARGET_LOCALE);
-        $this->em->persist($translation);
 
+        $this->em->persist($translation);
         $this->em->flush();
+
         $this->assertEquals($translationAssociatedEntity, $translation->getShared());
         $this->assertIsTranslation($entity, $translation);
     }

@@ -37,6 +37,10 @@ class TranslatableManyToOneEntityTranslationTest extends AbstractBaseTest
     public function it_can_share_translatable_entity_value_amongst_translations()
     {
         $associatedEntity = (new Scalar())->setTitle('shared');
+
+        $this->em->persist($associatedEntity);
+        $this->em->flush();
+
         // Pre-set the translation to confirm that it'll
         // be picked up by the parent's translation.
         $translationAssociatedEntity = $this->translator->translate($associatedEntity, self::TARGET_LOCALE);

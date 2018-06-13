@@ -29,7 +29,7 @@ interface TranslatableInterface
     /**
      * Returns entity's UUID
      */
-    public function getUuid(): string;
+    public function getUuid();
 
     /**
      * Returns translations ids per locale

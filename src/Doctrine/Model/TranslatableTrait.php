@@ -3,7 +3,6 @@
 namespace Umanit\TranslationBundle\Doctrine\Model;
 
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
 /**
@@ -28,22 +27,6 @@ trait TranslatableTrait
      * @ORM\Column(type="json_array")
      */
     protected $translations = [];
-
-    /**
-     * TranslatableTrait constructor.
-     *
-     * @param string             $locale
-     * @param UuidInterface|null $uuid
-     */
-    public function __construct(string $locale = null, UuidInterface $uuid = null)
-    {
-        if (null === $uuid) {
-            $uuid = Uuid::uuid4();
-        }
-
-        $this->locale = $locale;
-        $this->uuid   = (string) $uuid;
-    }
 
     /**
      * Set the locale
@@ -88,7 +71,7 @@ trait TranslatableTrait
      *
      * @return string
      */
-    public function getUuid(): string
+    public function getUuid()
     {
         return $this->uuid;
     }
