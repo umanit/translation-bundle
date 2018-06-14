@@ -34,9 +34,24 @@ class TranslatableManyToManyBidirectionalChild implements TranslatableInterface
      */
     protected $simpleParents;
 
+    /**
+     * Scalar value.
+     *
+     * @var ArrayCollection
+     *
+     * @ORM\ManyToMany(
+     *     targetEntity="AppTestBundle\Entity\Translatable\TranslatableManyToManyBidirectionalParent",
+     *     cascade={"persist"},
+     *     inversedBy="emptyChildren"
+     * )
+     * @ORM\JoinTable(name="empty_translatablemanytomanybidirectionalchild_translatablemanytomanybidirectionalparent")
+     */
+    protected $emptyParents;
+
     public function __construct()
     {
         $this->simpleParents = new ArrayCollection();
+        $this->emptyParents  = new ArrayCollection();
     }
 
     /**
@@ -58,6 +73,21 @@ class TranslatableManyToManyBidirectionalChild implements TranslatableInterface
     public function addSimpleParent(TranslatableManyToManyBidirectionalParent $parent)
     {
         $this->simpleParents[] = $parent;
+
+        return $this;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getEmptyParents()
+    {
+        return $this->emptyParents;
+    }
+
+    public function addEmptyParent(TranslatableManyToManyBidirectionalParent $parent)
+    {
+        $this->emptyParents[] = $parent;
 
         return $this;
     }

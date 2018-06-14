@@ -52,4 +52,33 @@ class TranslatableManyToManyTranslationTest extends AbstractBaseTest
             $this->assertEquals($child->getSimpleParents()->first(), $parentTranslation);
         }
     }
+
+    /** @test */
+    public function it_can_empty_on_translate()
+    {
+        // Create 3 children entities
+        $child1 = (new TranslatableManyToManyBidirectionalChild())->setLocale('en');
+        $child2 = (new TranslatableManyToManyBidirectionalChild())->setLocale('en');
+        $child3 = (new TranslatableManyToManyBidirectionalChild())->setLocale('en');
+
+        $this->em->persist($child1);
+        $this->em->persist($child2);
+        $this->em->persist($child3);
+        // Create 1 parent entity
+        $parent = (new TranslatableManyToManyBidirectionalParent())->setLocale('en');
+        $parent
+            ->addEmptyChild($child1)
+            ->addEmptyChild($child2)
+            ->addEmptyChild($child3)
+        ;
+        $this->em->persist($parent);
+        // Translate the parent
+        /** @var TranslatableManyToManyBidirectionalParent $parentTranslation */
+        $parentTranslation = $this->translator->translate($parent, self::TARGET_LOCALE);
+        $this->em->persist($parentTranslation);
+        $this->em->flush();
+
+        // Assert that the translated parents has an empty list of child
+        $this->assertEmpty($parentTranslation->getSimpleChildren());
+    }
 }

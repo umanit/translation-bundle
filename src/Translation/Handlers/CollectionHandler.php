@@ -70,8 +70,7 @@ class CollectionHandler implements TranslationHandlerInterface
 
     public function handleEmptyOnTranslate(TranslationArgs $args)
     {
-        // @todo handle EmptyOnTranslate
-        return null;
+        return new ArrayCollection([]);
     }
 
     public function translate(TranslationArgs $args)

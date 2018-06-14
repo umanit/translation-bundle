@@ -4,6 +4,7 @@ namespace AppTestBundle\Entity\Translatable;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Umanit\TranslationBundle\Doctrine\Annotation\EmptyOnTranslate;
 use Umanit\TranslationBundle\Doctrine\Model\TranslatableInterface;
 use Umanit\TranslationBundle\Doctrine\Model\TranslatableTrait;
 
@@ -31,9 +32,22 @@ class TranslatableManyToManyBidirectionalParent implements TranslatableInterface
      */
     private $simpleChildren;
 
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\ManyToMany(
+     *     targetEntity="AppTestBundle\Entity\Translatable\TranslatableManyToManyBidirectionalChild",
+     *     mappedBy="emptyParents"
+     * )
+     * @ORM\JoinTable(name="empty_translatablemanytomanybidirectionalchild_translatablemanytomanybidirectionalparent")
+     * @EmptyOnTranslate()
+     */
+    private $emptyChildren;
+
     public function __construct()
     {
         $this->simpleChildren = new ArrayCollection();
+        $this->emptyChildren  = new ArrayCollection();
     }
 
     /**
@@ -57,6 +71,23 @@ class TranslatableManyToManyBidirectionalParent implements TranslatableInterface
         $child->addSimpleParent($this);
 
         $this->simpleChildren[] = $child;
+
+        return $this;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getEmptyChildren()
+    {
+        return $this->emptyChildren;
+    }
+
+    public function addEmptyChild(TranslatableManyToManyBidirectionalChild $child)
+    {
+        $child->addEmptyParent($this);
+
+        $this->emptyChildren[] = $child;
 
         return $this;
     }
