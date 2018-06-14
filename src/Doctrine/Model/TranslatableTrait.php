@@ -12,13 +12,13 @@ trait TranslatableTrait
 {
     /**
      * @var UuidInterface
-     * @ORM\Column(name="uuid", type="guid", length=36)
+     * @ORM\Column(type="guid", length=36)
      */
-    protected $uuid;
+    protected $tuuid;
 
     /**
      * @var string
-     * @ORM\Column(name="locale", type="string", length=7)
+     * @ORM\Column(type="string", length=7)
      */
     protected $locale;
 
@@ -53,27 +53,27 @@ trait TranslatableTrait
     }
 
     /**
-     * Set the UUID
+     * Set the Translation UUID
      *
-     * @param string $uuid
+     * @param string $tuuid
      *
      * @return $this
      */
-    public function setUuid(string $uuid): self
+    public function setTuuid(string $tuuid): self
     {
-        $this->uuid = $uuid;
+        $this->tuuid = $tuuid;
 
         return $this;
     }
 
     /**
-     * Returns entity's UUID.
+     * Returns entity's Translation UUID.
      *
      * @return string
      */
-    public function getUuid()
+    public function getTuuid()
     {
-        return $this->uuid;
+        return $this->tuuid;
     }
 
     /**

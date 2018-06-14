@@ -76,7 +76,7 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
 
             $table['uniqueConstraints'] = [
                 $classMetadata->getTableName().'_unique_translation' => [
-                    'columns' => ['uuid', 'locale'],
+                    'columns' => ['tuuid', 'locale'],
                 ],
             ];
             $classMetadata->table       = $table;
@@ -134,8 +134,8 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
         if ($translatable instanceof TranslatableInterface && null === $translatable->getLocale()) {
             $translatable->setLocale($this->defaultLocale);
         }
-        if ($translatable instanceof TranslatableInterface && null === $translatable->getUuid()) {
-            $translatable->setUuid((string) Uuid::uuid4());
+        if ($translatable instanceof TranslatableInterface && null === $translatable->getTuuid()) {
+            $translatable->setTuuid((string) Uuid::uuid4());
         }
     }
 
@@ -153,7 +153,7 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
             $repo = $em->getRepository(\get_class($translatable));
 
             /** @var TranslatableInterface[] $translations */
-            $translations = $repo->findBy(['uuid' => $translatable->getUuid()]);
+            $translations = $repo->findBy(['tuuid' => $translatable->getTuuid()]);
 
             foreach ($translations as $translation) {
                 $em->remove($translation);
@@ -179,7 +179,7 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
             $repo = $em->getRepository(\get_class($translatable));
 
             /** @var TranslatableInterface[] $translations */
-            $translations      = $repo->findBy(['uuid' => $translatable->getUuid()]);
+            $translations      = $repo->findBy(['tuuid' => $translatable->getTuuid()]);
             $translationsArray = [];
 
             foreach ($translations as $translation) {
@@ -226,7 +226,7 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
         $em               = $args->getEntityManager();
         $translations     = $em
             ->getRepository(\get_class($translatable))
-            ->findBy(['uuid' => $translatable->getUuid()])
+            ->findBy(['tuuid' => $translatable->getTuuid()])
         ;
 
         // Loops through all translations
@@ -247,7 +247,7 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
                     $sourceValue = $em
                         ->getRepository(\get_class($sourceValue))
                         ->findOneBy([
-                            'uuid'   => $translationValue->getUuid(),
+                            'tuuid'   => $translationValue->getTuuid(),
                             'locale' => $translationValue->getLocale(),
                         ])
                     ;

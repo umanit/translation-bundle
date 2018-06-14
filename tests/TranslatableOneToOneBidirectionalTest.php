@@ -78,7 +78,7 @@ class TranslatableOneToOneBidirectionalTest extends AbstractBaseTest
     protected function assertIsTranslation(TranslatableInterface $source, TranslatableInterface $translation)
     {
         $this->assertAttributeContains(self::TARGET_LOCALE, 'locale', $translation);
-        $this->assertAttributeContains($source->getUuid(), 'uuid', $translation);
+        $this->assertAttributeContains($source->getTuuid(), 'tuuid', $translation);
         $this->assertNotEquals(spl_object_hash($source), spl_object_hash($translation));
     }
 }

@@ -20,16 +20,16 @@ interface TranslatableInterface
     public function setLocale(string $locale = null);
 
     /**
-     * Set entity's UUID
+     * Set entity's Translation UUID
      *
-     * @param string $uuid
+     * @param string $tuuid
      */
-    public function setUuid(string $uuid);
+    public function setTuuid(string $tuuid);
 
     /**
-     * Returns entity's UUID
+     * Returns entity's Translation UUID
      */
-    public function getUuid();
+    public function getTuuid();
 
     /**
      * Returns translations ids per locale

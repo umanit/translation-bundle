@@ -43,7 +43,7 @@ class TranslatableEntityHandler implements TranslationHandlerInterface
     {
         $data = $args->getDataToBeTranslated();
 
-        if (null === $data->getUuid()) {
+        if (null === $data->getTuuid()) {
             return $this->translate($args);
         }
 
@@ -51,7 +51,7 @@ class TranslatableEntityHandler implements TranslationHandlerInterface
         // exists, otherwise translate it.
         $existingTranslation = $this->em->getRepository(\get_class($data))->findOneBy([
             'locale' => $args->getTargetLocale(),
-            'uuid'   => $data->getUuid(),
+            'tuuid'   => $data->getTuuid(),
         ]);
 
         if (null !== $existingTranslation) {

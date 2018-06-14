@@ -17,7 +17,6 @@ class ScalarTranslationTest extends AbstractBaseTest
     {
         $entity      = $this->createEntity();
         $translation = $this->translator->translate($entity, 'fr');
-
         $this->em->flush();
         $this->assertAttributeContains('Test title', 'title', $translation);
         $this->assertIsTranslation($entity, $translation);
@@ -78,7 +77,7 @@ class ScalarTranslationTest extends AbstractBaseTest
     protected function assertIsTranslation(TranslatableInterface $source, TranslatableInterface $translation)
     {
         $this->assertAttributeContains('fr', 'locale', $translation);
-        $this->assertAttributeContains($source->getUuid(), 'uuid', $translation);
+        $this->assertAttributeContains($source->getTuuid(), 'tuuid', $translation);
         $this->assertNotEquals(spl_object_hash($source), spl_object_hash($translation));
     }
 }
