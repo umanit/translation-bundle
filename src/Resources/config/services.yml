@@ -18,7 +18,7 @@ services:
     # Translation Handlers
 
     # PrimaryKey
-    umanit_translation.translation.handlers.primary_key_hander:
+    umanit_translation.translation.handlers.primary_key_handler:
         class: Umanit\TranslationBundle\Translation\Handlers\PrimaryKeyHandler
         arguments:
             - '@umanit_translation.utils.annotation_helper'
@@ -26,7 +26,7 @@ services:
             - { name: umanit_translation.translation_handler, priority: 10 }
 
     # PrimaryKey
-    umanit_translation.translation.handlers.cllection_hander:
+    umanit_translation.translation.handlers.collection_handler:
         class: Umanit\TranslationBundle\Translation\Handlers\CollectionHandler
         arguments:
             - '@umanit_translation.utils.annotation_helper'
@@ -37,7 +37,7 @@ services:
             - { name: umanit_translation.translation_handler, priority: 20 }
 
     # Scalar
-    umanit_translation.translation.handlers.scalar_hander:
+    umanit_translation.translation.handlers.scalar_handler:
         class: Umanit\TranslationBundle\Translation\Handlers\ScalarHandler
         tags:
             - { name: umanit_translation.translation_handler, priority: 30 }
