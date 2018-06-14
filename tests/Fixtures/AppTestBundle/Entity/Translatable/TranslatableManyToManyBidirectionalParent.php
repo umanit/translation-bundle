@@ -5,6 +5,7 @@ namespace AppTestBundle\Entity\Translatable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Umanit\TranslationBundle\Doctrine\Annotation\EmptyOnTranslate;
+use Umanit\TranslationBundle\Doctrine\Annotation\SharedAmongstTranslations;
 use Umanit\TranslationBundle\Doctrine\Model\TranslatableInterface;
 use Umanit\TranslationBundle\Doctrine\Model\TranslatableTrait;
 
@@ -44,10 +45,25 @@ class TranslatableManyToManyBidirectionalParent implements TranslatableInterface
      */
     private $emptyChildren;
 
+
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\ManyToMany(
+     *     targetEntity="AppTestBundle\Entity\Translatable\ManyToManyBidirectionalChild",
+     *     mappedBy="sharedParents",
+     *     cascade={"persist"}
+     * )
+     * @ORM\JoinTable(name="shared_manytomanybidirectionalchild_translatablemanytomanybidirectionalparent")
+     * @SharedAmongstTranslations()
+     */
+    private $sharedChildren;
+
     public function __construct()
     {
         $this->simpleChildren = new ArrayCollection();
         $this->emptyChildren  = new ArrayCollection();
+        $this->sharedChildren = new ArrayCollection();
     }
 
     /**
@@ -88,6 +104,23 @@ class TranslatableManyToManyBidirectionalParent implements TranslatableInterface
         $child->addEmptyParent($this);
 
         $this->emptyChildren[] = $child;
+
+        return $this;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getSharedChildren()
+    {
+        return $this->sharedChildren;
+    }
+
+    public function addSharedChild(ManyToManyBidirectionalChild $child)
+    {
+        $child->addSharedParent($this);
+
+        $this->sharedChildren[] = $child;
 
         return $this;
     }

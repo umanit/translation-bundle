@@ -22,8 +22,6 @@ class TranslatableManyToManyBidirectionalChild implements TranslatableInterface
     protected $id;
 
     /**
-     * Scalar value.
-     *
      * @var ArrayCollection
      *
      * @ORM\ManyToMany(
@@ -35,8 +33,6 @@ class TranslatableManyToManyBidirectionalChild implements TranslatableInterface
     protected $simpleParents;
 
     /**
-     * Scalar value.
-     *
      * @var ArrayCollection
      *
      * @ORM\ManyToMany(

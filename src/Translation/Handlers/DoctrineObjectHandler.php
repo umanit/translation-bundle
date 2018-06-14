@@ -3,6 +3,7 @@
 
 namespace Umanit\TranslationBundle\Translation\Handlers;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Persistence\Proxy;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
@@ -85,7 +86,8 @@ class DoctrineObjectHandler implements TranslationHandlerInterface
         // Loop through all properties
         foreach ($properties as $property) {
             $propValue = $accessor->getValue($args->getDataToBeTranslated(), $property->name);
-            if (null === $propValue) {
+
+            if (empty($propValue) || ($propValue instanceof Collection && $propValue->isEmpty())) {
                 continue;
             }
             $subTranslationArgs =

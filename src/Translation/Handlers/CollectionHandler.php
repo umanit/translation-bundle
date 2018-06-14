@@ -64,8 +64,35 @@ class CollectionHandler implements TranslationHandlerInterface
 
     public function handleSharedAmongstTranslations(TranslationArgs $args)
     {
-        // @todo handle SharedAmongstTranslations
-        return null;
+        /** @var Collection $collection */
+        $collection    = $args->getDataToBeTranslated();
+        $newCollection = clone $collection;
+        $newOwner      = $args->getTranslatedParent();
+        // Get the owner's "mappedBy"
+        $associations = $this->em->getClassMetadata(\get_class($newOwner))->getAssociationMappings();
+        $association  = $associations[$args->getProperty()->name];
+        $mappedBy     = $association['mappedBy'];
+
+        // Iterate through collection and set
+        // their owner owner to $newOwner
+        foreach ($newCollection as $key => $item) {
+            $reflection = new \ReflectionProperty(\get_class($item), $mappedBy);
+            $reflection->setAccessible(true);
+            // Translate the item
+            $subTranslationArgs =
+                (new TranslationArgs($item, $args->getSourceLocale(), $args->getTargetLocale()))
+                    ->setTranslatedParent($newOwner)
+                    ->setProperty($reflection)
+            ;
+
+            $itemTrans = $this->translator->processTranslation($subTranslationArgs);
+
+            // Set the translated item new owner
+            $reflection->setValue($itemTrans, new ArrayCollection([$newOwner]));
+            $newCollection[$key] = $itemTrans;
+        }
+
+        return $newCollection;
     }
 
     public function handleEmptyOnTranslate(TranslationArgs $args)
@@ -81,7 +108,7 @@ class CollectionHandler implements TranslationHandlerInterface
         $newOwner      = $args->getTranslatedParent();
         // Get the owner's "mappedBy"
         $associations = $this->em->getClassMetadata(\get_class($newOwner))->getAssociationMappings();
-        $association  = reset($associations);
+        $association  = $associations[$args->getProperty()->name];
         $mappedBy     = $association['mappedBy'];
 
         // Iterate through collection and set
@@ -92,7 +119,7 @@ class CollectionHandler implements TranslationHandlerInterface
             // Set item's owner to null
             $reflection->setValue($item, new ArrayCollection([]));
             // Translate the item
-            $itemTrans  = $this->translator->translate($item, $args->getTargetLocale());
+            $itemTrans = $this->translator->translate($item, $args->getTargetLocale());
             // Set the translated item new owner
             $reflection->setValue($itemTrans, new ArrayCollection([$newOwner]));
             $newCollection[$key] = $itemTrans;
