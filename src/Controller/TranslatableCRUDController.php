@@ -36,6 +36,8 @@ class TranslatableCRUDController extends CRUDController
             $this->admin->checkAccess('edit', $object);
 
             $newObject = $this->get('umanit_translation.translation.entity_translator')->translate($object, $locale);
+            $this->get('doctrine')->getManager()->persist($newObject);
+            $this->get('doctrine')->getManager()->flush();
 
             $this->addFlash('sonata_flash_success', 'Translated successfully!');
         }
