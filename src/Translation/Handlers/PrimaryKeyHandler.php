@@ -41,5 +41,4 @@ class PrimaryKeyHandler implements TranslationHandlerInterface
     {
         return null;
     }
-
 }

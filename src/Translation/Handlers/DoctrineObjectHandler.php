@@ -6,6 +6,7 @@ namespace Umanit\TranslationBundle\Translation\Handlers;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Persistence\Proxy;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\PropertyAccess\Exception\NoSuchPropertyException;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Umanit\TranslationBundle\Translation\Args\TranslationArgs;
 use Umanit\TranslationBundle\Translation\EntityTranslator;
@@ -81,7 +82,8 @@ class DoctrineObjectHandler implements TranslationHandlerInterface
     {
         $translation = $args->getDataToBeTranslated();
         $accessor    = PropertyAccess::createPropertyAccessor();
-        $properties  = $this->em->getClassMetadata(\get_class($args->getDataToBeTranslated()))->getReflectionProperties();
+        $reflect     = new \ReflectionClass(\get_class($args->getDataToBeTranslated()));
+        $properties  = $reflect->getProperties();
 
         // Loop through all properties
         foreach ($properties as $property) {
@@ -98,9 +100,13 @@ class DoctrineObjectHandler implements TranslationHandlerInterface
 
             $propertyTranslation = $this->translator->processTranslation($subTranslationArgs);
 
-            $reflection = new \ReflectionProperty(\get_class($translation), $property->name);
-            $reflection->setAccessible(true);
-            $reflection->setValue($translation, $propertyTranslation);
+            try {
+                $accessor->setValue($translation, $property->name, $propertyTranslation);
+            } catch (NoSuchPropertyException $e) {
+                $reflection = new \ReflectionProperty(\get_class($translation), $property->name);
+                $reflection->setAccessible(true);
+                $reflection->setValue($translation, $propertyTranslation);
+            }
         }
     }
 }
