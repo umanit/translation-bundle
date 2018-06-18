@@ -27,12 +27,15 @@ class TranslatableCRUDController extends CRUDController
             throw $this->createNotFoundException(sprintf('unable to find the object with id : %s', $id));
         }
 
-        $newObject = $this->admin->getModelManager()->findOneBy(get_class($object), ['oid' => $object->getOid(), 'locale' => $locale]);
+        $newObject = $this->admin->getModelManager()->findOneBy(\get_class($object), [
+            'tuuid'  => $object->getTuuid(),
+            'locale' => $locale,
+        ]);
 
         if (empty($newObject)) {
             $this->admin->checkAccess('edit', $object);
 
-            $newObject = $this->get('umanit_translation.translator.entity_translator')->getEntityTranslation($object, $locale);
+            $newObject = $this->get('umanit_translation.translation.entity_translator')->translate($object, $locale);
 
             $this->addFlash('sonata_flash_success', 'Translated successfully!');
         }
