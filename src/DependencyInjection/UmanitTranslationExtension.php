@@ -44,13 +44,6 @@ class UmanitTranslationExtension extends Extension implements PrependExtensionIn
         if (isset($bundles['SonataAdminBundle'])) {
             $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
             $loader->load('sonata_admin.yml');
-
-            $container->prependExtensionConfig('sonata_admin', [
-                'assets' => [
-                    'javascripts' => ['bundles/umanittranslation/js/admin-filters.js'],
-                    'stylesheets' => ['bundles/umanittranslation/css/admin-sonata.css'],
-                ],
-            ]);
         }
 
         if (isset($bundles['UmanitDoctrineSingletonBundle'])) {
