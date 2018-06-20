@@ -2,7 +2,7 @@
 
 {% block field %}
     {% for locale in locales %}
-        {% if object.translations[locale] is defined %}
+        {% if locale in object.translations %}
             <span class="label label-success">{{ locale }}</span>
         {% else %}
             <span class="label label-danger">{{ locale }}</span>
