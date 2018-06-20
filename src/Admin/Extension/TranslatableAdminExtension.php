@@ -154,7 +154,7 @@ class TranslatableAdminExtension extends AbstractAdminExtension
                         'newLocale' => $locale,
                     ]),
                     'attributes' => [
-                        'icon' => isset($admin->getSubject()->getTranslations()[$locale]) || $locale === $admin->getSubject()->getLocale()
+                        'icon' => \in_array($locale, $admin->getSubject()->getTranslations(), true) || $locale === $admin->getSubject()->getLocale()
                             ? 'fa fa-check'
                             : 'fa fa-plus',
                     ],
