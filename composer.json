@@ -2,7 +2,11 @@
     "name": "umanit/translation-bundle",
     "description": "Manages Doctrine translations",
     "type": "symfony-bundle",
-    "keywords": ["symfony", "doctrine", "translation"],
+    "keywords": [
+        "symfony",
+        "doctrine",
+        "translation"
+    ],
     "homepage": "https://github.com/umanit/translation-bundle",
     "license": "MIT",
     "authors": [
@@ -12,14 +16,24 @@
         }
     ],
     "require": {
-        "php": ">=5.6",
-        "symfony/symfony": ">=2.8",
-        "doctrine/doctrine-bundle": "^1.6",
-        "doctrine/orm": "^2.5"
+        "php": ">=7.0",
+        "doctrine/doctrine-bundle": ">=1.6",
+        "doctrine/orm": ">=2.5",
+        "ramsey/uuid": ">=3.7",
+        "symfony/framework-bundle": ">=3.4",
+        "symfony/yaml": ">=3.4",
+        "symfony/property-access": ">=3.4",
+        "twig/twig": ">=2.0"
     },
     "minimum-stability": "stable",
-    "target-dir": "Umanit/TranslationBundle",
     "autoload": {
-        "psr-0": { "Umanit\\TranslationBundle": "" }
+        "psr-4": {
+            "Umanit\\TranslationBundle\\": "src/"
+        }
+    },
+    "require-dev": {
+        "symfony/phpunit-bridge": ">=4.0",
+        "phpunit/phpunit": ">=6.5",
+        "symfony/var-dumper": ">=3.4"
     }
 }

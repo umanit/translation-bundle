@@ -1,0 +1,99 @@
+services:
+    Umanit\TranslationBundle\Translation\EntityTranslator: '@umanit_translation.translation.entity_translator'
+
+    umanit_translation.translation.entity_translator:
+        class: Umanit\TranslationBundle\Translation\EntityTranslator
+        arguments:
+            - '%umanit_translation.locales%'
+            - '@event_dispatcher'
+            - '@doctrine.orm.entity_manager'
+            - '@umanit_translation.utils.annotation_helper'
+        public: true # This is just for testing purpose
+
+    # Utils
+    umanit_translation.utils.annotation_helper:
+        class: Umanit\TranslationBundle\Utils\AnnotationHelper
+        arguments: ['@annotations.reader']
+
+    # Translation Handlers
+
+    # Embedded
+    umanit_translation.translation.handlers.embedded_key_handler:
+        class: Umanit\TranslationBundle\Translation\Handlers\EmbeddedHandler
+        arguments:
+            - '@umanit_translation.utils.annotation_helper'
+            - '@umanit_translation.translation_handlers.doctrine_object_handler'
+        tags:
+            - { name: umanit_translation.translation_handler, priority: 10 }
+
+    # PrimaryKey
+    umanit_translation.translation.handlers.primary_key_handler:
+        class: Umanit\TranslationBundle\Translation\Handlers\PrimaryKeyHandler
+        arguments:
+            - '@umanit_translation.utils.annotation_helper'
+        tags:
+            - { name: umanit_translation.translation_handler, priority: 20 }
+
+    # Collection
+    umanit_translation.translation.handlers.collection_handler:
+        class: Umanit\TranslationBundle\Translation\Handlers\CollectionHandler
+        arguments:
+            - '@umanit_translation.utils.annotation_helper'
+            - '@doctrine.orm.entity_manager'
+            - '@annotations.reader'
+            - '@umanit_translation.translation.entity_translator'
+        tags:
+            - { name: umanit_translation.translation_handler, priority: 30 }
+
+    # Scalar
+    umanit_translation.translation.handlers.scalar_handler:
+        class: Umanit\TranslationBundle\Translation\Handlers\ScalarHandler
+        tags:
+            - { name: umanit_translation.translation_handler, priority: 40 }
+
+    # Bidirectional Association
+    umanit_translation.translation_handlers.bidirectional_association_handler:
+        class: Umanit\TranslationBundle\Translation\Handlers\BidirectionalAssociationHandler
+        arguments:
+            - '@annotations.reader'
+            - '@doctrine.orm.entity_manager'
+            - '@property_accessor'
+            - '@umanit_translation.utils.annotation_helper'
+        tags:
+            - { name: umanit_translation.translation_handler, priority: 50 }
+
+    # Translatable Entity
+    umanit_translation.translation_handlers.translatable_entity_handler:
+        class: Umanit\TranslationBundle\Translation\Handlers\TranslatableEntityHandler
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@umanit_translation.translation_handlers.doctrine_object_handler'
+        tags:
+            - { name: umanit_translation.translation_handler, priority: 60 }
+
+    # Doctrine Object
+    umanit_translation.translation_handlers.doctrine_object_handler:
+        class: Umanit\TranslationBundle\Translation\Handlers\DoctrineObjectHandler
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@umanit_translation.translation.entity_translator'
+        tags:
+            - { name: umanit_translation.translation_handler, priority: 100 }
+
+    umanit_translation.twig.umanit_translation_extension:
+        class: Umanit\TranslationBundle\Twig\UmanitTranslationExtension
+        arguments: ['%umanit_translation.locales%']
+        tags:
+            - { name: twig.extension }
+
+    umanit_translation.doctrine.event_subscriber.translatable_event_subscriber:
+        class: Umanit\TranslationBundle\Doctrine\EventSubscriber\TranslatableEventSubscriber
+        arguments: ['@annotation_reader', '%kernel.default_locale%']
+        tags:
+            - { name: doctrine.event_subscriber }
+
+    umanit_translation.event_subscriber.locale_filter_configurator:
+        class: Umanit\TranslationBundle\EventSubscriber\LocaleFilterConfigurator
+        arguments: ['@doctrine.orm.entity_manager', '%kernel.default_locale%']
+        tags:
+            - { name: kernel.event_subscriber }

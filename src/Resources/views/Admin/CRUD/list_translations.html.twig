@@ -1,0 +1,11 @@
+{% extends 'SonataAdminBundle:CRUD:base_list_field.html.twig' %}
+
+{% block field %}
+    {% for locale in locales %}
+        {% if locale in object.translations %}
+            <span class="label label-success">{{ locale }}</span>
+        {% else %}
+            <span class="label label-danger">{{ locale }}</span>
+        {% endif %}
+    {% endfor %}
+{% endblock %}
