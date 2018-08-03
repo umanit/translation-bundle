@@ -22,6 +22,7 @@
         "ramsey/uuid": ">=3.7",
         "symfony/framework-bundle": ">=3.4",
         "symfony/yaml": ">=3.4",
+        "symfony/security-bundle": ">=3.4",
         "symfony/property-access": ">=3.4",
         "twig/twig": ">=2.0"
     },

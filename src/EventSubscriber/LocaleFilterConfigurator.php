@@ -3,13 +3,11 @@
 namespace Umanit\TranslationBundle\EventSubscriber;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\SecurityBundle\Security\FirewallConfig;
 use Symfony\Bundle\SecurityBundle\Security\FirewallMap;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
-use Symfony\Component\Security\Http\Firewall;
 use Umanit\TranslationBundle\Doctrine\Filter\LocaleFilter;
 
 /**

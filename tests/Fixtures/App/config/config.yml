@@ -28,3 +28,4 @@ doctrine:
                  is_bundle: false
 umanit_translation:
     locales: [en, fr, ja]
+    disabled_firewalls: [admin]
