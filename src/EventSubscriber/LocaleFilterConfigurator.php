@@ -43,7 +43,7 @@ class LocaleFilterConfigurator implements EventSubscriberInterface
     {
         $this->em                = $em;
         $this->disabledFirewalls = $disabledFirewalls;
-        $this->firewallMap = $firewallMap;
+        $this->firewallMap       = $firewallMap;
     }
 
     /**
@@ -63,8 +63,12 @@ class LocaleFilterConfigurator implements EventSubscriberInterface
     public function onKernelRequest(GetResponseEvent $event)
     {
         if ($this->em->getFilters()->has('umanit_translation_locale_filter')) {
-            if ($this->em->getFilters()->isEnabled('umanit_translation_locale_filter') && $this->isDisabledFirewall($event->getRequest())) {
-                $this->em->getFilters()->disable('umanit_translation_locale_filter');
+
+            if ($this->isDisabledFirewall($event->getRequest())) {
+                if ($this->em->getFilters()->isEnabled('umanit_translation_locale_filter')) {
+                    $this->em->getFilters()->disable('umanit_translation_locale_filter');
+                }
+
                 return;
             }
             /** @var LocaleFilter $filter */
