@@ -19,10 +19,10 @@ class Configuration implements ConfigurationInterface
         $rootNode    = $treeBuilder->root('umanit_translation');
         $rootNode
             ->children()
+                ->scalarNode('default_locale')->defaultNull()->end()
                 ->arrayNode('locales')
                     ->prototype('scalar')->end()->isRequired()
                 ->end()
-                ->scalarNode('default_locale')->defaultNull()
                 ->arrayNode('disabled_firewalls')->info('Defines the firewalls where the filter should be disabled (ex: admin)')
                     ->prototype('scalar')->end()->defaultValue([])
                 ->end()
