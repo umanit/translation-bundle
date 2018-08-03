@@ -2,8 +2,8 @@
 
 namespace Umanit\TranslationBundle\Doctrine\Filter;
 
-use Doctrine\ORM\Query\Filter\SQLFilter;
 use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Query\Filter\SQLFilter;
 use Umanit\TranslationBundle\Doctrine\Model\TranslatableInterface;
 
 /**
@@ -39,7 +39,7 @@ class LocaleFilter extends SQLFilter
     public function addFilterConstraint(ClassMetadata $targetEntity, $targetTableAlias)
     {
         // If the entity is a TranslatableInterface
-        if (in_array(TranslatableInterface::class, $targetEntity->getReflectionClass()->getInterfaceNames())) {
+        if (\in_array(TranslatableInterface::class, $targetEntity->getReflectionClass()->getInterfaceNames(), true)) {
             return sprintf("%s.locale = '%s'", $targetTableAlias, $this->locale);
         }
 

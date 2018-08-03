@@ -170,6 +170,15 @@ doctrine:
                 enabled: true
 ```  
 
+#### (Optional) Disable the filter for a specific firewall
+Usually you'll need to administrate your contents.
+For doing so, you can disable the filter by configuring the disabled_firewalls option. 
+
+```yaml
+# app/config/config.yml
+umanit_translation:
+    disabled_firewalls: ['admin']
+```
 
 ## Advanced usage
 

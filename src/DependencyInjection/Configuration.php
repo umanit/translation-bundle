@@ -23,6 +23,9 @@ class Configuration implements ConfigurationInterface
                     ->prototype('scalar')->end()->isRequired()
                 ->end()
                 ->scalarNode('default_locale')->defaultNull()
+                ->arrayNode('disabled_firewalls')->info('Defines the firewalls where the filter should be disabled (ex: admin)')
+                    ->prototype('scalar')->end()->defaultValue([])
+                ->end()
             ->end()
         ;
 

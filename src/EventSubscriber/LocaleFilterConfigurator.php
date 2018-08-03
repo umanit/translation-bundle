@@ -3,8 +3,13 @@
 namespace Umanit\TranslationBundle\EventSubscriber;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\SecurityBundle\Security\FirewallConfig;
+use Symfony\Bundle\SecurityBundle\Security\FirewallMap;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\Security\Http\Firewall;
 use Umanit\TranslationBundle\Doctrine\Filter\LocaleFilter;
 
 /**
@@ -20,20 +25,27 @@ class LocaleFilterConfigurator implements EventSubscriberInterface
     private $em;
 
     /**
-     * @var string
+     * @var array
      */
-    private $locale;
+    private $disabledFirewalls;
+
+    /**
+     * @var FirewallMap
+     */
+    private $firewallMap;
 
     /**
      * LocaleFilterConfigurator constructor.
      *
      * @param EntityManagerInterface $em
-     * @param string                 $locale
+     * @param FirewallMap            $firewallMap
+     * @param array                  $disabledFirewalls
      */
-    public function __construct(EntityManagerInterface $em, $locale = 'en')
+    public function __construct(EntityManagerInterface $em, FirewallMap $firewallMap, array $disabledFirewalls)
     {
-        $this->locale = $locale;
-        $this->em     = $em;
+        $this->em                = $em;
+        $this->disabledFirewalls = $disabledFirewalls;
+        $this->firewallMap = $firewallMap;
     }
 
     /**
@@ -47,13 +59,36 @@ class LocaleFilterConfigurator implements EventSubscriberInterface
 
     /**
      * Called on each request.
+     *
+     * @param GetResponseEvent $event
      */
-    public function onKernelRequest()
+    public function onKernelRequest(GetResponseEvent $event)
     {
         if ($this->em->getFilters()->has('umanit_translation_locale_filter')) {
+
+            if ($this->isDisabledFirewall($event->getRequest())) {
+                return;
+            }
+
             /** @var LocaleFilter $filter */
             $filter = $this->em->getFilters()->enable('umanit_translation_locale_filter');
-            $filter->setLocale($this->locale);
+            $filter->setLocale($event->getRequest()->getLocale());
         }
+    }
+
+    /**
+     * Indicates if the current firewall should disable the filter.
+     *
+     * @param Request $request
+     *
+     * @return bool
+     */
+    protected function isDisabledFirewall(Request $request)
+    {
+        if (null === $this->firewallMap->getFirewallConfig($request)) {
+            return false;
+        }
+
+        return \in_array($this->firewallMap->getFirewallConfig($request)->getName(), $this->disabledFirewalls, true);
     }
 }
