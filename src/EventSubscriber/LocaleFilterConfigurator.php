@@ -65,11 +65,10 @@ class LocaleFilterConfigurator implements EventSubscriberInterface
     public function onKernelRequest(GetResponseEvent $event)
     {
         if ($this->em->getFilters()->has('umanit_translation_locale_filter')) {
-
-            if ($this->isDisabledFirewall($event->getRequest())) {
+            if ($this->em->getFilters()->isEnabled('umanit_translation_locale_filter') && $this->isDisabledFirewall($event->getRequest())) {
+                $this->em->getFilters()->disable('umanit_translation_locale_filter');
                 return;
             }
-
             /** @var LocaleFilter $filter */
             $filter = $this->em->getFilters()->enable('umanit_translation_locale_filter');
             $filter->setLocale($event->getRequest()->getLocale());

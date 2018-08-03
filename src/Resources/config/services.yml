@@ -94,8 +94,7 @@ services:
 
     umanit_translation.event_subscriber.locale_filter_configurator:
         class: Umanit\TranslationBundle\EventSubscriber\LocaleFilterConfigurator
-        arguments: ['@doctrine.orm.entity_manager']
-            arguments:
+        arguments:
             - '@doctrine.orm.entity_manager'
             - '@security.firewall.map'
             - '%umanit_translation.disabled_firewalls%'
