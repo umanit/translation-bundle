@@ -16,14 +16,14 @@ class LocaleFilter extends SQLFilter
     /**
      * @var string
      */
-    protected $locale = 'en';
+    protected $locale;
 
     /**
      * Dependency injection.
      *
      * @param string $locale
      */
-    public function setLocale($locale = 'en')
+    public function setLocale($locale)
     {
         $this->locale = $locale;
     }
@@ -38,6 +38,9 @@ class LocaleFilter extends SQLFilter
      */
     public function addFilterConstraint(ClassMetadata $targetEntity, $targetTableAlias)
     {
+        if (null === $this->locale) {
+            return '';
+        }
         // If the entity is a TranslatableInterface
         if (\in_array(TranslatableInterface::class, $targetEntity->getReflectionClass()->getInterfaceNames(), true)) {
             return sprintf("%s.locale = '%s'", $targetTableAlias, $this->locale);
