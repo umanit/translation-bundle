@@ -88,7 +88,7 @@ services:
 
     umanit_translation.doctrine.event_subscriber.translatable_event_subscriber:
         class: Umanit\TranslationBundle\Doctrine\EventSubscriber\TranslatableEventSubscriber
-        arguments: ['@annotation_reader', '%kernel.default_locale%']
+        arguments: ['@annotation_reader', '%umanit_translation.default_locale%']
         tags:
             - { name: doctrine.event_subscriber }
 
