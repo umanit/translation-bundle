@@ -115,6 +115,11 @@ class CollectionHandler implements TranslationHandlerInterface
         // their owner owner to $newOwner
         foreach ($newCollection as $key => $item) {
             $reflection = new \ReflectionProperty(\get_class($item), $mappedBy);
+
+            if ($this->annotationHelper->isManyToOne($reflection)) {
+                continue;
+            }
+
             $reflection->setAccessible(true);
             // Set item's owner to null
             $reflection->setValue($item, new ArrayCollection([]));
