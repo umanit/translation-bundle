@@ -33,6 +33,32 @@ class TranslatableManyToOneEntityTranslationTest extends AbstractBaseTest
         $this->assertIsTranslation($entity, $translation);
     }
 
+
+    /** @test */
+    public function it_must_associate_existing_translation()
+    {
+        $associatedEntity = (new Scalar())->setTitle('simple');
+        $this->em->persist($associatedEntity);
+
+        $translatedAssociatedEntity = $this->translator->translate($associatedEntity, self::TARGET_LOCALE);
+
+        $entity =
+            (new TranslatableManyToOne())
+                ->setSimple($associatedEntity);
+
+        $this->em->persist($entity);
+        $this->em->flush();
+
+        /** @var TranslatableManyToOne $translation */
+        $translation = $this->translator->translate($entity, self::TARGET_LOCALE);
+
+        $this->em->flush();
+        $this->assertNotEquals($associatedEntity, $translation->getSimple());
+        $this->assertEquals($translatedAssociatedEntity, $translation->getSimple());
+        $this->assertAttributeContains(self::TARGET_LOCALE, 'locale', $translation->getSimple());
+        $this->assertIsTranslation($entity, $translation);
+    }
+
     /** @test */
     public function it_can_share_translatable_entity_value_amongst_translations()
     {

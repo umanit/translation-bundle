@@ -41,23 +41,6 @@ class TranslatableEntityHandler implements TranslationHandlerInterface
 
     public function handleSharedAmongstTranslations(TranslationArgs $args)
     {
-        $data = $args->getDataToBeTranslated();
-
-        if (null === $data->getTuuid()) {
-            return $this->translate($args);
-        }
-
-        // Search in database if the content
-        // exists, otherwise translate it.
-        $existingTranslation = $this->em->getRepository(\get_class($data))->findOneBy([
-            'locale' => $args->getTargetLocale(),
-            'tuuid'   => $data->getTuuid(),
-        ]);
-
-        if (null !== $existingTranslation) {
-            return $existingTranslation;
-        }
-
         return $this->translate($args);
     }
 
@@ -68,6 +51,19 @@ class TranslatableEntityHandler implements TranslationHandlerInterface
 
     public function translate(TranslationArgs $args)
     {
+        $data = $args->getDataToBeTranslated();
+
+        // Search in database if the content
+        // exists, otherwise translate it.
+        $existingTranslation = $this->em->getRepository(\get_class($data))->findOneBy([
+            'locale' => $args->getTargetLocale(),
+            'tuuid' => $data->getTuuid(),
+        ]);
+
+        if (null !== $existingTranslation) {
+            return $existingTranslation;
+        }
+
         /** @var TranslatableInterface $clone */
         $clone = clone $args->getDataToBeTranslated();
 

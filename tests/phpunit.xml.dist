@@ -5,7 +5,7 @@
          colors="true"
          convertErrorsToExceptions="true"
          convertNoticesToExceptions="true"
-         convertWarningsToExceptions="false"
+         convertWarningsToExceptions="true"
          processIsolation="false"
          stopOnFailure="false">
     <testsuites>
@@ -26,5 +26,6 @@
         <ini name="display_startup_errors" value="1"/>
         <ini name="memory_limit" value="-1"/>
         <ini name="zend.enable_gc" value="1"/>
+        <env name="SYMFONY_DEPRECATIONS_HELPER" value="weak_vendors" />
     </php>
 </phpunit>
