@@ -30,3 +30,4 @@ doctrine:
 umanit_translation:
     locales: [en, fr, ja]
     disabled_firewalls: [admin]
+    default_locale:  '%locale%'
