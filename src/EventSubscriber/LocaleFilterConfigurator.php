@@ -28,7 +28,7 @@ class LocaleFilterConfigurator implements EventSubscriberInterface
     private $disabledFirewalls;
 
     /**
-     * @var FirewallMap
+     * @var FirewallMap|null
      */
     private $firewallMap;
 
@@ -36,10 +36,10 @@ class LocaleFilterConfigurator implements EventSubscriberInterface
      * LocaleFilterConfigurator constructor.
      *
      * @param EntityManagerInterface $em
-     * @param FirewallMap            $firewallMap
      * @param array                  $disabledFirewalls
+     * @param FirewallMap            $firewallMap
      */
-    public function __construct(EntityManagerInterface $em, FirewallMap $firewallMap, array $disabledFirewalls)
+    public function __construct(EntityManagerInterface $em, array $disabledFirewalls, FirewallMap $firewallMap = null)
     {
         $this->em                = $em;
         $this->disabledFirewalls = $disabledFirewalls;
@@ -86,7 +86,7 @@ class LocaleFilterConfigurator implements EventSubscriberInterface
      */
     protected function isDisabledFirewall(Request $request)
     {
-        if (null === $this->firewallMap->getFirewallConfig($request)) {
+        if (null === $this->firewallMap || null === $this->firewallMap->getFirewallConfig($request)) {
             return false;
         }
 

@@ -19,13 +19,14 @@ doctrine:
         auto_generate_proxy_classes: true
         auto_mapping: true
         mappings:
-             UnitTestEntities:
-                 mapping: true
-                 type: annotation
-                 dir: '%kernel.root_dir%/../AppTestBundle/Entity/'
-                 alias: 'Entity'
-                 prefix: 'AppTestBundle\Entity'
-                 is_bundle: false
+            UnitTestEntities:
+                mapping: true
+                type: annotation
+                dir: '%kernel.root_dir%/../AppTestBundle/Entity/'
+                alias: 'Entity'
+                prefix: 'AppTestBundle\Entity'
+                is_bundle: false
+
 umanit_translation:
     locales: [en, fr, ja]
     disabled_firewalls: [admin]
