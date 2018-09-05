@@ -15,12 +15,12 @@ class TranslatableEntityHandler implements TranslationHandlerInterface
     /**
      * @var DoctrineObjectHandler
      */
-    private $doctrineObjectHandler;
+    protected $doctrineObjectHandler;
 
     /**
      * @var EntityManagerInterface
      */
-    private $em;
+    protected $em;
 
     /**
      * TranslatableEntity constructor.
