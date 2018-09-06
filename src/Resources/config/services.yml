@@ -119,7 +119,7 @@ services:
         class: Umanit\TranslationBundle\EventSubscriber\LocaleFilterConfigurator
         arguments:
             - '@doctrine.orm.entity_manager'
-            - '?@security.firewall.map'
             - '%umanit_translation.disabled_firewalls%'
+            - '?@security.firewall.map'
         tags:
             - { name: kernel.event_subscriber }
