@@ -6,6 +6,7 @@ use Doctrine\Common\Annotations\Reader;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Umanit\TranslationBundle\Translation\Args\TranslationArgs;
+use Umanit\TranslationBundle\Translation\EntityTranslator;
 use Umanit\TranslationBundle\Utils\AnnotationHelper;
 
 /**
@@ -34,6 +35,10 @@ class BidirectionalManyToOneHandler implements TranslationHandlerInterface
      * @var PropertyAccessorInterface
      */
     private $propertyAccessor;
+    /**
+     * @var EntityTranslator
+     */
+    private $translator;
 
     /**
      * BidirectionalManyToOneHandler constructor.
@@ -42,17 +47,20 @@ class BidirectionalManyToOneHandler implements TranslationHandlerInterface
      * @param Reader                    $reader
      * @param EntityManagerInterface    $em
      * @param PropertyAccessorInterface $propertyAccessor
+     * @param EntityTranslator          $translator
      */
     public function __construct(
         AnnotationHelper $annotationHelper,
         Reader $reader,
         EntityManagerInterface $em,
-        PropertyAccessorInterface $propertyAccessor
+        PropertyAccessorInterface $propertyAccessor,
+        EntityTranslator $translator
     ) {
         $this->annotationHelper = $annotationHelper;
         $this->reader           = $reader;
         $this->em               = $em;
         $this->propertyAccessor = $propertyAccessor;
+        $this->translator       = $translator;
     }
 
     public function supports(TranslationArgs $args): bool
@@ -91,7 +99,8 @@ class BidirectionalManyToOneHandler implements TranslationHandlerInterface
     public function translate(TranslationArgs $args)
     {
         // $data is the child association
-        $clone = clone $args->getDataToBeTranslated();
+        $clone           = clone $args->getDataToBeTranslated();
+        $parentFieldName = null;
 
         // Get the correct parent association with the fieldName
         $fieldName    = $args->getProperty()->name;
@@ -103,11 +112,16 @@ class BidirectionalManyToOneHandler implements TranslationHandlerInterface
             }
         }
 
-        $clone->setLocale($args->getTargetLocale());
+        if (null !== $parentFieldName) {
+            $clone->setLocale($args->getTargetLocale());
 
-        // Set the invertedAssociation with the clone parent.
-        $this->propertyAccessor->setValue($clone, $parentFieldName, $args->getTranslatedParent());
+            // Set the invertedAssociation with the clone parent.
+            $this->propertyAccessor->setValue($clone, $parentFieldName, $args->getTranslatedParent());
 
-        return $clone;
+            return $clone;
+        }
+
+        // If no parent field is found, were in the parent, translate it rather than the child.
+        return $this->translator->translate($args->getDataToBeTranslated(), $args->getTargetLocale());
     }
 }

@@ -26,7 +26,8 @@ class TranslatableOneToManyBidirectionalChild implements TranslatableInterface
      *
      * @ORM\ManyToOne(
      *     targetEntity="AppTestBundle\Entity\Translatable\TranslatableOneToManyBidirectionalParent",
-     *     inversedBy="children"
+     *     inversedBy="children",
+     *     cascade={"persist"}
      * )
      * @ORM\JoinColumn(referencedColumnName="id")
      */

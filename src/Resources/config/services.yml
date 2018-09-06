@@ -53,6 +53,7 @@ services:
             - '@annotations.reader'
             - '@doctrine.orm.entity_manager'
             - '@property_accessor'
+            - '@umanit_translation.translation.entity_translator'
         tags:
             - { name: umanit_translation.translation_handler, priority: 35 }
 
@@ -120,6 +121,6 @@ services:
         arguments:
             - '@doctrine.orm.entity_manager'
             - '%umanit_translation.disabled_firewalls%'
-            - '?@security.firewall.map'
+            - '@?security.firewall.map'
         tags:
             - { name: kernel.event_subscriber }
