@@ -26,11 +26,6 @@ class BidirectionalManyToOneHandler implements TranslationHandlerInterface
     private $reader;
 
     /**
-     * @var BidirectionalAssociationHandler
-     */
-    private $bidirectionalAssociationHandler;
-
-    /**
      * @var EntityManagerInterface
      */
     private $em;
@@ -43,24 +38,21 @@ class BidirectionalManyToOneHandler implements TranslationHandlerInterface
     /**
      * BidirectionalManyToOneHandler constructor.
      *
-     * @param AnnotationHelper                $annotationHelper
-     * @param Reader                          $reader
-     * @param BidirectionalAssociationHandler $bidirectionalAssociationHandler
-     * @param EntityManagerInterface          $em
-     * @param PropertyAccessorInterface       $propertyAccessor
+     * @param AnnotationHelper          $annotationHelper
+     * @param Reader                    $reader
+     * @param EntityManagerInterface    $em
+     * @param PropertyAccessorInterface $propertyAccessor
      */
     public function __construct(
         AnnotationHelper $annotationHelper,
         Reader $reader,
-        BidirectionalAssociationHandler $bidirectionalAssociationHandler,
         EntityManagerInterface $em,
         PropertyAccessorInterface $propertyAccessor
     ) {
-        $this->annotationHelper                = $annotationHelper;
-        $this->reader                          = $reader;
-        $this->bidirectionalAssociationHandler = $bidirectionalAssociationHandler;
-        $this->em                              = $em;
-        $this->propertyAccessor                = $propertyAccessor;
+        $this->annotationHelper = $annotationHelper;
+        $this->reader           = $reader;
+        $this->em               = $em;
+        $this->propertyAccessor = $propertyAccessor;
     }
 
     public function supports(TranslationArgs $args): bool
@@ -79,12 +71,21 @@ class BidirectionalManyToOneHandler implements TranslationHandlerInterface
 
     public function handleSharedAmongstTranslations(TranslationArgs $args)
     {
-        // TODO AGU : Implement handleSharedAmongstTranslations() method.
+        $data    = $args->getDataToBeTranslated();
+        $message =
+            '%class%::%prop% is a Bidirectional ManyToOne, it cannot be shared '.
+            'amongst translations. Either remove the @SharedAmongstTranslation '.
+            'annotation or choose another association type.';
+
+        throw new \ErrorException(strtr($message, [
+            '%class%' => \get_class($data),
+            '%prop%'  => $args->getProperty()->name,
+        ]));
     }
 
     public function handleEmptyOnTranslate(TranslationArgs $args)
     {
-        // TODO AGU : Implement handleEmptyOnTranslate() method.
+        return null;
     }
 
     public function translate(TranslationArgs $args)

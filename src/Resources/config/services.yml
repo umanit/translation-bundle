@@ -51,7 +51,6 @@ services:
         arguments:
             - '@umanit_translation.utils.annotation_helper'
             - '@annotations.reader'
-            - '@umanit_translation.translation_handlers.bidirectional_association_handler'
             - '@doctrine.orm.entity_manager'
             - '@property_accessor'
         tags:

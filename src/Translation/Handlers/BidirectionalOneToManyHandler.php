@@ -3,6 +3,7 @@
 namespace Umanit\TranslationBundle\Translation\Handlers;
 
 use Doctrine\Common\Annotations\Reader;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
 use Umanit\TranslationBundle\Translation\Args\TranslationArgs;
@@ -72,12 +73,21 @@ class BidirectionalOneToManyHandler implements TranslationHandlerInterface
 
     public function handleSharedAmongstTranslations(TranslationArgs $args)
     {
-        // TODO AGU : Implement handleSharedAmongstTranslations() method.
+        $data    = $args->getDataToBeTranslated();
+        $message =
+            '%class%::%prop% is a Bidirectional OneToMany, it cannot be shared '.
+            'amongst translations. Either remove the @SharedAmongstTranslation '.
+            'annotation or choose another association type.';
+
+        throw new \ErrorException(strtr($message, [
+            '%class%' => \get_class($data),
+            '%prop%'  => $args->getProperty()->name,
+        ]));
     }
 
     public function handleEmptyOnTranslate(TranslationArgs $args)
     {
-        // TODO AGU : Implement handleEmptyOnTranslate() method.
+        return new ArrayCollection();
     }
 
     public function translate(TranslationArgs $args)
