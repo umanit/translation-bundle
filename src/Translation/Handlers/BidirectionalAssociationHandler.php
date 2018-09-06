@@ -12,6 +12,7 @@ use Umanit\TranslationBundle\Utils\AnnotationHelper;
  * Handles translation of one-to-one-bidirectional association.
  *
  * @author Arthur Guigand <aguigand@umanit.fr>
+ * @todo : Next major release, rename to BidirectionalManyToManyHandler.
  */
 class BidirectionalAssociationHandler implements TranslationHandlerInterface
 {
@@ -29,6 +30,7 @@ class BidirectionalAssociationHandler implements TranslationHandlerInterface
      * @var PropertyAccessor
      */
     private $propertyAccessor;
+
     /**
      * @var AnnotationHelper
      */

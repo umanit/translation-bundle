@@ -22,9 +22,7 @@ class DoctrineObjectHandler implements TranslationHandlerInterface
     /** @var EntityManagerInterface */
     protected $em;
 
-    /**
-     * @var EntityTranslator
-     */
+    /** @var EntityTranslator */
     protected $translator;
 
     /**

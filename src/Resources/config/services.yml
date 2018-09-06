@@ -34,6 +34,29 @@ services:
         tags:
             - { name: umanit_translation.translation_handler, priority: 20 }
 
+    # Bidirectional OneToMany (parent)
+    umanit_translation.translation_handlers.bidirectional_one_to_many_handler:
+        class: Umanit\TranslationBundle\Translation\Handlers\BidirectionalOneToManyHandler
+        tags:
+            - { name: umanit_translation.translation_handler, priority: 30 }
+        arguments:
+            - '@umanit_translation.utils.annotation_helper'
+            - '@annotations.reader'
+            - '@umanit_translation.translation.entity_translator'
+            - '@doctrine.orm.entity_manager'
+
+    # Bidirectional ManyToOne (children)
+    umanit_translation.translation_handlers.bidirectional_many_to_one_handler:
+        class: Umanit\TranslationBundle\Translation\Handlers\BidirectionalManyToOneHandler
+        arguments:
+            - '@umanit_translation.utils.annotation_helper'
+            - '@annotations.reader'
+            - '@umanit_translation.translation_handlers.bidirectional_association_handler'
+            - '@doctrine.orm.entity_manager'
+            - '@property_accessor'
+        tags:
+            - { name: umanit_translation.translation_handler, priority: 35 }
+
     # Collection
     umanit_translation.translation.handlers.collection_handler:
         class: Umanit\TranslationBundle\Translation\Handlers\CollectionHandler
@@ -43,15 +66,15 @@ services:
             - '@annotations.reader'
             - '@umanit_translation.translation.entity_translator'
         tags:
-            - { name: umanit_translation.translation_handler, priority: 30 }
+            - { name: umanit_translation.translation_handler, priority: 40 }
 
     # Scalar
     umanit_translation.translation.handlers.scalar_handler:
         class: Umanit\TranslationBundle\Translation\Handlers\ScalarHandler
         tags:
-            - { name: umanit_translation.translation_handler, priority: 40 }
+            - { name: umanit_translation.translation_handler, priority: 50 }
 
-    # Bidirectional Association
+    # Bidirectional ManyToMany
     umanit_translation.translation_handlers.bidirectional_association_handler:
         class: Umanit\TranslationBundle\Translation\Handlers\BidirectionalAssociationHandler
         arguments:
@@ -60,7 +83,7 @@ services:
             - '@property_accessor'
             - '@umanit_translation.utils.annotation_helper'
         tags:
-            - { name: umanit_translation.translation_handler, priority: 50 }
+            - { name: umanit_translation.translation_handler, priority: 60 }
 
     # Translatable Entity
     umanit_translation.translation_handlers.translatable_entity_handler:
@@ -69,7 +92,7 @@ services:
             - '@doctrine.orm.entity_manager'
             - '@umanit_translation.translation_handlers.doctrine_object_handler'
         tags:
-            - { name: umanit_translation.translation_handler, priority: 60 }
+            - { name: umanit_translation.translation_handler, priority: 70 }
 
     # Doctrine Object
     umanit_translation.translation_handlers.doctrine_object_handler:
@@ -77,6 +100,7 @@ services:
         arguments:
             - '@doctrine.orm.entity_manager'
             - '@umanit_translation.translation.entity_translator'
+            - '@umanit_translation.utils.annotation_helper'
         tags:
             - { name: umanit_translation.translation_handler, priority: 100 }
 

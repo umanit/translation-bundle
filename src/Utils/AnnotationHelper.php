@@ -5,6 +5,8 @@ namespace Umanit\TranslationBundle\Utils;
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\ORM\Mapping\Embedded;
 use Doctrine\ORM\Mapping\Id;
+use Doctrine\ORM\Mapping\ManyToOne;
+use Doctrine\ORM\Mapping\OneToMany;
 use Doctrine\ORM\Mapping\OneToOne;
 use Umanit\TranslationBundle\Doctrine\Annotation\EmptyOnTranslate;
 use Umanit\TranslationBundle\Doctrine\Annotation\SharedAmongstTranslations;
@@ -69,7 +71,7 @@ class AnnotationHelper
      *
      * @return bool
      */
-    public function isOneToOne(\ReflectionProperty $property)
+    public function isOneToOne(\ReflectionProperty $property): bool
     {
         return null !== $this->reader->getPropertyAnnotation($property, OneToOne::class);
     }
@@ -81,8 +83,33 @@ class AnnotationHelper
      *
      * @return bool
      */
-    public function isId(\ReflectionProperty $property)
+    public function isId(\ReflectionProperty $property): bool
     {
         return null !== $this->reader->getPropertyAnnotation($property, Id::class);
     }
+
+    /**
+     * Defines if the property is a ManyToOne relation.
+     *
+     * @param \ReflectionProperty $property
+     *
+     * @return bool
+     */
+    public function isManyToOne(\ReflectionProperty $property): bool
+    {
+        return null !== $this->reader->getPropertyAnnotation($property, ManyToOne::class);
+    }
+
+    /**
+     * Defines if the property is a ManyToOne relation.
+     *
+     * @param \ReflectionProperty $property
+     *
+     * @return bool
+     */
+    public function isOneToMany(\ReflectionProperty $property): bool
+    {
+        return null !== $this->reader->getPropertyAnnotation($property, OneToMany::class);
+    }
+
 }
