@@ -32,6 +32,11 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
     private $translator;
 
     /**
+     * @var bool
+     */
+    private $alreadySync;
+
+    /**
      * TranslatableEventSubscriber constructor.
      *
      * @param Common\Annotations\Reader $reader
@@ -104,6 +109,9 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
      */
     public function postUpdate(ORM\Event\LifecycleEventArgs $args)
     {
+        if (true === $this->alreadySync) {
+            return;
+        }
         $this->synchronizeTranslatableSharedField($args);
     }
 
@@ -220,7 +228,9 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
      */
     protected function synchronizeTranslatableSharedField(ORM\Event\LifecycleEventArgs $args)
     {
+        $this->alreadySync = true;
         $translatable = $args->getEntity();
+
         // Only synchronize TranslatableInterface
         if (!$translatable instanceof TranslatableInterface) {
             return;
