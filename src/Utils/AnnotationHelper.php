@@ -5,6 +5,7 @@ namespace Umanit\TranslationBundle\Utils;
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\ORM\Mapping\Embedded;
 use Doctrine\ORM\Mapping\Id;
+use Doctrine\ORM\Mapping\ManyToMany;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\OneToMany;
 use Doctrine\ORM\Mapping\OneToOne;
@@ -110,6 +111,18 @@ class AnnotationHelper
     public function isOneToMany(\ReflectionProperty $property): bool
     {
         return null !== $this->reader->getPropertyAnnotation($property, OneToMany::class);
+    }
+
+    /**
+     * Defines if the property is a ManyToMany relation.
+     *
+     * @param \ReflectionProperty $property
+     *
+     * @return bool
+     */
+    public function isManyToMany(\ReflectionProperty $property): bool
+    {
+        return null !== $this->reader->getPropertyAnnotation($property, ManyToMany::class);
     }
 
 }

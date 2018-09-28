@@ -8,6 +8,8 @@ use Ramsey\Uuid\Uuid;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Umanit\TranslationBundle\Doctrine\Annotation\SharedAmongstTranslations;
 use Umanit\TranslationBundle\Doctrine\Model\TranslatableInterface;
+use Umanit\TranslationBundle\Translation\Args\TranslationArgs;
+use Umanit\TranslationBundle\Translation\EntityTranslator;
 
 /**
  * @author Arthur Guigand <aguigand@umanit.fr>
@@ -20,9 +22,14 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
     private $reader;
 
     /**
-     * @var
+     * @var string
      */
     private $defaultLocale;
+
+    /**
+     * @var EntityTranslator
+     */
+    private $translator;
 
     /**
      * TranslatableEventSubscriber constructor.
@@ -30,10 +37,17 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
      * @param Common\Annotations\Reader $reader
      * @param string                    $defaultLocale
      */
-    public function __construct(Common\Annotations\Reader $reader, $defaultLocale)
-    {
+    public function __construct(
+        Common\Annotations\Reader $reader,
+        string $defaultLocale
+    ) {
         $this->reader        = $reader;
         $this->defaultLocale = $defaultLocale;
+    }
+
+    public function setEntityTranslator(EntityTranslator $entityTranslator)
+    {
+        $this->translator = $entityTranslator;
     }
 
     /**
@@ -215,8 +229,7 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
         $properties = $em->getClassMetadata(\get_class($translatable))->getReflectionProperties();
 
         $sharedAmongstTranslationsProperties = array_filter($properties, function ($property) {
-            // @todo AGU : ManyToMany are not supported yet
-            return $this->isSharedAmongstTranslations($property) && $this->isNotManyToMany($property);
+            return $this->isSharedAmongstTranslations($property);
         });
 
         // Update the translations if any property is to be shared
@@ -239,25 +252,22 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
             }
             foreach ($sharedAmongstTranslationsProperties as $property) {
                 $sourceValue      = $propertyAccessor->getValue($translatable, $property->name);
-                $translationValue = $propertyAccessor->getValue($translation, $property->name);
-                // Set the value only of it's not already the same
-                if ($translationValue === $sourceValue) {
-                    continue;
-                }
-                // If property is translatable, check for its translation
-                if ($translationValue instanceof TranslatableInterface) {
-                    $sourceValue = $em
-                        ->getRepository(\get_class($sourceValue))
-                        ->findOneBy([
-                            'tuuid'   => $translationValue->getTuuid(),
-                            'locale' => $translationValue->getLocale(),
-                        ])
-                    ;
-                }
-                $propertyAccessor->setValue($translation, $property->name, $sourceValue);
+
+                $translationArgs = (new TranslationArgs(
+                    $sourceValue,
+                    $translatable->getLocale(),
+                    $translation->getLocale()
+                ))
+                    ->setProperty($property)
+                    ->setTranslatedParent($translation)
+                ;
+
+                $translationValue = $this->translator->processTranslation($translationArgs);
+
+                $propertyAccessor->setValue($translation, $property->name, $translationValue);
             }
             $em->persist($translation);
-            $em->flush($translation);
+            $em->flush();
         }
     }
 
