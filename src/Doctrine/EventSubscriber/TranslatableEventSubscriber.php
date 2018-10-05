@@ -32,9 +32,9 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
     private $translator;
 
     /**
-     * @var bool
+     * @var array
      */
-    private $alreadySync;
+    private $alreadySyncedEntities = [];
 
     /**
      * TranslatableEventSubscriber constructor.
@@ -109,7 +109,7 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
      */
     public function postUpdate(ORM\Event\LifecycleEventArgs $args)
     {
-        if (true === $this->alreadySync) {
+        if (\in_array($args->getEntity(), $this->alreadySyncedEntities, true)) {
             return;
         }
         $this->synchronizeTranslatableSharedField($args);
@@ -228,8 +228,8 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
      */
     protected function synchronizeTranslatableSharedField(ORM\Event\LifecycleEventArgs $args)
     {
-        $this->alreadySync = true;
-        $translatable = $args->getEntity();
+        $translatable                  = $args->getEntity();
+//        $this->alreadySyncedEntities[] = $translatable;
 
         // Only synchronize TranslatableInterface
         if (!$translatable instanceof TranslatableInterface) {
@@ -261,7 +261,7 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
                 continue;
             }
             foreach ($sharedAmongstTranslationsProperties as $property) {
-                $sourceValue      = $propertyAccessor->getValue($translatable, $property->name);
+                $sourceValue = $propertyAccessor->getValue($translatable, $property->name);
 
                 $translationArgs = (new TranslationArgs(
                     $sourceValue,
