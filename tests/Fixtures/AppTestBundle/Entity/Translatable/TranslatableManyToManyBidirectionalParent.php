@@ -3,6 +3,7 @@
 namespace AppTestBundle\Entity\Translatable;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Umanit\TranslationBundle\Doctrine\Annotation\EmptyOnTranslate;
 use Umanit\TranslationBundle\Doctrine\Annotation\SharedAmongstTranslations;
@@ -114,6 +115,18 @@ class TranslatableManyToManyBidirectionalParent implements TranslatableInterface
     public function getSharedChildren()
     {
         return $this->sharedChildren;
+    }
+
+    /**
+     * @param Collection $sharedChildren
+     *
+     * @return TranslatableManyToManyBidirectionalParent
+     */
+    public function setSharedChildren(Collection $sharedChildren)
+    {
+        $this->sharedChildren = $sharedChildren;
+
+        return $this;
     }
 
     public function addSharedChild(ManyToManyBidirectionalChild $child)

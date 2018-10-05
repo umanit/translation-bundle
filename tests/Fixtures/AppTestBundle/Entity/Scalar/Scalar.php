@@ -54,7 +54,7 @@ class Scalar implements TranslatableInterface
      *
      * @return Scalar
      */
-    public function setTitle(string $title)
+    public function setTitle(string $title = null)
     {
         $this->title = $title;
 
@@ -74,7 +74,7 @@ class Scalar implements TranslatableInterface
      *
      * @return Scalar
      */
-    public function setShared(string $shared)
+    public function setShared(string $shared = null)
     {
         $this->shared = $shared;
 

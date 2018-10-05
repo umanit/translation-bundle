@@ -66,7 +66,7 @@ class TranslatableManyToOne implements TranslatableInterface
      *
      * @return $this
      */
-    public function setSimple(Scalar $simple)
+    public function setSimple(Scalar $simple = null)
     {
         $this->simple = $simple;
 
@@ -86,7 +86,7 @@ class TranslatableManyToOne implements TranslatableInterface
      *
      * @return $this
      */
-    public function setShared(Scalar $shared)
+    public function setShared(Scalar $shared = null)
     {
         $this->shared = $shared;
 
