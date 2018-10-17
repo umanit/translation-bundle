@@ -26,7 +26,6 @@ class ScalarTranslationTest extends AbstractBaseTest
      * @todo fixme: This test is broken because of
      *       TranslatableEventSubscriber->alreadySyncedEntities.
      *       I don't know yet how to fix it.
-     * // @test
      */
     public function it_can_share_scalar_value_amongst_translations()
     {

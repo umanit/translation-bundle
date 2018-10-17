@@ -229,7 +229,7 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
     protected function synchronizeTranslatableSharedField(ORM\Event\LifecycleEventArgs $args)
     {
         $translatable                  = $args->getEntity();
-//        $this->alreadySyncedEntities[] = $translatable;
+        $this->alreadySyncedEntities[] = $translatable;
 
         // Only synchronize TranslatableInterface
         if (!$translatable instanceof TranslatableInterface) {
