@@ -3,5 +3,4 @@ tests/Fixtures/App/cache
 tests/build
 /vendor
 /bin
-/composer.lock
 !.gitkeep
