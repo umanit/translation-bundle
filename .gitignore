@@ -4,3 +4,4 @@ tests/build
 /vendor
 /bin
 !.gitkeep
+grumphp.yml
