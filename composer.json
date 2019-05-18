@@ -35,6 +35,8 @@
     "require-dev": {
         "symfony/phpunit-bridge": ">=4.0",
         "phpunit/phpunit": ">=6.5",
-        "symfony/var-dumper": ">=3.4"
+        "symfony/var-dumper": ">=3.4",
+        "phpro/grumphp": "^0.15.2",
+        "jakub-onderka/php-parallel-lint": "^1.0"
     }
 }
