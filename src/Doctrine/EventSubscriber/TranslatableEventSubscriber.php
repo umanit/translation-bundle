@@ -40,11 +40,11 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
      * TranslatableEventSubscriber constructor.
      *
      * @param Common\Annotations\Reader $reader
-     * @param string                    $defaultLocale
+     * @param null|string               $defaultLocale
      */
     public function __construct(
         Common\Annotations\Reader $reader,
-        string $defaultLocale
+        string $defaultLocale = null
     ) {
         $this->reader        = $reader;
         $this->defaultLocale = $defaultLocale;
