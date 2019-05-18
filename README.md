@@ -20,11 +20,12 @@ Register the bundle to your 'app/AppKernel.php'
     new Umanit\TranslationBundle\UmanitTranslationBundle(),
 ```
 
-Configure your available locales
+Configure your available locales and, optionally, the default one
 
 ```yaml
 umanit_translation:
     locales: [en, fr, ja]
+    default_locale: en
 ```
 
 That's it!
@@ -60,10 +61,10 @@ class Page implements TranslatableInterface
 Use the service `umanit_translation.translator.entity_translator` to translate a source entity to a target language.
 
 ```php
-$translatedEntity = $this->get('umanit_translation.translator.entity_translator')->getEntityTranslation($entity, 'fr');
+$translatedEntity = $this->get('umanit_translation.translator.entity_translator')->translate($entity, 'fr');
 ```
 
-The `$translatedEntity` will be persisted and flushed.
+The `$translatedEntity` will be persisted.
 
 Every attribute of the source entity will be cloned into a new entity.
 
