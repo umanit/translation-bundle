@@ -6,7 +6,6 @@ services:
         arguments:
             - '%umanit_translation.locales%'
             - '@event_dispatcher'
-            - '@doctrine.orm.entity_manager'
             - '@umanit_translation.utils.annotation_helper'
         public: true # This is just for testing purpose
 

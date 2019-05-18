@@ -35,27 +35,19 @@ class EntityTranslator
     private $annotationHelper;
 
     /**
-     * @var EntityManagerInterface
-     */
-    private $em;
-
-    /**
      * EntityTranslator constructor.
      *
      * @param array                    $locales
      * @param EventDispatcherInterface $eventDispatcher
-     * @param EntityManagerInterface   $em
      * @param AnnotationHelper         $annotationHelper
      */
     public function __construct(
         array $locales,
         EventDispatcherInterface $eventDispatcher,
-        EntityManagerInterface $em,
         AnnotationHelper $annotationHelper
     ) {
         $this->locales          = $locales;
         $this->eventDispatcher  = $eventDispatcher;
-        $this->em               = $em;
         $this->annotationHelper = $annotationHelper;
     }
 
