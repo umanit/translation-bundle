@@ -3,6 +3,7 @@
 namespace Umanit\TranslationBundle\Utils;
 
 use Doctrine\Common\Annotations\Reader;
+use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Embedded;
 use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\ManyToMany;
@@ -125,4 +126,17 @@ class AnnotationHelper
         return null !== $this->reader->getPropertyAnnotation($property, ManyToMany::class);
     }
 
+    /**
+     * Defines if the property can be null.
+     *
+     * @param \ReflectionProperty $property
+     *
+     * @return bool
+     */
+    public function isNullable(\ReflectionProperty $property): bool
+    {
+        $columnAnnotation = $this->reader->getPropertyAnnotation($property, Column::class);
+
+        return null === $columnAnnotation || true === $columnAnnotation->nullable;
+    }
 }

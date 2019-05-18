@@ -2,6 +2,7 @@
 
 namespace Umanit\TranslationBundle\Test;
 
+use AppTestBundle\Entity\Scalar\CanNotBeNull;
 use AppTestBundle\Entity\Scalar\Scalar;
 use Umanit\TranslationBundle\Doctrine\Model\TranslatableInterface;
 
@@ -50,6 +51,21 @@ class ScalarTranslationTest extends AbstractBaseTest
 
         $this->em->flush();
         $this->assertAttributeEmpty('empty', $translation);
+        $this->assertIsTranslation($entity, $translation);
+    }
+
+    /** @test */
+    public function it_can_not_empty_not_nullable_scalar_value_on_translate()
+    {
+        $this->expectException(\LogicException::class);
+
+        $entity = (new CanNotBeNull())->setEmptyNotNullable('Empty not nullable attribute');
+
+        $this->em->persist($entity);
+        $translation = $this->translator->translate($entity, 'fr');
+
+        $this->em->flush();
+        $this->assertAttributeEmpty('empty_not_nullable', $translation);
         $this->assertIsTranslation($entity, $translation);
     }
 

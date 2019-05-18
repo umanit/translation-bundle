@@ -2,7 +2,6 @@
 
 namespace Umanit\TranslationBundle\Translation;
 
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Umanit\TranslationBundle\Doctrine\Model\TranslatableInterface;
 use Umanit\TranslationBundle\Translation\Args\TranslationArgs;
@@ -81,7 +80,16 @@ class EntityTranslator
                     if ($this->annotationHelper->isSharedAmongstTranslations($args->getProperty())) {
                         return $handler->handleSharedAmongstTranslations($args);
                     }
+
                     if ($this->annotationHelper->isEmptyOnTranslate($args->getProperty())) {
+                        if (!$this->annotationHelper->isNullable($args->getProperty())) {
+                            throw new \LogicException(sprintf(
+                                'The property %s::%s can not use the @EmptyOnTranslate() annotation because it is not nullable.',
+                                $args->getProperty()->class,
+                                $args->getProperty()->name
+                            ));
+                        }
+
                         return $handler->handleEmptyOnTranslate($args);
                     }
                 }
