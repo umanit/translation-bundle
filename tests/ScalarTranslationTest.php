@@ -17,6 +17,7 @@ class ScalarTranslationTest extends AbstractBaseTest
     {
         $entity      = $this->createEntity();
         $translation = $this->translator->translate($entity, 'fr');
+        $this->em->persist($translation);
         $this->em->flush();
         $this->assertAttributeContains('Test title', 'title', $translation);
         $this->assertIsTranslation($entity, $translation);
@@ -48,6 +49,7 @@ class ScalarTranslationTest extends AbstractBaseTest
         $entity      = $this->createEntity();
         $translation = $this->translator->translate($entity, 'fr');
 
+        $this->em->persist($translation);
         $this->em->flush();
         $this->assertAttributeEmpty('empty', $translation);
         $this->assertIsTranslation($entity, $translation);
