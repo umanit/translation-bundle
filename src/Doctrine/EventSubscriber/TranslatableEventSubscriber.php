@@ -213,8 +213,6 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
             foreach ($translations as $translation) {
                 $translation->setTranslations($translationsArray);
                 $args->getEntityManager()->persist($translation);
-
-                $em->flush($translation);
             }
         }
     }
