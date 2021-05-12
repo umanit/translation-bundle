@@ -15,8 +15,15 @@ class Configuration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder();
-        $rootNode    = $treeBuilder->root('umanit_translation');
+
+        if (Kernel::VERSION_ID >= 40200) {
+            $builder  = new TreeBuilder('umanit_translation');
+            $rootNode = $builder->getRootNode();
+        } else {
+            $builder  = new TreeBuilder();
+            $rootNode = $builder->root('umanit_translation');
+        }
+
         $rootNode
             ->children()
                 ->scalarNode('default_locale')->defaultNull()->end()
