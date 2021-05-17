@@ -4,23 +4,17 @@ namespace Umanit\TranslationBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
+use Symfony\Component\HttpKernel\Kernel;
 
-/**
- * @author Arthur Guigand <aguigand@umanit.fr>
- */
 class Configuration implements ConfigurationInterface
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getConfigTreeBuilder()
+    public function getConfigTreeBuilder(): TreeBuilder
     {
-
         if (Kernel::VERSION_ID >= 40200) {
-            $builder  = new TreeBuilder('umanit_translation');
+            $builder = new TreeBuilder('umanit_translation');
             $rootNode = $builder->getRootNode();
         } else {
-            $builder  = new TreeBuilder();
+            $builder = new TreeBuilder();
             $rootNode = $builder->root('umanit_translation');
         }
 
@@ -36,6 +30,6 @@ class Configuration implements ConfigurationInterface
             ->end()
         ;
 
-        return $treeBuilder;
+        return $builder;
     }
 }
