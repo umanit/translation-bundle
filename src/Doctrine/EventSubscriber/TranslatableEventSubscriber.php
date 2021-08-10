@@ -214,6 +214,8 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
                 $translation->setTranslations($translationsArray);
                 $args->getEntityManager()->persist($translation);
             }
+
+            $args->getEntityManager()->flush();
         }
     }
 
