@@ -30,6 +30,19 @@ umanit_translation:
 
 That's it!
 
+### Integration with Sonata Admin
+
+You will need to add extra stylesheets and JavaScript to your admin interface:
+
+```yaml
+sonata_admin:
+    assets:
+        extra_stylesheets:
+            - 'bundles/umanittranslation/css/admin-sonata.css'
+        extra_javascripts:
+            - 'bundles/umanittranslation/js/admin-filters.js'
+```
+
 ## Usage
 
 ### Make your entity translatable
