@@ -1,8 +1,0 @@
-version: '3.6'
-
-services:
-    php:
-        image: umanit/web:7.0
-        volumes:
-            - .:/var/www/html
-            - ~/.composer:/tmp
