@@ -31,3 +31,8 @@ umanit_translation:
     locales: [en, fr, ja]
     disabled_firewalls: [admin]
     default_locale:  '%locale%'
+
+services:
+    _defaults:
+        bind:
+            array $locales: '%umanit_translation.locales%'

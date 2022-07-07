@@ -7,7 +7,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Umanit\TranslationBundle\Translation\Args\TranslationArgs;
 use Umanit\TranslationBundle\Translation\EntityTranslator;
-use Umanit\TranslationBundle\Utils\AnnotationHelper;
+use Umanit\TranslationBundle\Utils\AttributeHelper;
 
 /**
  * Handles translation of ManyToOne relations.
@@ -17,7 +17,7 @@ use Umanit\TranslationBundle\Utils\AnnotationHelper;
 class BidirectionalManyToOneHandler implements TranslationHandlerInterface
 {
     /**
-     * @var AnnotationHelper
+     * @var AttributeHelper
      */
     private $annotationHelper;
 
@@ -43,14 +43,14 @@ class BidirectionalManyToOneHandler implements TranslationHandlerInterface
     /**
      * BidirectionalManyToOneHandler constructor.
      *
-     * @param AnnotationHelper          $annotationHelper
+     * @param AttributeHelper           $annotationHelper
      * @param Reader                    $reader
      * @param EntityManagerInterface    $em
      * @param PropertyAccessorInterface $propertyAccessor
      * @param EntityTranslator          $translator
      */
     public function __construct(
-        AnnotationHelper $annotationHelper,
+        AttributeHelper $annotationHelper,
         Reader $reader,
         EntityManagerInterface $em,
         PropertyAccessorInterface $propertyAccessor,

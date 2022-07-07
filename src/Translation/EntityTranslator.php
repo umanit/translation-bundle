@@ -6,57 +6,30 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Umanit\TranslationBundle\Doctrine\Model\TranslatableInterface;
 use Umanit\TranslationBundle\Translation\Args\TranslationArgs;
 use Umanit\TranslationBundle\Translation\Handlers\TranslationHandlerInterface;
-use Umanit\TranslationBundle\Utils\AnnotationHelper;
+use Umanit\TranslationBundle\Utils\AttributeHelper;
 
 /**
  * @author Arthur Guigand <aguigand@umanit.fr>
  */
 class EntityTranslator
 {
-    /**
-     * @var array
-     */
-    protected $locales;
+    protected array $locales;
+    protected EventDispatcherInterface $eventDispatcher;
+    protected array $handlers;
+    private AttributeHelper $attributeHelper;
 
-    /**
-     * @var EventDispatcherInterface
-     */
-    protected $eventDispatcher;
-
-    /**
-     * @var TranslationHandlerInterface[]
-     */
-    protected $handlers;
-
-    /**
-     * @var AnnotationHelper
-     */
-    private $annotationHelper;
-
-    /**
-     * EntityTranslator constructor.
-     *
-     * @param array                    $locales
-     * @param EventDispatcherInterface $eventDispatcher
-     * @param AnnotationHelper         $annotationHelper
-     */
     public function __construct(
         array $locales,
         EventDispatcherInterface $eventDispatcher,
-        AnnotationHelper $annotationHelper
+        AttributeHelper $attributeHelper
     ) {
         $this->locales          = $locales;
         $this->eventDispatcher  = $eventDispatcher;
-        $this->annotationHelper = $annotationHelper;
+        $this->attributeHelper = $attributeHelper;
     }
 
     /**
-     * Translate an entity.
-     *
-     * @param TranslatableInterface $data
-     * @param string                $locale
-     *
-     * @return mixed
+     * Translates a given entity
      */
     public function translate(TranslatableInterface $data, string $locale)
     {
@@ -64,27 +37,21 @@ class EntityTranslator
     }
 
     /**
-     * Process the translation.
-     *
-     * @internal
-     *
-     * @param TranslationArgs $args
-     *
-     * @return mixed
+     * Processes the translation
      */
     public function processTranslation(TranslationArgs $args)
     {
         foreach ($this->handlers as $handler) {
             if ($handler->supports($args)) {
                 if (null !== $args->getProperty()) {
-                    if ($this->annotationHelper->isSharedAmongstTranslations($args->getProperty())) {
+                    if ($this->attributeHelper->isSharedAmongstTranslations($args->getProperty())) {
                         return $handler->handleSharedAmongstTranslations($args);
                     }
 
-                    if ($this->annotationHelper->isEmptyOnTranslate($args->getProperty())) {
-                        if (!$this->annotationHelper->isNullable($args->getProperty())) {
+                    if ($this->attributeHelper->isEmptyOnTranslate($args->getProperty())) {
+                        if (!$this->attributeHelper->isNullable($args->getProperty())) {
                             throw new \LogicException(sprintf(
-                                'The property %s::%s can not use the @EmptyOnTranslate() annotation because it is not nullable.',
+                                'The property %s::%s can not use the EmptyOnTranslate attribute because it is not nullable.',
                                 $args->getProperty()->class,
                                 $args->getProperty()->name
                             ));
@@ -102,10 +69,7 @@ class EntityTranslator
     }
 
     /**
-     * Service call.
-     *
-     * @param TranslationHandlerInterface $handler
-     * @param null                        $priority
+     * Service call
      */
     public function addTranslationHandler(TranslationHandlerInterface $handler, $priority = null)
     {

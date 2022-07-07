@@ -6,7 +6,7 @@ use Doctrine\Common\Annotations\Reader;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 use Umanit\TranslationBundle\Translation\Args\TranslationArgs;
-use Umanit\TranslationBundle\Utils\AnnotationHelper;
+use Umanit\TranslationBundle\Utils\AttributeHelper;
 
 /**
  * Handles translation of one-to-one-bidirectional association.
@@ -32,7 +32,7 @@ class BidirectionalAssociationHandler implements TranslationHandlerInterface
     private $propertyAccessor;
 
     /**
-     * @var AnnotationHelper
+     * @var AttributeHelper
      */
     private $annotationHelper;
 
@@ -42,13 +42,13 @@ class BidirectionalAssociationHandler implements TranslationHandlerInterface
      * @param Reader                 $reader
      * @param EntityManagerInterface $em
      * @param PropertyAccessor       $propertyAccessor
-     * @param AnnotationHelper       $annotationHelper
+     * @param AttributeHelper        $annotationHelper
      */
     public function __construct(
         Reader $reader,
         EntityManagerInterface $em,
         PropertyAccessor $propertyAccessor,
-        AnnotationHelper $annotationHelper
+        AttributeHelper $annotationHelper
     ) {
         $this->reader           = $reader;
         $this->em               = $em;

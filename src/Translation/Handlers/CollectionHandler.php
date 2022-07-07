@@ -8,7 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
 use Umanit\TranslationBundle\Translation\Args\TranslationArgs;
 use Umanit\TranslationBundle\Translation\EntityTranslator;
-use Umanit\TranslationBundle\Utils\AnnotationHelper;
+use Umanit\TranslationBundle\Utils\AttributeHelper;
 
 /**
  * Collection handler, used for ManyToMany bidirectional association.
@@ -18,7 +18,7 @@ use Umanit\TranslationBundle\Utils\AnnotationHelper;
 class CollectionHandler implements TranslationHandlerInterface
 {
     /**
-     * @var AnnotationHelper
+     * @var AttributeHelper
      */
     private $annotationHelper;
     /**
@@ -35,7 +35,7 @@ class CollectionHandler implements TranslationHandlerInterface
     private $translator;
 
     public function __construct(
-        AnnotationHelper $annotationHelper,
+        AttributeHelper $annotationHelper,
         EntityManagerInterface $em,
         Reader $reader,
         EntityTranslator $translator

@@ -43,6 +43,17 @@ sonata_admin:
             - 'bundles/umanittranslation/js/admin-filters.js'
 ```
 
+### Integration with EasyAdmin
+
+You'll need to add the assets to your `DashboardController`:
+
+```php
+    public function configureAssets(): Assets
+    {
+        return parent::configureAssets()->addJsFile('bundles/umanittranslation/js/easyadmin.js');
+    }
+```
+
 ## Usage
 
 ### Make your entity translatable
@@ -201,7 +212,8 @@ You can alter the entities to translate or translated, before and after translat
 - `TranslateEvent::PRE_TRANSLATE` called before starting to translate the properties. The new translation is just instanciate with the right `oid` and `locale`
 - `TranslateEvent::POST_TRANSLATE` called after saving the translation
 
-## Integrating into SonataAdmin
+## Integration with admin bundles
+### Sonata
 
 The bundle will automatically add translations widgets in SonataAdmin if you're using it.
 * The `list` view will add two columns `locale` and `translations`.
@@ -216,6 +228,12 @@ umanit_translation:
     default_locale: en
 ```
 The admin will then show only the english contents on the list view.
+
+### EasyAdmin 4
+
+* Have your controllers extend `AbstractTranslatableCRUDController` instead of `AbstractCrudController` from EasyAdmin. This will:
+  * Add `TUUID` and `locale` as columns in the index view, as well as replace the edit action with links to translate to or edit a given locale
+  * Add a translate dropdown with links to other locales on the edit view (translated or not)
 
 ## Integration with DoctrineSingletonBundle
 

@@ -40,6 +40,7 @@ class UmanitTranslationExtension extends Extension implements PrependExtensionIn
     public function prepend(ContainerBuilder $container)
     {
         $bundles = $container->getParameter('kernel.bundles');
+
         // Conditionnaly load sonata_admin.yml
         if (isset($bundles['SonataAdminBundle'])) {
             $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
@@ -49,6 +50,15 @@ class UmanitTranslationExtension extends Extension implements PrependExtensionIn
         if (isset($bundles['UmanitDoctrineSingletonBundle'])) {
             $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
             $loader->load('doctrine_singleton.yml');
+        }
+
+        // Conditionnally override some templates from EasyAdmin
+        if (isset($bundles['EasyAdminBundle'])) {
+            $thirdPartyBundlesViewFileLocator = new FileLocator(__DIR__.'/../Resources/views/bundles');
+
+            $container->loadFromExtension('twig', [
+                'paths' => [$thirdPartyBundlesViewFileLocator->locate('EasyAdminBundle') => 'EasyAdmin'],
+            ]);
         }
     }
 

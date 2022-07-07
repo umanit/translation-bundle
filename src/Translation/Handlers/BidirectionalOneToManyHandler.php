@@ -8,7 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
 use Umanit\TranslationBundle\Translation\Args\TranslationArgs;
 use Umanit\TranslationBundle\Translation\EntityTranslator;
-use Umanit\TranslationBundle\Utils\AnnotationHelper;
+use Umanit\TranslationBundle\Utils\AttributeHelper;
 
 /**
  * Handles translation of OneToMany relations.
@@ -18,7 +18,7 @@ use Umanit\TranslationBundle\Utils\AnnotationHelper;
 class BidirectionalOneToManyHandler implements TranslationHandlerInterface
 {
     /**
-     * @var AnnotationHelper
+     * @var AttributeHelper
      */
     private $annotationHelper;
 
@@ -40,13 +40,13 @@ class BidirectionalOneToManyHandler implements TranslationHandlerInterface
     /**
      * BidirectionalManyToOneHandler constructor.
      *
-     * @param AnnotationHelper       $annotationHelper
+     * @param AttributeHelper        $annotationHelper
      * @param Reader                 $reader
      * @param EntityTranslator       $translator
      * @param EntityManagerInterface $em
      */
     public function __construct(
-        AnnotationHelper $annotationHelper,
+        AttributeHelper $annotationHelper,
         Reader $reader,
         EntityTranslator $translator,
         EntityManagerInterface $em

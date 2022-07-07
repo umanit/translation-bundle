@@ -9,7 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\PersistentCollection;
 use Umanit\TranslationBundle\Translation\Args\TranslationArgs;
 use Umanit\TranslationBundle\Translation\EntityTranslator;
-use Umanit\TranslationBundle\Utils\AnnotationHelper;
+use Umanit\TranslationBundle\Utils\AttributeHelper;
 
 /**
  * @author Arthur Guigand <aguigand@umanit.fr>
@@ -17,7 +17,7 @@ use Umanit\TranslationBundle\Utils\AnnotationHelper;
 class UnidirectionalManyToManyHandler implements TranslationHandlerInterface
 {
     /**
-     * @var AnnotationHelper
+     * @var AttributeHelper
      */
     private $annotationHelper;
 
@@ -35,7 +35,7 @@ class UnidirectionalManyToManyHandler implements TranslationHandlerInterface
     private $em;
 
     public function __construct(
-        AnnotationHelper $annotationHelper,
+        AttributeHelper $annotationHelper,
         Reader $reader,
         EntityTranslator $translator,
         EntityManagerInterface $em

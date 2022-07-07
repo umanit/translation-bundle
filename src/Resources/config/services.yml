@@ -6,13 +6,12 @@ services:
         arguments:
             - '%umanit_translation.locales%'
             - '@event_dispatcher'
-            - '@umanit_translation.utils.annotation_helper'
+            - '@umanit_translation.utils.attribute_helper'
         public: true # This is just for testing purpose
 
     # Utils
-    umanit_translation.utils.annotation_helper:
-        class: Umanit\TranslationBundle\Utils\AnnotationHelper
-        arguments: ['@annotations.reader']
+    umanit_translation.utils.attribute_helper:
+        class: Umanit\TranslationBundle\Utils\AttributeHelper
 
     # Translation Handlers
 
@@ -20,7 +19,7 @@ services:
     umanit_translation.translation.handlers.embedded_key_handler:
         class: Umanit\TranslationBundle\Translation\Handlers\EmbeddedHandler
         arguments:
-            - '@umanit_translation.utils.annotation_helper'
+            - '@umanit_translation.utils.attribute_helper'
             - '@umanit_translation.translation_handlers.doctrine_object_handler'
         tags:
             - { name: umanit_translation.translation_handler, priority: 10 }
@@ -29,7 +28,7 @@ services:
     umanit_translation.translation.handlers.primary_key_handler:
         class: Umanit\TranslationBundle\Translation\Handlers\PrimaryKeyHandler
         arguments:
-            - '@umanit_translation.utils.annotation_helper'
+            - '@umanit_translation.utils.attribute_helper'
         tags:
             - { name: umanit_translation.translation_handler, priority: 20 }
 
@@ -39,7 +38,7 @@ services:
         tags:
             - { name: umanit_translation.translation_handler, priority: 30 }
         arguments:
-            - '@umanit_translation.utils.annotation_helper'
+            - '@umanit_translation.utils.attribute_helper'
             - '@annotations.reader'
             - '@umanit_translation.translation.entity_translator'
             - '@doctrine.orm.entity_manager'
@@ -48,7 +47,7 @@ services:
     umanit_translation.translation_handlers.bidirectional_many_to_one_handler:
         class: Umanit\TranslationBundle\Translation\Handlers\BidirectionalManyToOneHandler
         arguments:
-            - '@umanit_translation.utils.annotation_helper'
+            - '@umanit_translation.utils.attribute_helper'
             - '@annotations.reader'
             - '@doctrine.orm.entity_manager'
             - '@property_accessor'
@@ -60,7 +59,7 @@ services:
     umanit_translation.translation.handlers.collection_handler:
         class: Umanit\TranslationBundle\Translation\Handlers\CollectionHandler
         arguments:
-            - '@umanit_translation.utils.annotation_helper'
+            - '@umanit_translation.utils.attribute_helper'
             - '@doctrine.orm.entity_manager'
             - '@annotations.reader'
             - '@umanit_translation.translation.entity_translator'
@@ -80,7 +79,7 @@ services:
             - '@annotations.reader'
             - '@doctrine.orm.entity_manager'
             - '@property_accessor'
-            - '@umanit_translation.utils.annotation_helper'
+            - '@umanit_translation.utils.attribute_helper'
         tags:
             - { name: umanit_translation.translation_handler, priority: 60 }
 
@@ -88,7 +87,7 @@ services:
     umanit_translation.translation_handlers.unidirectional_many_to_many_handler:
         class: Umanit\TranslationBundle\Translation\Handlers\UnidirectionalManyToManyHandler
         arguments:
-            - '@umanit_translation.utils.annotation_helper'
+            - '@umanit_translation.utils.attribute_helper'
             - '@annotations.reader'
             - '@umanit_translation.translation.entity_translator'
             - '@doctrine.orm.entity_manager'
@@ -110,7 +109,7 @@ services:
         arguments:
             - '@doctrine.orm.entity_manager'
             - '@umanit_translation.translation.entity_translator'
-            - '@umanit_translation.utils.annotation_helper'
+            - '@umanit_translation.utils.attribute_helper'
         tags:
             - { name: umanit_translation.translation_handler, priority: 100 }
 
@@ -124,7 +123,6 @@ services:
         class: Umanit\TranslationBundle\Doctrine\EventSubscriber\TranslatableEventSubscriber
         lazy: true
         arguments:
-            - '@annotation_reader'
             - '%umanit_translation.default_locale%'
         calls:
             - {method: 'setEntityTranslator', arguments: ['@umanit_translation.translation.entity_translator']}

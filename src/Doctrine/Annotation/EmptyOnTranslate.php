@@ -2,10 +2,9 @@
 
 namespace Umanit\TranslationBundle\Doctrine\Annotation;
 
-/**
- * @Annotation
- * @author Arthur Guigand <aguigand@umanit.fr>
- */
+use Attribute;
+
+#[Attribute(Attribute::TARGET_PROPERTY)]
 class EmptyOnTranslate
 {
 }

@@ -3,7 +3,7 @@
 namespace Umanit\TranslationBundle\Translation\Handlers;
 
 use Umanit\TranslationBundle\Translation\Args\TranslationArgs;
-use Umanit\TranslationBundle\Utils\AnnotationHelper;
+use Umanit\TranslationBundle\Utils\AttributeHelper;
 
 /**
  * Translation handler for @Doctrine\ORM\Mapping\Embeddable()
@@ -13,7 +13,7 @@ use Umanit\TranslationBundle\Utils\AnnotationHelper;
 class EmbeddedHandler implements TranslationHandlerInterface
 {
     /**
-     * @var AnnotationHelper
+     * @var AttributeHelper
      */
     private $annotationHelper;
 
@@ -25,10 +25,10 @@ class EmbeddedHandler implements TranslationHandlerInterface
     /**
      * EmbeddedHandler constructor.
      *
-     * @param AnnotationHelper      $annotationHelper
+     * @param AttributeHelper       $annotationHelper
      * @param DoctrineObjectHandler $objectHandler
      */
-    public function __construct(AnnotationHelper $annotationHelper, DoctrineObjectHandler $objectHandler)
+    public function __construct(AttributeHelper $annotationHelper, DoctrineObjectHandler $objectHandler)
     {
         $this->annotationHelper = $annotationHelper;
         $this->objectHandler    = $objectHandler;

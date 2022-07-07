@@ -10,30 +10,17 @@ use Ramsey\Uuid\UuidInterface;
  */
 trait TranslatableTrait
 {
-    /**
-     * @var UuidInterface
-     * @ORM\Column(type="guid", length=36)
-     */
-    protected $tuuid;
+    #[ORM\Column(type: 'guid', length: 36)]
+    protected ?string $tuuid;
 
-    /**
-     * @var string
-     * @ORM\Column(type="string", length=7)
-     */
-    protected $locale;
+    #[ORM\Column(type: 'string', length: 7)]
+    protected ?string $locale;
 
-    /**
-     * @var array
-     * @ORM\Column(type="json_array")
-     */
-    protected $translations = [];
+    #[ORM\Column(type: 'json')]
+    protected array $translations = [];
 
     /**
      * Set the locale
-     *
-     * @param string $locale
-     *
-     * @return $this
      */
     public function setLocale(string $locale = null): self
     {
@@ -44,8 +31,6 @@ trait TranslatableTrait
 
     /**
      * Returns entity's locale.
-     *
-     * @return string
      */
     public function getLocale()
     {
@@ -54,12 +39,8 @@ trait TranslatableTrait
 
     /**
      * Set the Translation UUID
-     *
-     * @param string $tuuid
-     *
-     * @return $this
      */
-    public function setTuuid(string $tuuid): self
+    public function setTuuid(?string $tuuid): self
     {
         $this->tuuid = $tuuid;
 
@@ -68,31 +49,21 @@ trait TranslatableTrait
 
     /**
      * Returns entity's Translation UUID.
-     *
-     * @return string
      */
-    public function getTuuid()
+    public function getTuuid(): ?string
     {
         return $this->tuuid;
     }
 
-    /**
-     * @return array
-     */
-    public function getTranslations(): array
-    {
-        return $this->translations;
-    }
-
-    /**
-     * @param array $translations
-     *
-     * @return $this
-     */
     public function setTranslations(array $translations): TranslatableInterface
     {
         $this->translations = $translations;
 
         return $this;
+    }
+
+    public function getTranslations(): array
+    {
+        return $this->translations;
     }
 }

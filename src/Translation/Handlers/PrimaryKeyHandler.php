@@ -3,7 +3,7 @@
 namespace Umanit\TranslationBundle\Translation\Handlers;
 
 use Umanit\TranslationBundle\Translation\Args\TranslationArgs;
-use Umanit\TranslationBundle\Utils\AnnotationHelper;
+use Umanit\TranslationBundle\Utils\AttributeHelper;
 
 /**
  * Handles translation of primary keys.
@@ -13,11 +13,11 @@ use Umanit\TranslationBundle\Utils\AnnotationHelper;
 class PrimaryKeyHandler implements TranslationHandlerInterface
 {
     /**
-     * @var AnnotationHelper
+     * @var AttributeHelper
      */
     private $annotationHelper;
 
-    public function __construct(AnnotationHelper $annotationHelper)
+    public function __construct(AttributeHelper $annotationHelper)
     {
         $this->annotationHelper = $annotationHelper;
     }
