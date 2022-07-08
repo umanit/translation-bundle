@@ -17,37 +17,20 @@ use Umanit\TranslationBundle\Doctrine\Filter\LocaleFilter;
  */
 class LocaleFilterConfigurator implements EventSubscriberInterface
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $em;
+    private EntityManagerInterface $em;
+    private array $disabledFirewalls;
+    private ?FirewallMap $firewallMap;
 
-    /**
-     * @var array
-     */
-    private $disabledFirewalls;
-
-    /**
-     * @var FirewallMap|null
-     */
-    private $firewallMap;
-
-    /**
-     * LocaleFilterConfigurator constructor.
-     *
-     * @param EntityManagerInterface $em
-     * @param array                  $disabledFirewalls
-     * @param FirewallMap            $firewallMap
-     */
     public function __construct(EntityManagerInterface $em, array $disabledFirewalls, FirewallMap $firewallMap = null)
     {
-        $this->em                = $em;
+        $this->em = $em;
         $this->disabledFirewalls = $disabledFirewalls;
-        $this->firewallMap       = $firewallMap;
+        $this->firewallMap = $firewallMap;
     }
 
     /**
      * @inheritdoc
+     *
      * @return array
      */
     public static function getSubscribedEvents()
@@ -63,7 +46,6 @@ class LocaleFilterConfigurator implements EventSubscriberInterface
     public function onKernelRequest(RequestEvent $event)
     {
         if ($this->em->getFilters()->has('umanit_translation_locale_filter')) {
-
             if ($this->isDisabledFirewall($event->getRequest())) {
                 if ($this->em->getFilters()->isEnabled('umanit_translation_locale_filter')) {
                     $this->em->getFilters()->disable('umanit_translation_locale_filter');
@@ -71,6 +53,7 @@ class LocaleFilterConfigurator implements EventSubscriberInterface
 
                 return;
             }
+
             /** @var LocaleFilter $filter */
             $filter = $this->em->getFilters()->enable('umanit_translation_locale_filter');
             $filter->setLocale($event->getRequest()->getLocale());
@@ -79,12 +62,8 @@ class LocaleFilterConfigurator implements EventSubscriberInterface
 
     /**
      * Indicates if the current firewall should disable the filter.
-     *
-     * @param Request $request
-     *
-     * @return bool
      */
-    protected function isDisabledFirewall(Request $request)
+    protected function isDisabledFirewall(Request $request): bool
     {
         if (null === $this->firewallMap || null === $this->firewallMap->getFirewallConfig($request)) {
             return false;

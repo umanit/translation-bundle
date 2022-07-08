@@ -1,6 +1,6 @@
 <?php
 
-namespace Umanit\TranslationBundle\Controller;
+namespace Umanit\TranslationBundle\Controller\Sonata;
 
 use Sonata\AdminBundle\Controller\CRUDController;
 use Symfony\Component\HttpFoundation\RedirectResponse;

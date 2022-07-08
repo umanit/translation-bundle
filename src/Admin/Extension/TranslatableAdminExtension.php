@@ -18,24 +18,12 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
  */
 class TranslatableAdminExtension extends AbstractAdminExtension
 {
-    /**
-     * @var array
-     */
-    private $locales;
-    /**
-     * @var null
-     */
+    private array $locales;
     private $defaultAdminLocale;
 
-    /**
-     * TranslatableAdminExtension constructor.
-     *
-     * @param array $locales
-     * @param null  $defaultAdminLocale
-     */
-    public function __construct(array $locales, $defaultAdminLocale = null)
+    public function __construct(array $locales, ?string $defaultAdminLocale = null)
     {
-        $this->locales            = $locales;
+        $this->locales = $locales;
         $this->defaultAdminLocale = $defaultAdminLocale;
     }
 

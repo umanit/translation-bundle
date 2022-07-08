@@ -12,6 +12,6 @@ services:
             - { name: sonata.admin.extension }
 
     umanit_translation.controller.translatable_crudcontroller:
-        class: Umanit\TranslationBundle\Controller\TranslatableCRUDController
+        class: Umanit\TranslationBundle\Controller\Sonata\TranslatableCRUDController
         tags:
             - { name: controller.service_arguments }
