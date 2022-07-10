@@ -4,7 +4,11 @@ declare(strict_types=1);
 
 namespace Umanit\TranslationBundle\Controller\EasyAdmin;
 
+use App\Admin\Filter\LocaleFilter;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
+use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
@@ -13,13 +17,19 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDataDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\AdminContextFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\ControllerFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\LocaleField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
+use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Intl\Locale;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Translation\TranslatableMessage;
 use Twig\Environment;
@@ -51,14 +61,6 @@ abstract class AbstractTranslatableCRUDController extends AbstractCrudController
         $this->twig = $twig;
     }
 
-    public function configureCrud(Crud $crud): Crud
-    {
-        return $crud
-            ->setPageTitle(Action::EDIT, new TranslatableMessage('admin.manage_version'))
-            ->setDefaultSort(['id' => 'ASC', 'tuuid' => 'ASC'])
-        ;
-    }
-
     public function configureFields(string $pageName): iterable
     {
         yield FormField::addPanel()->hideOnIndex();
@@ -75,6 +77,14 @@ abstract class AbstractTranslatableCRUDController extends AbstractCrudController
         yield $localeField;
     }
 
+    public function configureCrud(Crud $crud): Crud
+    {
+        return $crud
+            ->setPageTitle(Action::EDIT, new TranslatableMessage('admin.manage_version'))
+            ->setDefaultSort(['id' => 'ASC', 'tuuid' => 'ASC'])
+        ;
+    }
+
     public function configureFilters(Filters $filters): Filters
     {
         return $filters->add('locale');
@@ -84,35 +94,35 @@ abstract class AbstractTranslatableCRUDController extends AbstractCrudController
     {
         $actions = parent::configureActions($actions);
 
-        // Edit action will be handled with locale management
-        $actions->remove(Crud::PAGE_INDEX, Action::EDIT);
+        if (0 < $this->locales) {
+            $actions->update(
+                Crud::PAGE_INDEX,
+                Action::EDIT,
+                fn(Action $action) => $action->addCssClass('border-top')
+            );
+        }
 
         foreach ($this->locales as $locale) {
+            $translateAction = Action::new('translate_'.$locale, \Locale::getDisplayName($locale))
+                                     ->linkToCrudAction('translate')
+                                     ->setHtmlAttributes(['data-translate-into' => $locale])
+            ;
+
             $actions
-                ->add(
-                    Crud::PAGE_INDEX,
-                    Action::new('translate_'.$locale, \Locale::getDisplayName($locale))
-                          ->linkToCrudAction(Crud::PAGE_EDIT)
-                          ->setHtmlAttributes(['data-translate-to' => $locale])
-                          ->setIcon('fa fa-language')
-                )
-                ->add(
-                    Crud::PAGE_EDIT,
-                    Action::new('translate_'.$locale, \Locale::getDisplayName($locale))
-                          ->linkToCrudAction(Crud::PAGE_EDIT)
-                          ->setHtmlAttributes(['data-translate-to' => $locale])
-                )
+                ->add(Crud::PAGE_INDEX, $translateAction)
+                ->add(Crud::PAGE_EDIT, $translateAction)
             ;
         }
+
+        /**
+         * NB: more precise configuration, object-dependent,
+         * is managed by the TranslationActionsCustomisationSubscriber
+         */
 
         return $actions;
     }
 
-    /**
-     * Overrides the edit action to allow for entity translation to a new locale,
-     * or edition of the existing translation in the locale of choice
-     */
-    public function edit(AdminContext $context)
+    public function translate(AdminContext $context)
     {
         $entity = $context->getEntity()->getInstance();
         $request = $context->getRequest();
@@ -123,7 +133,7 @@ abstract class AbstractTranslatableCRUDController extends AbstractCrudController
         ]);
 
         // Translation doesn't exist, jumpstart it
-        if (empty($translatedEntity)) {
+        if (null === $translatedEntity) {
             $translatedEntity = $this->entityTranslator->translate($entity, $locale);
         }
 
@@ -146,6 +156,13 @@ abstract class AbstractTranslatableCRUDController extends AbstractCrudController
             $this->controllerFactory->getDashboardControllerInstance($context->getDashboardControllerFqcn(), $request),
             $this->controllerFactory->getCrudControllerInstance($request->query->get(EA::CRUD_CONTROLLER_FQCN), $request->query->get(EA::CRUD_ACTION), $request)
         );
+
+        // Translation is done, back to the "edit" action
+        $crudDto = $context->getCrud();
+
+        $crudDto->setPageName(Action::EDIT);
+        $crudDto->setCurrentAction(Action::EDIT);
+        $crudDto->getActionsConfig()->setPageName(Action::EDIT);
 
         // Sets new context in request
         $request->attributes->set(EA::CONTEXT_REQUEST_ATTRIBUTE, $context);

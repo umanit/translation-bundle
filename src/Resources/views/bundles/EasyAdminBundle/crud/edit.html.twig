@@ -8,11 +8,6 @@
 
   {% for action in entity.actions %}
     {% if 'translate' in action.name %}
-      {# Removes the 'btn' class added by the ActionFactory #}
-      {% do action.setCssClass(action.cssClass|replace({' btn': ''})) %}
-      {# Adds an icon to the action label depending wether or not a translation already exists for the locale #}
-      {% do action.setIcon(action.name|replace({'translate_': ''}) in entity.instance.translations ? 'fa-solid fa-check text-success' : 'fa-solid fa-plus') %}
-
       {% set translate_actions = translate_actions|merge([action]) %}
     {% else %}
       {% set actions = actions|merge([action]) %}
@@ -26,7 +21,7 @@
       </a>
 
       <div class="dropdown-menu dropdown-menu-right">
-        {% for action in translate_actions|filter(action => entity.instance.locale != action.name|replace({'translate_': ''}) ) %}
+        {% for action in translate_actions %}
           {{ include(action.templatePath, { action: action, isIncludedInDropdown: true }, with_context = false) }}
         {% endfor %}
       </div>

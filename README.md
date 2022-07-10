@@ -47,17 +47,6 @@ sonata_admin:
             - 'bundles/umanittranslation/js/admin-filters.js'
 ```
 
-### Integration with EasyAdmin
-
-You'll need to add the assets to your `DashboardController`:
-
-```php
-    public function configureAssets(): Assets
-    {
-        return parent::configureAssets()->addJsFile('bundles/umanittranslation/js/easyadmin.js');
-    }
-```
-
 ## Usage
 
 ### Make your entity translatable

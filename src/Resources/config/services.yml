@@ -125,7 +125,7 @@ services:
         arguments:
             - '%umanit_translation.default_locale%'
         calls:
-            - {method: 'setEntityTranslator', arguments: ['@umanit_translation.translation.entity_translator']}
+            - { method: 'setEntityTranslator', arguments: ['@umanit_translation.translation.entity_translator'] }
         tags:
             - { name: doctrine.event_subscriber }
 
@@ -135,5 +135,10 @@ services:
             - '@doctrine.orm.entity_manager'
             - '%umanit_translation.disabled_firewalls%'
             - '@?security.firewall.map'
+        tags:
+            - { name: kernel.event_subscriber }
+
+    umanit_translation.event_subscriber.translation_actions_customisation_subscriber:
+        class: Umanit\TranslationBundle\EventSubscriber\TranslationActionsCustomisationSubscriber
         tags:
             - { name: kernel.event_subscriber }

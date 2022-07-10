@@ -23,8 +23,8 @@ class EntityTranslator
         EventDispatcherInterface $eventDispatcher,
         AttributeHelper $attributeHelper
     ) {
-        $this->locales          = $locales;
-        $this->eventDispatcher  = $eventDispatcher;
+        $this->locales = $locales;
+        $this->eventDispatcher = $eventDispatcher;
         $this->attributeHelper = $attributeHelper;
     }
 
