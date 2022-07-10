@@ -32,7 +32,7 @@ trait TranslatableTrait
     /**
      * Returns entity's locale.
      */
-    public function getLocale()
+    public function getLocale(): ?string
     {
         return $this->locale;
     }

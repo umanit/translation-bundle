@@ -11,11 +11,6 @@ use Umanit\TranslationBundle\Doctrine\Model\TranslatableInterface;
  */
 class SingletonSubscriber implements EventSubscriberInterface
 {
-    /**
-     * {@inheritdoc}
-     *
-     * @return array
-     */
     public static function getSubscribedEvents()
     {
         return [FilterSingletonEvent::SINGLETON_FILTER_EVENT => ['onFilterEvent']];
@@ -23,8 +18,6 @@ class SingletonSubscriber implements EventSubscriberInterface
 
     /**
      * Called to check if a singleton is unique per language.
-     *
-     * @param FilterSingletonEvent $event
      */
     public function onFilterEvent(FilterSingletonEvent $event)
     {

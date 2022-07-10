@@ -56,6 +56,7 @@ class LocaleFilterConfigurator implements EventSubscriberInterface
 
             /** @var LocaleFilter $filter */
             $filter = $this->em->getFilters()->enable('umanit_translation_locale_filter');
+
             $filter->setLocale($event->getRequest()->getLocale());
         }
     }

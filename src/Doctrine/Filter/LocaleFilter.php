@@ -13,17 +13,12 @@ use Umanit\TranslationBundle\Doctrine\Model\TranslatableInterface;
  */
 class LocaleFilter extends SQLFilter
 {
-    /**
-     * @var string
-     */
-    protected $locale;
+    protected ?string $locale;
 
     /**
      * Dependency injection.
-     *
-     * @param string $locale
      */
-    public function setLocale($locale)
+    public function setLocale(?string $locale)
     {
         $this->locale = $locale;
     }
@@ -41,6 +36,7 @@ class LocaleFilter extends SQLFilter
         if (null === $this->locale) {
             return '';
         }
+
         // If the entity is a TranslatableInterface
         if (\in_array(TranslatableInterface::class, $targetEntity->getReflectionClass()->getInterfaceNames(), true)) {
             return sprintf("%s.locale = '%s'", $targetTableAlias, $this->locale);
