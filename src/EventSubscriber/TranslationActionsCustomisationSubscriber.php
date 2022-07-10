@@ -6,15 +6,12 @@ namespace Umanit\TranslationBundle\EventSubscriber;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
-use EasyCorp\Bundle\EasyAdminBundle\Collection\ActionCollection;
-use EasyCorp\Bundle\EasyAdminBundle\Collection\EntityCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterCrudActionEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Umanit\TranslationBundle\Doctrine\Model\TranslatableInterface;
-use http_build_url;
 
 class TranslationActionsCustomisationSubscriber implements EventSubscriberInterface
 {
@@ -86,7 +83,7 @@ class TranslationActionsCustomisationSubscriber implements EventSubscriberInterf
                 // Update URL to edit existing translation
                 if ($translationExists) {
                     $translation = $this->repository->findOneBy([
-                        'tuuid' => $object->getTuuid(),
+                        'tuuid'  => $object->getTuuid(),
                         'locale' => $translateInto,
                     ]);
 

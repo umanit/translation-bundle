@@ -5,32 +5,20 @@ declare(strict_types=1);
 namespace Umanit\TranslationBundle\Controller\EasyAdmin;
 
 use App\Admin\Filter\LocaleFilter;
-use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
-use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
-use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
-use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\FilterDataDto;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\AdminContextFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\ControllerFactory;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\LocaleField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use EasyCorp\Bundle\EasyAdminBundle\Form\Type\ComparisonType;
-use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\Intl\Locale;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Translation\TranslatableMessage;
 use Twig\Environment;
 use Umanit\TranslationBundle\Doctrine\Model\TranslatableInterface;
@@ -160,9 +148,9 @@ abstract class AbstractTranslatableCRUDController extends AbstractCrudController
         // Translation is done, back to the "edit" action
         $crudDto = $context->getCrud();
 
-        $crudDto->setPageName(Action::EDIT);
-        $crudDto->setCurrentAction(Action::EDIT);
-        $crudDto->getActionsConfig()->setPageName(Action::EDIT);
+        $crudDto->setPageName(Crud::PAGE_EDIT);
+        $crudDto->setCurrentAction(Crud::PAGE_EDIT);
+        $crudDto->getActionsConfig()->setPageName(Crud::PAGE_EDIT);
 
         // Sets new context in request
         $request->attributes->set(EA::CONTEXT_REQUEST_ATTRIBUTE, $context);
