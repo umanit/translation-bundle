@@ -6,7 +6,7 @@ use Doctrine\Common;
 use Doctrine\ORM;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\PropertyAccess\PropertyAccess;
-use Umanit\TranslationBundle\Doctrine\Annotation\SharedAmongstTranslations;
+use Umanit\TranslationBundle\Doctrine\Attribute\SharedAmongstTranslations;
 use Umanit\TranslationBundle\Doctrine\Model\TranslatableInterface;
 use Umanit\TranslationBundle\Translation\Args\TranslationArgs;
 use Umanit\TranslationBundle\Translation\EntityTranslator;

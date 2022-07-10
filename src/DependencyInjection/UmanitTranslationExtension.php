@@ -15,13 +15,10 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
  */
 class UmanitTranslationExtension extends Extension implements PrependExtensionInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     public function load(array $configs, ContainerBuilder $container)
     {
         $configuration = new Configuration();
-        $config        = $this->processConfiguration($configuration, $configs);
+        $config = $this->processConfiguration($configuration, $configs);
 
         // Set configuration into params
         $rootName = 'umanit_translation';
@@ -32,11 +29,6 @@ class UmanitTranslationExtension extends Extension implements PrependExtensionIn
         $loader->load('services.yml');
     }
 
-    /**
-     * {@inheritdoc}
-     *
-     * @param ContainerBuilder $container
-     */
     public function prepend(ContainerBuilder $container)
     {
         $bundles = $container->getParameter('kernel.bundles');
@@ -64,12 +56,8 @@ class UmanitTranslationExtension extends Extension implements PrependExtensionIn
 
     /**
      * Add config keys as parameters.
-     *
-     * @param ContainerBuilder $container
-     * @param array            $params
-     * @param string           $parent
      */
-    private function setConfigAsParameters(ContainerBuilder $container, array $params, $parent)
+    private function setConfigAsParameters(ContainerBuilder $container, array $params, string $parent)
     {
         foreach ($params as $key => $value) {
             $name = $parent.'.'.$key;

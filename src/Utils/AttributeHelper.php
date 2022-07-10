@@ -10,8 +10,8 @@ use Doctrine\ORM\Mapping\ManyToMany;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\OneToMany;
 use Doctrine\ORM\Mapping\OneToOne;
-use Umanit\TranslationBundle\Doctrine\Annotation\EmptyOnTranslate;
-use Umanit\TranslationBundle\Doctrine\Annotation\SharedAmongstTranslations;
+use Umanit\TranslationBundle\Doctrine\Attribute\EmptyOnTranslate;
+use Umanit\TranslationBundle\Doctrine\Attribute\SharedAmongstTranslations;
 
 /**
  * Utils class used to shortcut annotation reader

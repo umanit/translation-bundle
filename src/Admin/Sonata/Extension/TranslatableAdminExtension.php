@@ -1,6 +1,6 @@
 <?php
 
-namespace Umanit\TranslationBundle\Admin\Extension;
+namespace Umanit\TranslationBundle\Admin\Sonata\Extension;
 
 use Knp\Menu\ItemInterface as MenuItemInterface;
 use Sonata\AdminBundle\Admin\AbstractAdminExtension;
@@ -19,7 +19,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 class TranslatableAdminExtension extends AbstractAdminExtension
 {
     private array $locales;
-    private $defaultAdminLocale;
+    private ?string $defaultAdminLocale;
 
     public function __construct(array $locales, ?string $defaultAdminLocale = null)
     {
@@ -27,12 +27,6 @@ class TranslatableAdminExtension extends AbstractAdminExtension
         $this->defaultAdminLocale = $defaultAdminLocale;
     }
 
-    /**
-     * {@inheritdoc}
-     *
-     * @param AdminInterface $admin
-     * @param mixed          $object
-     */
     public function alterNewInstance(AdminInterface $admin, $object)
     {
         if (!$admin->id($object)) {
@@ -40,12 +34,6 @@ class TranslatableAdminExtension extends AbstractAdminExtension
         }
     }
 
-    /**
-     * {@inheritdoc}
-     *
-     * @param AdminInterface $admin
-     * @param array          $filterValues
-     */
     public function configureDefaultFilterValues(AdminInterface $admin, array &$filterValues)
     {
         if ($this->defaultAdminLocale) {
@@ -55,11 +43,6 @@ class TranslatableAdminExtension extends AbstractAdminExtension
         }
     }
 
-    /**
-     * {@inheritdoc}
-     *
-     * @param DatagridMapper $datagridMapper
-     */
     public function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
         $datagridMapper->add('locale', ChoiceFilter::class, [
@@ -69,9 +52,6 @@ class TranslatableAdminExtension extends AbstractAdminExtension
         ]);
     }
 
-    /**
-     * @param ListMapper $listMapper
-     */
     public function configureListFields(ListMapper $listMapper)
     {
         if ($listMapper->has('translations')) {
@@ -83,20 +63,16 @@ class TranslatableAdminExtension extends AbstractAdminExtension
 
         if ($listMapper->has('_action')) {
             $actions = $listMapper->get('_action')->getOption('actions');
+
             if ($actions && isset($actions['edit'])) {
                 // Overrides edit action
                 $actions['edit'] = ['template' => '@UmanitTranslation/Admin/CRUD/list__action_edit.html.twig'];
+
                 $listMapper->get('_action')->setOption('actions', $actions);
             }
         }
     }
 
-    /**
-     * {@inheritdoc}.
-     *
-     * @param AdminInterface  $admin
-     * @param RouteCollection $collection
-     */
     public function configureRoutes(AdminInterface $admin, RouteCollection $collection)
     {
         // Add the tranlate route
@@ -105,28 +81,15 @@ class TranslatableAdminExtension extends AbstractAdminExtension
         ]);
     }
 
-    /**
-     * {@inheritdoc}
-     *
-     * @param AdminInterface $admin
-     * @param mixed          $object
-     */
     public function preUpdate(AdminInterface $admin, $object)
     {
         // Re-set the locale to make sure the children share the same
         $object->setLocale($object->getLocale());
+
         parent::preUpdate($admin, $object);
     }
 
-    /**
-     * {@inheritdoc}
-     *
-     * @param AdminInterface      $admin
-     * @param MenuItemInterface   $menu
-     * @param string              $action
-     * @param AdminInterface|null $childAdmin
-     */
-    public function configureTabMenu(AdminInterface $admin, MenuItemInterface $menu, $action, AdminInterface $childAdmin = null)
+    public function configureTabMenu(AdminInterface $admin, MenuItemInterface $menu, string $action, AdminInterface $childAdmin = null)
     {
         // Add the locales switcher dropdown in the edit view
         if ($action === 'edit' && $admin->id($admin->getSubject())) {
@@ -154,10 +117,6 @@ class TranslatableAdminExtension extends AbstractAdminExtension
 
     /**
      * Return the edit locale.
-     *
-     * @param AdminInterface $admin
-     *
-     * @return null|string
      */
     private function getEditLocale(AdminInterface $admin)
     {

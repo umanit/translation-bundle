@@ -3,7 +3,7 @@
 namespace AppTestBundle\Entity\Scalar;
 
 use Doctrine\ORM\Mapping as ORM;
-use Umanit\TranslationBundle\Doctrine\Annotation\EmptyOnTranslate;
+use Umanit\TranslationBundle\Doctrine\Attribute\EmptyOnTranslate;
 use Umanit\TranslationBundle\Doctrine\Model\TranslatableInterface;
 use Umanit\TranslationBundle\Doctrine\Model\TranslatableTrait;
 

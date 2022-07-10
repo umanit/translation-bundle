@@ -120,7 +120,7 @@ namespace App\Entity\Content;
 use Doctrine\ORM\Mapping as ORM;
 use Umanit\TranslationBundle\Doctrine\Model\TranslatableInterface;
 use Umanit\TranslationBundle\Doctrine\Model\TranslatableTrait;
-use Umanit\TranslationBundle\Doctrine\Annotation\SharedAmongstTranslations;
+use Umanit\TranslationBundle\Doctrine\Attribute\SharedAmongstTranslations;
 
 #[ORM\Table(name: "page")]
 class Page implements TranslatableInterface
@@ -147,7 +147,7 @@ namespace App\Entity\Content;
 use Doctrine\ORM\Mapping as ORM;
 use Umanit\TranslationBundle\Doctrine\Model\TranslatableInterface;
 use Umanit\TranslationBundle\Doctrine\Model\TranslatableTrait;
-use Umanit\TranslationBundle\Doctrine\Annotation\EmptyOnTranslate;
+use Umanit\TranslationBundle\Doctrine\Attribute\EmptyOnTranslate;
 
  #[ORM\Table(name: "page")]
 class Page implements TranslatableInterface

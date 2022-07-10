@@ -1,6 +1,6 @@
 <?php
 
-namespace Umanit\TranslationBundle\Doctrine\Annotation;
+namespace Umanit\TranslationBundle\Doctrine\Attribute;
 
 use Attribute;
 
