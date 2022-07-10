@@ -4,18 +4,30 @@ declare(strict_types=1);
 
 namespace Umanit\TranslationBundle\EventSubscriber;
 
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\ActionCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\EntityCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterCrudActionEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Umanit\TranslationBundle\Doctrine\Model\TranslatableInterface;
+use http_build_url;
 
 class TranslationActionsCustomisationSubscriber implements EventSubscriberInterface
 {
     private const TRANSLATION_EXISTS_ICON = 'fa-solid fa-check text-success';
     private const ADD_TRANSLATION_ICON = 'fa-solid fa-plus';
+
+    private ?EntityManagerInterface $em;
+    private ?EntityRepository $repository;
+
+    public function __construct(EntityManagerInterface $em)
+    {
+        $this->em = $em;
+    }
 
     public static function getSubscribedEvents(): array
     {
@@ -33,6 +45,7 @@ class TranslationActionsCustomisationSubscriber implements EventSubscriberInterf
             return;
         }
 
+        $this->repository = $this->em->getRepository($event->getAdminContext()->getEntity()->getFqcn());
         $responseParameters = $event->getResponseParameters();
 
         if (Crud::PAGE_INDEX === $responseParameters->get('pageName')) {
@@ -66,8 +79,35 @@ class TranslationActionsCustomisationSubscriber implements EventSubscriberInterf
                     continue;
                 }
 
+                $translationExists = in_array($translateInto, $object->getTranslations());
+                $url = parse_url($action->getLinkUrl());
+                parse_str($url['query'], $query);
+
+                // Update URL to edit existing translation
+                if ($translationExists) {
+                    $translation = $this->repository->findOneBy([
+                        'tuuid' => $object->getTuuid(),
+                        'locale' => $translateInto,
+                    ]);
+
+                    // Should not happen
+                    if (
+                        null === $translation ||
+                        !array_key_exists('crudAction', $query) ||
+                        !array_key_exists('entityId', $query)
+                    ) {
+                        continue;
+                    }
+
+                    $query['crudAction'] = Action::EDIT;
+                    $query['entityId'] = $translation->getId();
+                    $url['query'] = http_build_query($query);
+
+                    $action->setLinkUrl(sprintf('%s://%s%s?%s', $url['scheme'], $url['host'], $url['path'], $url['query']));
+                }
+
                 // Set icon
-                $action->setIcon(in_array($translateInto, $object->getTranslations()) ? self::TRANSLATION_EXISTS_ICON : self::ADD_TRANSLATION_ICON);
+                $action->setIcon($translationExists ? self::TRANSLATION_EXISTS_ICON : self::ADD_TRANSLATION_ICON);
 
                 // Add locale to URL
                 $action->setLinkUrl(sprintf('%s&locale=%s', $action->getLinkUrl(), $translateInto));

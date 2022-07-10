@@ -140,5 +140,7 @@ services:
 
     umanit_translation.event_subscriber.translation_actions_customisation_subscriber:
         class: Umanit\TranslationBundle\EventSubscriber\TranslationActionsCustomisationSubscriber
+        arguments:
+            - '@doctrine.orm.entity_manager'
         tags:
             - { name: kernel.event_subscriber }
