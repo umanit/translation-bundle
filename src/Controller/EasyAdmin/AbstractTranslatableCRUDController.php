@@ -104,7 +104,7 @@ abstract class AbstractTranslatableCRUDController extends AbstractCrudController
 
         /**
          * NB: more precise configuration, object-dependent,
-         * is managed by the TranslationActionsCustomisationSubscriber
+         * is managed by the EasyAdminActionCustomisationSubscriber
          */
 
         return $actions;
@@ -123,6 +123,9 @@ abstract class AbstractTranslatableCRUDController extends AbstractCrudController
         // Translation doesn't exist, jumpstart it
         if (null === $translatedEntity) {
             $translatedEntity = $this->entityTranslator->translate($entity, $locale);
+
+            $this->em->getManager()->persist($translatedEntity);
+            $this->em->getManager()->flush();
         }
 
         // Request can't be modified without creating a new context

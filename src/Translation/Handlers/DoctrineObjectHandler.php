@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Umanit\TranslationBundle\Translation\Handlers;
 
 use Doctrine\Common\Collections\Collection;
@@ -12,28 +11,19 @@ use Umanit\TranslationBundle\Translation\Args\TranslationArgs;
 use Umanit\TranslationBundle\Translation\EntityTranslator;
 
 /**
- * Handles basic Doctrine Object.
- * Usual the entry point of a translation.
+ * Handles basic Doctrine Objects.
+ * Usually the entry point of a translation.
  *
  * @author Arthur Guigand <aguigand@umanit.fr>
  */
 class DoctrineObjectHandler implements TranslationHandlerInterface
 {
-    /** @var EntityManagerInterface */
-    protected $em;
+    protected EntityManagerInterface $em;
+    protected EntityTranslator $translator;
 
-    /** @var EntityTranslator */
-    protected $translator;
-
-    /**
-     * DoctrineObjectHandler constructor.
-     *
-     * @param EntityManagerInterface $em
-     * @param EntityTranslator       $translator
-     */
     public function __construct(EntityManagerInterface $em, EntityTranslator $translator)
     {
-        $this->em         = $em;
+        $this->em = $em;
         $this->translator = $translator;
     }
 
@@ -65,7 +55,6 @@ class DoctrineObjectHandler implements TranslationHandlerInterface
         $clone = clone $args->getDataToBeTranslated();
 
         $args->setDataToBeTranslated($clone);
-
         $this->translateProperties($args);
 
         return $args->getDataToBeTranslated();
@@ -73,15 +62,13 @@ class DoctrineObjectHandler implements TranslationHandlerInterface
 
     /**
      * Loops through all object properties to translate them.
-     *
-     * @param TranslationArgs $args
      */
     public function translateProperties(TranslationArgs $args)
     {
         $translation = $args->getDataToBeTranslated();
-        $accessor    = PropertyAccess::createPropertyAccessor();
-        $reflect     = new \ReflectionClass(\get_class($args->getDataToBeTranslated()));
-        $properties  = $reflect->getProperties();
+        $accessor = PropertyAccess::createPropertyAccessor();
+        $reflect = new \ReflectionClass(\get_class($args->getDataToBeTranslated()));
+        $properties = $reflect->getProperties();
 
         // Loop through all properties
         foreach ($properties as $property) {
@@ -90,6 +77,7 @@ class DoctrineObjectHandler implements TranslationHandlerInterface
             if (empty($propValue) || ($propValue instanceof Collection && $propValue->isEmpty())) {
                 continue;
             }
+
             $subTranslationArgs =
                 (new TranslationArgs($propValue, $args->getSourceLocale(), $args->getTargetLocale()))
                     ->setTranslatedParent($translation)

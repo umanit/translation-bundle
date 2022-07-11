@@ -138,8 +138,8 @@ services:
         tags:
             - { name: kernel.event_subscriber }
 
-    umanit_translation.event_subscriber.translation_actions_customisation_subscriber:
-        class: Umanit\TranslationBundle\EventSubscriber\TranslationActionsCustomisationSubscriber
+    umanit_translation.event_subscriber.easy_admin_action_customisation_subscriber:
+        class: Umanit\TranslationBundle\EventSubscriber\EasyAdminActionCustomisationSubscriber
         arguments:
             - '@doctrine.orm.entity_manager'
         tags:

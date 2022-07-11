@@ -13,7 +13,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Event\AfterCrudActionEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Umanit\TranslationBundle\Doctrine\Model\TranslatableInterface;
 
-class TranslationActionsCustomisationSubscriber implements EventSubscriberInterface
+class EasyAdminActionCustomisationSubscriber implements EventSubscriberInterface
 {
     private const TRANSLATION_EXISTS_ICON = 'fa-solid fa-check text-success';
     private const ADD_TRANSLATION_ICON = 'fa-solid fa-plus';
