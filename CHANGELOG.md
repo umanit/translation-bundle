@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Adds support of PHP 8.*
 - Adds integration to EasyAdmin 4
+- Adds compatibility with Twig 3 (>= 2.7) by updating method heads
+- Adds compatibility with Symfony 5 (>= 4.3) by updating `onKernelRequest()` method head
 
 ### Changed
 
