@@ -3,13 +3,9 @@
 namespace Umanit\TranslationBundle\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
-use Symfony\Component\DependencyInjection\Reference;
-use Umanit\TranslationBundle\Translation\EntityTranslator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Reference;
 
-/**
- * @author Arthur Guigand <aguigand@umanit.fr>
- */
 class TranslationHandlerPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)

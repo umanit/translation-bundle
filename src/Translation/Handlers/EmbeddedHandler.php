@@ -3,40 +3,25 @@
 namespace Umanit\TranslationBundle\Translation\Handlers;
 
 use Umanit\TranslationBundle\Translation\Args\TranslationArgs;
-use Umanit\TranslationBundle\Utils\AnnotationHelper;
+use Umanit\TranslationBundle\Utils\AttributeHelper;
 
 /**
  * Translation handler for @Doctrine\ORM\Mapping\Embeddable()
- *
- * @author Arthur Guigand <aguigand@umanit.fr>
  */
 class EmbeddedHandler implements TranslationHandlerInterface
 {
-    /**
-     * @var AnnotationHelper
-     */
-    private $annotationHelper;
+    private AttributeHelper $attributeHelper;
+    private DoctrineObjectHandler $objectHandler;
 
-    /**
-     * @var DoctrineObjectHandler
-     */
-    private $objectHandler;
-
-    /**
-     * EmbeddedHandler constructor.
-     *
-     * @param AnnotationHelper      $annotationHelper
-     * @param DoctrineObjectHandler $objectHandler
-     */
-    public function __construct(AnnotationHelper $annotationHelper, DoctrineObjectHandler $objectHandler)
+    public function __construct(AttributeHelper $attributeHelper, DoctrineObjectHandler $objectHandler)
     {
-        $this->annotationHelper = $annotationHelper;
-        $this->objectHandler    = $objectHandler;
+        $this->attributeHelper = $attributeHelper;
+        $this->objectHandler = $objectHandler;
     }
 
     public function supports(TranslationArgs $args): bool
     {
-        return null !== $args->getProperty() && $this->annotationHelper->isEmbedded($args->getProperty());
+        return null !== $args->getProperty() && $this->attributeHelper->isEmbedded($args->getProperty());
     }
 
     public function handleSharedAmongstTranslations(TranslationArgs $args)

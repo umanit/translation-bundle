@@ -2,78 +2,53 @@
 
 namespace Umanit\TranslationBundle\Event;
 
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
-/**
- * @author Arthur Guigand <aguigand@umanit.fr>
- */
 class TranslateEvent extends Event
 {
     /**
      * Event called before translation is done.
      */
-    const PRE_TRANSLATE = 'umanit_translation.pre_translate';
+    public const PRE_TRANSLATE = 'umanit_translation.pre_translate';
 
     /**
      * Event called after translation is done.
      */
-    const POST_TRANSLATE = 'umanit_translation.post_translate';
+    public const POST_TRANSLATE = 'umanit_translation.post_translate';
 
     /**
      * The source entity being translated.
-     *
-     * @var object
      */
-    protected $sourceEntity;
+    protected object $sourceEntity;
 
     /**
      * The translated entity.
-     *
-     * @var object
      */
-    protected $translatedEntity;
+    protected ?object $translatedEntity;
 
     /**
      * The target locale
-     *
-     * @var string
      */
-    private $locale;
+    private string $locale;
 
-    /**
-     * TranslateEvent constructor.
-     *
-     * @param object $sourceEntity
-     * @param string $locale
-     * @param object $translatedEntity
-     */
-    public function __construct($sourceEntity, $locale, $translatedEntity = null)
+    public function __construct(object $sourceEntity, string $locale, object $translatedEntity = null)
     {
-        $this->sourceEntity     = $sourceEntity;
-        $this->locale           = $locale;
+        $this->sourceEntity = $sourceEntity;
+        $this->locale = $locale;
         $this->translatedEntity = $translatedEntity;
     }
 
-    /**
-     * @return object
-     */
-    public function getSourceEntity()
+    public function getSourceEntity(): object
     {
         return $this->sourceEntity;
     }
 
-    /**
-     * @return object
-     */
-    public function getTranslatedEntity()
+    public function getTranslatedEntity(): ?object
     {
         return $this->translatedEntity;
     }
 
-    /**
-     * @return string
-     */
-    public function getLocale()
+    public function getLocale(): string
     {
         return $this->locale;
     }

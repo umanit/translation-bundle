@@ -4,56 +4,30 @@ namespace Umanit\TranslationBundle\Translation\Handlers;
 
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Mapping\OneToOne;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 use Umanit\TranslationBundle\Translation\Args\TranslationArgs;
-use Umanit\TranslationBundle\Utils\AnnotationHelper;
+use Umanit\TranslationBundle\Utils\AttributeHelper;
 
 /**
  * Handles translation of one-to-one-bidirectional association.
  *
- * @author Arthur Guigand <aguigand@umanit.fr>
- * @todo : Next major release, rename to BidirectionalManyToManyHandler.
+ * @todo   : Next major release, rename to BidirectionalManyToManyHandler.
  */
 class BidirectionalAssociationHandler implements TranslationHandlerInterface
 {
-    /**
-     * @var Reader
-     */
-    private $reader;
+    private EntityManagerInterface $em;
+    private PropertyAccessor $propertyAccessor;
+    private AttributeHelper $attributeHelper;
 
-    /**
-     * @var EntityManagerInterface
-     */
-    private $em;
-
-    /**
-     * @var PropertyAccessor
-     */
-    private $propertyAccessor;
-
-    /**
-     * @var AnnotationHelper
-     */
-    private $annotationHelper;
-
-    /**
-     * DoctrineObjectHandler constructor.
-     *
-     * @param Reader                 $reader
-     * @param EntityManagerInterface $em
-     * @param PropertyAccessor       $propertyAccessor
-     * @param AnnotationHelper       $annotationHelper
-     */
     public function __construct(
-        Reader $reader,
         EntityManagerInterface $em,
         PropertyAccessor $propertyAccessor,
-        AnnotationHelper $annotationHelper
+        AttributeHelper $attributeHelper
     ) {
-        $this->reader           = $reader;
-        $this->em               = $em;
+        $this->em = $em;
         $this->propertyAccessor = $propertyAccessor;
-        $this->annotationHelper = $annotationHelper;
+        $this->attributeHelper = $attributeHelper;
     }
 
     public function supports(TranslationArgs $args): bool
@@ -62,9 +36,10 @@ class BidirectionalAssociationHandler implements TranslationHandlerInterface
             return false;
         }
 
-        $propAnnotations = $this->reader->getPropertyAnnotations($args->getProperty());
-        foreach ($propAnnotations as $propAnnotation) {
-            if (property_exists($propAnnotation, 'mappedBy') && null !== $propAnnotation->mappedBy) {
+        if ($args->getProperty() && $this->attributeHelper->isOneToOne($args->getProperty())) {
+            $arguments = $args->getProperty()->getAttributes(OneToOne::class)[0]->getArguments();
+
+            if (array_key_exists('mappedBy', $arguments) && null !== $arguments['mappedBy']) {
                 return true;
             }
         }
@@ -74,17 +49,19 @@ class BidirectionalAssociationHandler implements TranslationHandlerInterface
 
     public function handleSharedAmongstTranslations(TranslationArgs $args)
     {
-        if (true === $this->annotationHelper->isOneToOne($args->getProperty())) {
-            $data    = $args->getDataToBeTranslated();
+        if (true === $this->attributeHelper->isOneToOne($args->getProperty())) {
+            $data = $args->getDataToBeTranslated();
             $message =
                 '%class%::%prop% is a Bidirectional OneToOne, it cannot be shared '.
                 'amongst translations. Either remove the @SharedAmongstTranslation '.
                 'annotation or choose another association type.';
 
-            throw new \ErrorException(strtr($message, [
-                '%class%' => \get_class($data),
-                '%prop%'  => $args->getProperty()->name,
-            ]));
+            throw new \ErrorException(
+                strtr($message, [
+                    '%class%' => \get_class($data),
+                    '%prop%'  => $args->getProperty()->name,
+                ])
+            );
         }
 
         return $args->getDataToBeTranslated();
@@ -101,8 +78,9 @@ class BidirectionalAssociationHandler implements TranslationHandlerInterface
         $clone = clone $args->getDataToBeTranslated();
 
         // Get the correct parent association with the fieldName
-        $fieldName    = $args->getProperty()->name;
+        $fieldName = $args->getProperty()->name;
         $associations = $this->em->getClassMetadata(\get_class($clone))->getAssociationMappings();
+
         foreach ($associations as $association) {
             if ($fieldName === $association['inversedBy']) {
                 $parentFieldName = $association['fieldName'];
@@ -116,5 +94,4 @@ class BidirectionalAssociationHandler implements TranslationHandlerInterface
 
         return $clone;
     }
-
 }

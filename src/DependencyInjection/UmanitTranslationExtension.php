@@ -15,13 +15,10 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
  */
 class UmanitTranslationExtension extends Extension implements PrependExtensionInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     public function load(array $configs, ContainerBuilder $container)
     {
         $configuration = new Configuration();
-        $config        = $this->processConfiguration($configuration, $configs);
+        $config = $this->processConfiguration($configuration, $configs);
 
         // Set configuration into params
         $rootName = 'umanit_translation';
@@ -29,37 +26,36 @@ class UmanitTranslationExtension extends Extension implements PrependExtensionIn
         $this->setConfigAsParameters($container, $config, $rootName);
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-        $loader->load('services.yml');
+        $loader->load('services.yaml');
     }
 
-    /**
-     * {@inheritdoc}
-     *
-     * @param ContainerBuilder $container
-     */
     public function prepend(ContainerBuilder $container)
     {
-        $bundles = $container->getParameter('kernel.bundles');
-        // Conditionnaly load sonata_admin.yml
-        if (isset($bundles['SonataAdminBundle'])) {
-            $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-            $loader->load('sonata_admin.yml');
+        $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+
+        // Conditionally load sonata_admin.yaml
+        if ($container->hasExtension('sonata_admin')) {
+            $loader->load('sonata_admin.yaml');
         }
 
-        if (isset($bundles['UmanitDoctrineSingletonBundle'])) {
-            $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-            $loader->load('doctrine_singleton.yml');
+        if ($container->hasExtension('umanit_doctrine_singleton')) {
+            $loader->load('doctrine_singleton.yaml');
+        }
+
+        // Conditionnally override some templates from EasyAdmin
+        if ($container->hasExtension('easy_admin')) {
+            $thirdPartyBundlesViewFileLocator = new FileLocator(__DIR__.'/../Resources/views/bundles');
+
+            $container->loadFromExtension('twig', [
+                'paths' => [$thirdPartyBundlesViewFileLocator->locate('EasyAdminBundle') => 'EasyAdmin'],
+            ]);
         }
     }
 
     /**
      * Add config keys as parameters.
-     *
-     * @param ContainerBuilder $container
-     * @param array            $params
-     * @param string           $parent
      */
-    private function setConfigAsParameters(ContainerBuilder $container, array $params, $parent)
+    private function setConfigAsParameters(ContainerBuilder $container, array $params, string $parent)
     {
         foreach ($params as $key => $value) {
             $name = $parent.'.'.$key;

@@ -1,25 +1,34 @@
 <?php
 
-namespace Umanit\TranslationBundle\Controller;
+namespace Umanit\TranslationBundle\Controller\Sonata;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Sonata\AdminBundle\Controller\CRUDController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Umanit\TranslationBundle\Translation\EntityTranslator;
 
-/**
- * @author Arthur Guigand <aguigand@umanit.fr>
- */
 class TranslatableCRUDController extends CRUDController
 {
+    private EntityTranslator $translator;
+    private EntityManagerInterface $em;
+
+    public function __construct(EntityTranslator $translator, EntityManagerInterface $em)
+    {
+        $this->translator = $translator;
+        $this->em = $em;
+    }
+
     /**
      * Translate an entity
      *
+     * @param Request $request
+     *
      * @return RedirectResponse
      */
-    public function translateAction()
+    public function translate(Request $request): RedirectResponse
     {
-        $request = $this->getRequest();
-
-        $id     = $request->get($this->admin->getIdParameter());
+        $id = $request->get($this->admin->getIdParameter());
         $locale = $request->get('newLocale');
         $object = $this->admin->getObject($id);
 
@@ -35,9 +44,10 @@ class TranslatableCRUDController extends CRUDController
         if (empty($newObject)) {
             $this->admin->checkAccess('edit', $object);
 
-            $newObject = $this->get('umanit_translation.translation.entity_translator')->translate($object, $locale);
-            $this->get('doctrine')->getManager()->persist($newObject);
-            $this->get('doctrine')->getManager()->flush();
+            $newObject = $this->translator->translate($object, $locale);
+
+            $this->em->persist($newObject);
+            $this->em->flush();
 
             $this->addFlash('sonata_flash_success', 'Translated successfully!');
         }

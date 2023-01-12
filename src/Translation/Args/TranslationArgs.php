@@ -4,58 +4,34 @@ namespace Umanit\TranslationBundle\Translation\Args;
 
 /**
  * Translation args DTO.
- *
- * @author Arthur Guigand <aguigand@umanit.fr>
  */
 class TranslationArgs
 {
-    /** @var mixed */
-    protected $dataToBeTranslated;
+    protected mixed $dataToBeTranslated;
+    protected string $sourceLocale;
+    protected string $targetLocale;
+    protected mixed $translatedParent;
+    protected ?\ReflectionProperty $property = null;
 
-    /** @var string */
-    protected $sourceLocale;
-
-    /** @var string */
-    protected $targetLocale;
-
-    /** @var mixed */
-    protected $translatedParent;
-
-    /** @var \ReflectionProperty */
-    protected $property;
-
-    /**
-     * TranslationArgs constructor.
-     *
-     * @param mixed  $dataToBeTranslated
-     * @param string $sourceLocale
-     * @param string $targetLocale
-     */
-    public function __construct($dataToBeTranslated, $sourceLocale, $targetLocale)
+    public function __construct(mixed $dataToBeTranslated, string $sourceLocale, string $targetLocale)
     {
         $this->dataToBeTranslated = $dataToBeTranslated;
-        $this->sourceLocale       = $sourceLocale;
-        $this->targetLocale       = $targetLocale;
+        $this->sourceLocale = $sourceLocale;
+        $this->targetLocale = $targetLocale;
     }
 
     /**
      * Returns the source data that will be translated.
-     *
-     * @return mixed
      */
-    public function getDataToBeTranslated()
+    public function getDataToBeTranslated(): mixed
     {
         return $this->dataToBeTranslated;
     }
 
     /**
      * Sets the source data that will be translated.
-     *
-     * @param mixed $dataToBeTranslated
-     *
-     * @return $this
      */
-    public function setDataToBeTranslated($dataToBeTranslated)
+    public function setDataToBeTranslated(mixed $dataToBeTranslated): self
     {
         $this->dataToBeTranslated = $dataToBeTranslated;
 
@@ -64,22 +40,16 @@ class TranslationArgs
 
     /**
      * Returns the locale of the original data.
-     *
-     * @return string
      */
-    public function getSourceLocale()
+    public function getSourceLocale(): string
     {
         return $this->sourceLocale;
     }
 
     /**
      * Sets the locale of the original data.
-     *
-     * @param string $sourceLocale
-     *
-     * @return $this
      */
-    public function setSourceLocale(string $sourceLocale)
+    public function setSourceLocale(string $sourceLocale): self
     {
         $this->sourceLocale = $sourceLocale;
 
@@ -88,22 +58,16 @@ class TranslationArgs
 
     /**
      * Returns the locale of the translated data.
-     *
-     * @return string
      */
-    public function getTargetLocale()
+    public function getTargetLocale(): string
     {
         return $this->targetLocale;
     }
 
     /**
      * Sets the locale of the translated data.
-     *
-     * @param string $targetLocale
-     *
-     * @return $this
      */
-    public function setTargetLocale(string $targetLocale)
+    public function setTargetLocale(string $targetLocale): self
     {
         $this->targetLocale = $targetLocale;
 
@@ -113,22 +77,16 @@ class TranslationArgs
     /**
      * Returns the parent of the data translation.
      * Only sets when translating association.
-     *
-     * @return mixed
      */
-    public function getTranslatedParent()
+    public function getTranslatedParent(): mixed
     {
         return $this->translatedParent;
     }
 
     /**
      * Sets the parent of the data translation.
-     *
-     * @param mixed $translatedParent
-     *
-     * @return $this
      */
-    public function setTranslatedParent($translatedParent)
+    public function setTranslatedParent($translatedParent): self
     {
         $this->translatedParent = $translatedParent;
 
@@ -138,27 +96,19 @@ class TranslationArgs
     /**
      * Returns the property associated to the translation.
      * Only sets when translating association.
-     *
-     * @return \ReflectionProperty
      */
-    public function getProperty()
+    public function getProperty(): ?\ReflectionProperty
     {
         return $this->property;
     }
 
     /**
      * Returns the property associated to the translation.
-     *
-     * @param \ReflectionProperty $property
-     *
-     * @return $this
      */
-    public function setProperty(\ReflectionProperty $property)
+    public function setProperty(?\ReflectionProperty $property): self
     {
         $this->property = $property;
 
         return $this;
     }
-
-
 }

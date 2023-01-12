@@ -1,36 +1,19 @@
 <?php
 
-
 namespace Umanit\TranslationBundle\Translation\Handlers;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Umanit\TranslationBundle\Doctrine\Model\TranslatableInterface;
 use Umanit\TranslationBundle\Translation\Args\TranslationArgs;
 
-/**
- * @author Arthur Guigand <aguigand@umanit.fr>
- */
 class TranslatableEntityHandler implements TranslationHandlerInterface
 {
-    /**
-     * @var DoctrineObjectHandler
-     */
-    protected $doctrineObjectHandler;
+    protected DoctrineObjectHandler $doctrineObjectHandler;
+    protected EntityManagerInterface $em;
 
-    /**
-     * @var EntityManagerInterface
-     */
-    protected $em;
-
-    /**
-     * TranslatableEntity constructor.
-     *
-     * @param EntityManagerInterface $em
-     * @param DoctrineObjectHandler  $doctrineObjectHandler
-     */
     public function __construct(EntityManagerInterface $em, DoctrineObjectHandler $doctrineObjectHandler)
     {
-        $this->em                    = $em;
+        $this->em = $em;
         $this->doctrineObjectHandler = $doctrineObjectHandler;
     }
 
@@ -57,7 +40,7 @@ class TranslatableEntityHandler implements TranslationHandlerInterface
         // exists, otherwise translate it.
         $existingTranslation = $this->em->getRepository(\get_class($data))->findOneBy([
             'locale' => $args->getTargetLocale(),
-            'tuuid' => $data->getTuuid(),
+            'tuuid'  => $data->getTuuid(),
         ]);
 
         if (null !== $existingTranslation) {
@@ -67,7 +50,9 @@ class TranslatableEntityHandler implements TranslationHandlerInterface
         /** @var TranslatableInterface $clone */
         $clone = clone $args->getDataToBeTranslated();
 
-        $this->doctrineObjectHandler->translateProperties(new TranslationArgs($clone, $clone->getLocale(), $args->getTargetLocale()));
+        $this->doctrineObjectHandler->translateProperties(
+            new TranslationArgs($clone, $clone->getLocale(), $args->getTargetLocale())
+        );
 
         $clone->setLocale($args->getTargetLocale());
 
@@ -75,5 +60,4 @@ class TranslatableEntityHandler implements TranslationHandlerInterface
 
         return $clone;
     }
-
 }

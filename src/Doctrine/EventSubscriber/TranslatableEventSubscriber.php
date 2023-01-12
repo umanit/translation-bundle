@@ -6,47 +6,19 @@ use Doctrine\Common;
 use Doctrine\ORM;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\PropertyAccess\PropertyAccess;
-use Umanit\TranslationBundle\Doctrine\Annotation\SharedAmongstTranslations;
+use Umanit\TranslationBundle\Doctrine\Attribute\SharedAmongstTranslations;
 use Umanit\TranslationBundle\Doctrine\Model\TranslatableInterface;
 use Umanit\TranslationBundle\Translation\Args\TranslationArgs;
 use Umanit\TranslationBundle\Translation\EntityTranslator;
 
-/**
- * @author Arthur Guigand <aguigand@umanit.fr>
- */
 class TranslatableEventSubscriber implements Common\EventSubscriber
 {
-    /**
-     * @var Common\Annotations\Reader
-     */
-    private $reader;
+    private ?string $defaultLocale;
+    private EntityTranslator $translator;
+    private array $alreadySyncedEntities = [];
 
-    /**
-     * @var string
-     */
-    private $defaultLocale;
-
-    /**
-     * @var EntityTranslator
-     */
-    private $translator;
-
-    /**
-     * @var array
-     */
-    private $alreadySyncedEntities = [];
-
-    /**
-     * TranslatableEventSubscriber constructor.
-     *
-     * @param Common\Annotations\Reader $reader
-     * @param null|string               $defaultLocale
-     */
-    public function __construct(
-        Common\Annotations\Reader $reader,
-        string $defaultLocale = null
-    ) {
-        $this->reader        = $reader;
+    public function __construct(string $defaultLocale = null)
+    {
         $this->defaultLocale = $defaultLocale;
     }
 
@@ -55,27 +27,20 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
         $this->translator = $entityTranslator;
     }
 
-    /**
-     * @inheritdoc
-     *
-     * @return array
-     */
     public function getSubscribedEvents()
     {
         return [
-            ORM\Events::postUpdate,
-            ORM\Events::postPersist,
-            ORM\Events::postRemove,
-            ORM\Events::prePersist,
             Orm\Events::loadClassMetadata,
+            ORM\Events::prePersist,
+            ORM\Events::postPersist,
+            ORM\Events::postUpdate,
+            ORM\Events::postRemove,
         ];
     }
 
     /**
      * Adds a unique constraint on uuid and
      * locale for every translatable entity.
-     *
-     * @param ORM\Event\LoadClassMetadataEventArgs $eventArgs
      *
      * @throws \ReflectionException
      */
@@ -85,9 +50,10 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
 
         // Create reflection from entity name
         $r = new \ReflectionClass($entityName);
-        if ($r->implementsInterface(TranslatableInterface::class)) {
+
+        if ($r->implementsInterface(TranslatableInterface::class) && !$r->isAbstract()) {
             $classMetadata = $eventArgs->getClassMetadata();
-            $table         = $classMetadata->table;
+            $table = $classMetadata->table;
 
             if (isset($table['uniqueConstraints'])) {
                 return;
@@ -98,34 +64,16 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
                     'columns' => ['tuuid', 'locale'],
                 ],
             ];
-            $classMetadata->table       = $table;
+            $classMetadata->table = $table;
         }
     }
 
-    /**
-     * @param ORM\Event\LifecycleEventArgs $args
-     *
-     * @throws ORM\OptimisticLockException
-     */
-    public function postUpdate(ORM\Event\LifecycleEventArgs $args)
-    {
-        if (\in_array($args->getEntity(), $this->alreadySyncedEntities, true)) {
-            return;
-        }
-        $this->synchronizeTranslatableSharedField($args);
-    }
-
-    /**
-     * @param ORM\Event\LifecycleEventArgs $args
-     */
     public function prePersist(ORM\Event\LifecycleEventArgs $args)
     {
         $this->setDefaultValues($args);
     }
 
     /**
-     * @param ORM\Event\LifecycleEventArgs $args
-     *
      * @throws ORM\OptimisticLockException
      */
     public function postPersist(ORM\Event\LifecycleEventArgs $args)
@@ -135,10 +83,17 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
     }
 
     /**
-     * @inheritdoc.
-     *
-     * @param ORM\Event\LifecycleEventArgs $args
+     * @throws ORM\OptimisticLockException
      */
+    public function postUpdate(ORM\Event\LifecycleEventArgs $args)
+    {
+        if (\in_array($args->getObject(), $this->alreadySyncedEntities, true)) {
+            return;
+        }
+
+        $this->synchronizeTranslatableSharedField($args);
+    }
+
     public function postRemove(ORM\Event\LifecycleEventArgs $args)
     {
         $this->updateTranslations($args);
@@ -149,15 +104,15 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
 
     /**
      * Sets the default locale before persist.
-     *
-     * @param ORM\Event\LifecycleEventArgs $args
      */
     public function setDefaultValues(ORM\Event\LifecycleEventArgs $args)
     {
-        $translatable = $args->getEntity();
+        $translatable = $args->getObject();
+
         if ($translatable instanceof TranslatableInterface && null === $translatable->getLocale()) {
             $translatable->setLocale($this->defaultLocale);
         }
+
         if ($translatable instanceof TranslatableInterface && null === $translatable->getTuuid()) {
             $translatable->setTuuid((string) Uuid::uuid4());
         }
@@ -165,14 +120,13 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
 
     /**
      * Removes all translations of a TranslatableInterface.
-     *
-     * @param ORM\Event\LifecycleEventArgs $args
      */
     public function removeAllTranslations(ORM\Event\LifecycleEventArgs $args)
     {
-        $translatable = $args->getEntity();
+        $translatable = $args->getObject();
+
         if ($translatable instanceof TranslatableInterface) {
-            $em = $args->getEntityManager();
+            $em = $args->getObjectManager();
             // Gets all translations
             $repo = $em->getRepository(\get_class($translatable));
 
@@ -188,22 +142,20 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
     /**
      * Updates the "translations" array of all translations on persist.
      *
-     * @param ORM\Event\LifecycleEventArgs $args
-     *
      * @throws ORM\ORMException
      * @throws ORM\OptimisticLockException
      */
     public function updateTranslations(ORM\Event\LifecycleEventArgs $args)
     {
-        $translatable = $args->getEntity();
+        $translatable = $args->getObject();
 
         if ($translatable instanceof TranslatableInterface) {
-            $em = $args->getEntityManager();
+            $em = $args->getObjectManager();
             // Gets all translations
             $repo = $em->getRepository(\get_class($translatable));
 
             /** @var TranslatableInterface[] $translations */
-            $translations      = $repo->findBy(['tuuid' => $translatable->getTuuid()]);
+            $translations = $repo->findBy(['tuuid' => $translatable->getTuuid()]);
             $translationsArray = [];
 
             foreach ($translations as $translation) {
@@ -212,30 +164,29 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
 
             foreach ($translations as $translation) {
                 $translation->setTranslations($translationsArray);
-                $args->getEntityManager()->persist($translation);
+                $args->getObjectManager()->persist($translation);
             }
 
-            $args->getEntityManager()->flush();
+            $args->getObjectManager()->flush();
         }
     }
 
     /**
-     * Seeks for the @SharedAmongstTranslations() annotation and sychronize all translations.
-     *
-     * @param ORM\Event\LifecycleEventArgs $args
+     * Looks for the @SharedAmongstTranslations attribute and sychronizes all translations
      *
      * @throws ORM\OptimisticLockException
      */
     protected function synchronizeTranslatableSharedField(ORM\Event\LifecycleEventArgs $args)
     {
-        $translatable                  = $args->getEntity();
+        $translatable = $args->getObject();
         $this->alreadySyncedEntities[] = $translatable;
 
         // Only synchronize TranslatableInterface
         if (!$translatable instanceof TranslatableInterface) {
             return;
         }
-        $em         = $args->getEntityManager();
+
+        $em = $args->getObjectManager();
         $properties = $em->getClassMetadata(\get_class($translatable))->getReflectionProperties();
 
         $sharedAmongstTranslationsProperties = array_filter($properties, function ($property) {
@@ -248,8 +199,8 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
         }
 
         $propertyAccessor = PropertyAccess::createPropertyAccessor();
-        $em               = $args->getEntityManager();
-        $translations     = $em
+        $em = $args->getObjectManager();
+        $translations = $em
             ->getRepository(\get_class($translatable))
             ->findBy(['tuuid' => $translatable->getTuuid()])
         ;
@@ -260,6 +211,7 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
             if ($translation === $translatable) {
                 continue;
             }
+
             foreach ($sharedAmongstTranslationsProperties as $property) {
                 $sourceValue = $propertyAccessor->getValue($translatable, $property->name);
 
@@ -276,32 +228,25 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
 
                 $propertyAccessor->setValue($translation, $property->name, $translationValue);
             }
+
             $em->persist($translation);
             $em->flush();
         }
     }
 
     /**
-     * Defines if the property is to be shared amongst translations.
-     *
-     * @param \ReflectionProperty $property
-     *
-     * @return bool
+     * Determines if the property is to be shared amongst translations
      */
     protected function isSharedAmongstTranslations(\ReflectionProperty $property): bool
     {
-        return null !== $this->reader->getPropertyAnnotation($property, SharedAmongstTranslations::class);
+        return [] !== $property->getAttributes(SharedAmongstTranslations::class, \ReflectionAttribute::IS_INSTANCEOF);
     }
 
     /**
-     * Defines if the property is ManyToMany.
-     *
-     * @param \ReflectionProperty $property
-     *
-     * @return bool
+     * Determines if the property is not a ManyToMany relation
      */
     protected function isNotManyToMany(\ReflectionProperty $property): bool
     {
-        return null === $this->reader->getPropertyAnnotation($property, ORM\Mapping\ManyToMany::class);
+        return [] === $property->getAttributes(ORM\Mapping\ManyToMany::class, \ReflectionAttribute::IS_INSTANCEOF);
     }
 }

@@ -1,0 +1,34 @@
+{% extends '@!EasyAdmin/crud/edit.html.twig' %}
+
+{# @var action \EasyCorp\Bundle\EasyAdminBundle\Dto\ActionDto #}
+
+{% block page_actions %}
+  {% set translate_actions = [] %}
+  {% set actions = [] %}
+
+  {% for action in entity.actions %}
+    {% if 'translate' in action.name %}
+      {% set translate_actions = translate_actions|merge([action]) %}
+    {% else %}
+      {% set actions = actions|merge([action]) %}
+    {% endif %}
+  {% endfor %}
+
+  {% if entity.instance.translations|default(false) %}
+    <div class="btn btn-secondary dropdown dropdown-actions">
+      <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="fa fa-language"></i> Translate
+      </a>
+
+      <div class="dropdown-menu dropdown-menu-right">
+        {% for action in translate_actions %}
+          {{ include(action.templatePath, { action: action, isIncludedInDropdown: true }, with_context = false) }}
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
+
+  {% for action in actions %}
+    {{ include(action.templatePath, { action: action }, with_context = false) }}
+  {% endfor %}
+{% endblock %}

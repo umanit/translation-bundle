@@ -4,9 +4,6 @@ namespace Umanit\TranslationBundle\Translation\Handlers;
 
 use Umanit\TranslationBundle\Translation\Args\TranslationArgs;
 
-/**
- * @author Arthur Guigand <aguigand@umanit.fr>
- */
 interface TranslationHandlerInterface
 {
     /**

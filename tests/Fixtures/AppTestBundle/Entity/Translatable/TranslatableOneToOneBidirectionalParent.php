@@ -3,8 +3,8 @@
 namespace AppTestBundle\Entity\Translatable;
 
 use Doctrine\ORM\Mapping as ORM;
-use Umanit\TranslationBundle\Doctrine\Annotation\EmptyOnTranslate;
-use Umanit\TranslationBundle\Doctrine\Annotation\SharedAmongstTranslations;
+use Umanit\TranslationBundle\Doctrine\Attribute\EmptyOnTranslate;
+use Umanit\TranslationBundle\Doctrine\Attribute\SharedAmongstTranslations;
 use Umanit\TranslationBundle\Doctrine\Model\TranslatableInterface;
 use Umanit\TranslationBundle\Doctrine\Model\TranslatableTrait;
 

@@ -1,39 +1,27 @@
 <?php
 
-
 namespace Umanit\TranslationBundle\Translation\Handlers;
 
 use Doctrine\Common\Collections\Collection;
-use Doctrine\Common\Persistence\Proxy;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\Proxy;
 use Symfony\Component\PropertyAccess\Exception\NoSuchPropertyException;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Umanit\TranslationBundle\Translation\Args\TranslationArgs;
 use Umanit\TranslationBundle\Translation\EntityTranslator;
 
 /**
- * Handles basic Doctrine Object.
- * Usual the entry point of a translation.
- *
- * @author Arthur Guigand <aguigand@umanit.fr>
+ * Handles basic Doctrine Objects.
+ * Usually the entry point of a translation.
  */
 class DoctrineObjectHandler implements TranslationHandlerInterface
 {
-    /** @var EntityManagerInterface */
-    protected $em;
+    protected EntityManagerInterface $em;
+    protected EntityTranslator $translator;
 
-    /** @var EntityTranslator */
-    protected $translator;
-
-    /**
-     * DoctrineObjectHandler constructor.
-     *
-     * @param EntityManagerInterface $em
-     * @param EntityTranslator       $translator
-     */
     public function __construct(EntityManagerInterface $em, EntityTranslator $translator)
     {
-        $this->em         = $em;
+        $this->em = $em;
         $this->translator = $translator;
     }
 
@@ -42,9 +30,9 @@ class DoctrineObjectHandler implements TranslationHandlerInterface
         $data = $args->getDataToBeTranslated();
 
         if (\is_object($data)) {
-            $data = ($data instanceof Proxy)
-                ? get_parent_class($data)
-                : \get_class($data);
+            $data = ($data instanceof Proxy) ?
+                get_parent_class($data) :
+                \get_class($data);
         }
 
         return !$this->em->getMetadataFactory()->isTransient($data);
@@ -65,7 +53,6 @@ class DoctrineObjectHandler implements TranslationHandlerInterface
         $clone = clone $args->getDataToBeTranslated();
 
         $args->setDataToBeTranslated($clone);
-
         $this->translateProperties($args);
 
         return $args->getDataToBeTranslated();
@@ -73,15 +60,13 @@ class DoctrineObjectHandler implements TranslationHandlerInterface
 
     /**
      * Loops through all object properties to translate them.
-     *
-     * @param TranslationArgs $args
      */
     public function translateProperties(TranslationArgs $args)
     {
         $translation = $args->getDataToBeTranslated();
-        $accessor    = PropertyAccess::createPropertyAccessor();
-        $reflect     = new \ReflectionClass(\get_class($args->getDataToBeTranslated()));
-        $properties  = $reflect->getProperties();
+        $accessor = PropertyAccess::createPropertyAccessor();
+        $reflect = new \ReflectionClass(\get_class($args->getDataToBeTranslated()));
+        $properties = $reflect->getProperties();
 
         // Loop through all properties
         foreach ($properties as $property) {
@@ -90,6 +75,7 @@ class DoctrineObjectHandler implements TranslationHandlerInterface
             if (empty($propValue) || ($propValue instanceof Collection && $propValue->isEmpty())) {
                 continue;
             }
+
             $subTranslationArgs =
                 (new TranslationArgs($propValue, $args->getSourceLocale(), $args->getTargetLocale()))
                     ->setTranslatedParent($translation)
@@ -102,7 +88,9 @@ class DoctrineObjectHandler implements TranslationHandlerInterface
                 $accessor->setValue($translation, $property->name, $propertyTranslation);
             } catch (NoSuchPropertyException $e) {
                 $reflection = new \ReflectionProperty(\get_class($translation), $property->name);
+
                 $reflection->setAccessible(true);
+
                 $reflection->setValue($translation, $propertyTranslation);
             }
         }

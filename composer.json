@@ -16,15 +16,15 @@
         }
     ],
     "require": {
-        "php": "^7.4|^8.0",
+        "php": ">=8.0",
         "doctrine/doctrine-bundle": ">=1.6",
-        "doctrine/orm": ">=2.5",
+        "doctrine/orm": ">=2.9",
         "ramsey/uuid": ">=3.7",
         "symfony/framework-bundle": "^4.4|^5.2",
         "symfony/yaml": "^4.4|^5.2",
         "symfony/security-bundle": "^4.4|^5.2",
         "symfony/property-access": "^4.4|^5.2",
-        "twig/twig": ">=2.0"
+        "twig/twig": ">=2.7"
     },
     "minimum-stability": "stable",
     "autoload": {
@@ -35,7 +35,6 @@
     "require-dev": {
         "symfony/phpunit-bridge": "^4.4|^5.2",
         "phpunit/phpunit": ">=6.5",
-        "symfony/var-dumper": "^4.4|^5.2",
         "jakub-onderka/php-parallel-lint": "^1.0"
     }
 }

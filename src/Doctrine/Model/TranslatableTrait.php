@@ -11,29 +11,28 @@ use Ramsey\Uuid\UuidInterface;
 trait TranslatableTrait
 {
     /**
-     * @var UuidInterface
+     * @var string|null
      * @ORM\Column(type="guid", length=36)
      */
-    protected $tuuid;
+    #[ORM\Column(type: 'guid', length: 36)]
+    protected ?string $tuuid = null;
 
     /**
-     * @var string
+     * @var string|null
      * @ORM\Column(type="string", length=7)
      */
-    protected $locale;
+    #[ORM\Column(type: 'string', length: 7)]
+    protected ?string $locale = null;
 
     /**
      * @var array
-     * @ORM\Column(type="json_array")
+     * @ORM\Column(type="json")
      */
-    protected $translations = [];
+    #[ORM\Column(type: 'json')]
+    protected array $translations = [];
 
     /**
      * Set the locale
-     *
-     * @param string $locale
-     *
-     * @return $this
      */
     public function setLocale(string $locale = null): self
     {
@@ -44,22 +43,16 @@ trait TranslatableTrait
 
     /**
      * Returns entity's locale.
-     *
-     * @return string
      */
-    public function getLocale()
+    public function getLocale(): ?string
     {
         return $this->locale;
     }
 
     /**
      * Set the Translation UUID
-     *
-     * @param string $tuuid
-     *
-     * @return $this
      */
-    public function setTuuid(string $tuuid): self
+    public function setTuuid(?string $tuuid): self
     {
         $this->tuuid = $tuuid;
 
@@ -68,31 +61,21 @@ trait TranslatableTrait
 
     /**
      * Returns entity's Translation UUID.
-     *
-     * @return string
      */
-    public function getTuuid()
+    public function getTuuid(): ?string
     {
         return $this->tuuid;
     }
 
-    /**
-     * @return array
-     */
-    public function getTranslations(): array
-    {
-        return $this->translations;
-    }
-
-    /**
-     * @param array $translations
-     *
-     * @return $this
-     */
-    public function setTranslations(array $translations): TranslatableInterface
+    public function setTranslations(array $translations): self
     {
         $this->translations = $translations;
 
         return $this;
+    }
+
+    public function getTranslations(): array
+    {
+        return $this->translations;
     }
 }
