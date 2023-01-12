@@ -13,11 +13,6 @@ use Doctrine\ORM\Mapping\OneToOne;
 use Umanit\TranslationBundle\Doctrine\Attribute\EmptyOnTranslate;
 use Umanit\TranslationBundle\Doctrine\Attribute\SharedAmongstTranslations;
 
-/**
- * Utils class used to shortcut annotation reader
- *
- * @author Arthur Guigand <aguigand@umanit.fr>
- */
 class AttributeHelper
 {
     /**

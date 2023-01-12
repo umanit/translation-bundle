@@ -10,6 +10,6 @@ window.onload = function() {
         var $el = jQuery(element);
         if ($el.val()) {
             $el.closest('.form-group[sonata-filter="true"]').show();
-        } 
+        }
     });
 }

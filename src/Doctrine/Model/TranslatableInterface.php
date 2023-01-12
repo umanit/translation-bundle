@@ -2,9 +2,6 @@
 
 namespace Umanit\TranslationBundle\Doctrine\Model;
 
-/**
- * @author Arthur Guigand <aguigand@umanit.fr>
- */
 interface TranslatableInterface
 {
     /**

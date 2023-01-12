@@ -100,7 +100,9 @@ class EasyAdminActionCustomisationSubscriber implements EventSubscriberInterface
                     $query['entityId'] = $translation->getId();
                     $url['query'] = http_build_query($query);
 
-                    $action->setLinkUrl(sprintf('%s://%s%s?%s', $url['scheme'], $url['host'], $url['path'], $url['query']));
+                    $action->setLinkUrl(
+                        sprintf('%s://%s%s?%s', $url['scheme'], $url['host'], $url['path'], $url['query'])
+                    );
                 }
 
                 // Set icon

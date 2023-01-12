@@ -4,14 +4,18 @@ sonata_admin:
         umanit_translation.admin.extension.translatable_admin_extension:
             implements:
                 - Umanit\TranslationBundle\Doctrine\Model\TranslatableInterface
+
 services:
     umanit_translation.admin.extension.translatable_admin_extension:
-        class: Umanit\TranslationBundle\Admin\Extension\TranslatableAdminExtension
+        class: Umanit\TranslationBundle\Admin\Sonata\Extension\TranslatableAdminExtension
         arguments: ['%umanit_translation.locales%', '%umanit_translation.default_locale%']
         tags:
             - { name: sonata.admin.extension }
 
     umanit_translation.controller.translatable_crudcontroller:
         class: Umanit\TranslationBundle\Controller\Sonata\TranslatableCRUDController
+        arguments:
+            $translator: '@umanit_translation.translation.entity_translator'
+            $em: '@doctrine.orm.entity_manager'
         tags:
             - { name: controller.service_arguments }

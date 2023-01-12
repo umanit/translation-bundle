@@ -6,9 +6,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Umanit\TranslationBundle\Doctrine\Model\TranslatableInterface;
 use Umanit\TranslationBundle\Translation\Args\TranslationArgs;
 
-/**
- * @author Arthur Guigand <aguigand@umanit.fr>
- */
 class TranslatableEntityHandler implements TranslationHandlerInterface
 {
     protected DoctrineObjectHandler $doctrineObjectHandler;
@@ -53,7 +50,9 @@ class TranslatableEntityHandler implements TranslationHandlerInterface
         /** @var TranslatableInterface $clone */
         $clone = clone $args->getDataToBeTranslated();
 
-        $this->doctrineObjectHandler->translateProperties(new TranslationArgs($clone, $clone->getLocale(), $args->getTargetLocale()));
+        $this->doctrineObjectHandler->translateProperties(
+            new TranslationArgs($clone, $clone->getLocale(), $args->getTargetLocale())
+        );
 
         $clone->setLocale($args->getTargetLocale());
 

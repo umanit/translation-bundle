@@ -3,8 +3,8 @@
 namespace Umanit\TranslationBundle\Translation\Handlers;
 
 use Doctrine\Common\Collections\Collection;
-use Doctrine\Common\Persistence\Proxy;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\Proxy;
 use Symfony\Component\PropertyAccess\Exception\NoSuchPropertyException;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Umanit\TranslationBundle\Translation\Args\TranslationArgs;
@@ -13,8 +13,6 @@ use Umanit\TranslationBundle\Translation\EntityTranslator;
 /**
  * Handles basic Doctrine Objects.
  * Usually the entry point of a translation.
- *
- * @author Arthur Guigand <aguigand@umanit.fr>
  */
 class DoctrineObjectHandler implements TranslationHandlerInterface
 {
@@ -32,9 +30,9 @@ class DoctrineObjectHandler implements TranslationHandlerInterface
         $data = $args->getDataToBeTranslated();
 
         if (\is_object($data)) {
-            $data = ($data instanceof Proxy)
-                ? get_parent_class($data)
-                : \get_class($data);
+            $data = ($data instanceof Proxy) ?
+                get_parent_class($data) :
+                \get_class($data);
         }
 
         return !$this->em->getMetadataFactory()->isTransient($data);
@@ -90,7 +88,9 @@ class DoctrineObjectHandler implements TranslationHandlerInterface
                 $accessor->setValue($translation, $property->name, $propertyTranslation);
             } catch (NoSuchPropertyException $e) {
                 $reflection = new \ReflectionProperty(\get_class($translation), $property->name);
+
                 $reflection->setAccessible(true);
+
                 $reflection->setValue($translation, $propertyTranslation);
             }
         }

@@ -1,0 +1,22 @@
+# Changelog
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+### Added
+
+- Adds support of PHP 8.*
+- Adds integration to EasyAdmin 4
+
+### Changed
+
+- Removes annotations in favor of attributes
+- Updates `README` file to best suit the new version
+
+### Removed
+
+- Drops support of PHP versions older than 8.0
+- Removes dev requirement of `symfony/var-dumper`

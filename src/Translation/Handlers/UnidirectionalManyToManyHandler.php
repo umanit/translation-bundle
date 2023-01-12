@@ -2,79 +2,50 @@
 
 namespace Umanit\TranslationBundle\Translation\Handlers;
 
-use Doctrine\Common\Annotations\Reader;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Mapping\ManyToMany;
 use Doctrine\ORM\PersistentCollection;
 use Umanit\TranslationBundle\Translation\Args\TranslationArgs;
 use Umanit\TranslationBundle\Translation\EntityTranslator;
 use Umanit\TranslationBundle\Utils\AttributeHelper;
 
 /**
- * @author Arthur Guigand <aguigand@umanit.fr>
+ * Used for ManyToMany unidirectional association.
  */
 class UnidirectionalManyToManyHandler implements TranslationHandlerInterface
 {
-    /**
-     * @var AttributeHelper
-     */
-    private $annotationHelper;
-
-    /**
-     * @var Reader
-     */
-    private $reader;
-    /**
-     * @var EntityTranslator
-     */
-    private $translator;
-    /**
-     * @var EntityManagerInterface
-     */
-    private $em;
+    private AttributeHelper $attributeHelper;
+    private EntityTranslator $translator;
+    private EntityManagerInterface $em;
 
     public function __construct(
-        AttributeHelper $annotationHelper,
-        Reader $reader,
+        AttributeHelper $attributeHelper,
         EntityTranslator $translator,
         EntityManagerInterface $em
     ) {
-        $this->annotationHelper = $annotationHelper;
-        $this->reader           = $reader;
-        $this->translator       = $translator;
-        $this->em               = $em;
+        $this->attributeHelper = $attributeHelper;
+        $this->translator = $translator;
+        $this->em = $em;
     }
 
-    /**
-     * {@inheritdoc}
-     *
-     * @param TranslationArgs $args
-     *
-     * @return bool
-     */
     public function supports(TranslationArgs $args): bool
     {
         if (!$args->getDataToBeTranslated() instanceof Collection) {
             return false;
         }
 
-        if (!$this->annotationHelper->isManyToMany($args->getProperty())) {
-            return false;
-        }
+        if ($args->getProperty() && $this->attributeHelper->isManyToMany($args->getProperty())) {
+            $arguments = $args->getProperty()->getAttributes(ManyToMany::class)[0]->getArguments();
 
-        $propAnnotations = $this->reader->getPropertyAnnotations($args->getProperty());
-
-        foreach ($propAnnotations as $propAnnotation) {
-            if (property_exists($propAnnotation, 'mappedBy') && null !== $propAnnotation->mappedBy) {
-                return false;
-            }
-            if (property_exists($propAnnotation, 'inversedBy') && null !== $propAnnotation->inversedBy) {
-                return false;
+            if ((array_key_exists('mappedBy', $arguments) && null !== $arguments['mappedBy']) ||
+                (array_key_exists('inversedBy', $arguments) && null !== $arguments['inversedBy'])) {
+                return true;
             }
         }
 
-        return true;
+        return false;
     }
 
     public function handleSharedAmongstTranslations(TranslationArgs $args)
@@ -90,13 +61,16 @@ class UnidirectionalManyToManyHandler implements TranslationHandlerInterface
     public function translate(TranslationArgs $args)
     {
         $newOwner = $args->getTranslatedParent();
+
         // Get the owner's fieldName
         $associations = $this->em->getClassMetadata(\get_class($newOwner))->getAssociationMappings();
-        $association  = $associations[$args->getProperty()->name];
-        $fieldName    = $association['fieldName'];
+        $association = $associations[$args->getProperty()->name];
+        $fieldName = $association['fieldName'];
 
         $reflection = new \ReflectionProperty(\get_class($newOwner), $fieldName);
+
         $reflection->setAccessible(true);
+
         /** @var PersistentCollection $collection */
         $collection = $reflection->getValue($newOwner);
 
@@ -104,8 +78,9 @@ class UnidirectionalManyToManyHandler implements TranslationHandlerInterface
             $collection->remove($key);
         }
 
-        foreach ($args->getDataToBeTranslated() as $key => $itemtoBeTrans) {
-            $itemTrans = $this->translator->translate($itemtoBeTrans, $args->getTargetLocale());
+        foreach ($args->getDataToBeTranslated() as $itemtoBeTranslated) {
+            $itemTrans = $this->translator->translate($itemtoBeTranslated, $args->getTargetLocale());
+
             if (!$collection->contains($itemTrans)) {
                 $collection->add($itemTrans);
             }
@@ -113,5 +88,4 @@ class UnidirectionalManyToManyHandler implements TranslationHandlerInterface
 
         return $collection;
     }
-
 }

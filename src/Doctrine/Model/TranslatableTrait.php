@@ -10,12 +10,24 @@ use Ramsey\Uuid\UuidInterface;
  */
 trait TranslatableTrait
 {
+    /**
+     * @var string|null
+     * @ORM\Column(type="guid", length=36)
+     */
     #[ORM\Column(type: 'guid', length: 36)]
-    protected ?string $tuuid;
+    protected ?string $tuuid = null;
 
+    /**
+     * @var string|null
+     * @ORM\Column(type="string", length=7)
+     */
     #[ORM\Column(type: 'string', length: 7)]
-    protected ?string $locale;
+    protected ?string $locale = null;
 
+    /**
+     * @var array
+     * @ORM\Column(type="json")
+     */
     #[ORM\Column(type: 'json')]
     protected array $translations = [];
 
@@ -55,7 +67,7 @@ trait TranslatableTrait
         return $this->tuuid;
     }
 
-    public function setTranslations(array $translations): TranslatableInterface
+    public function setTranslations(array $translations): self
     {
         $this->translations = $translations;
 

@@ -18,7 +18,7 @@ Unlike most translations libraries, every translation is stored in the same tabl
 composer require umanit/translation-bundle
 ```
 
-Register the bundle to your `app/AppKernel.php` if it's not done automatically. 
+Register the bundle to your `app/AppKernel.php` if it's not done automatically.
 
 ```php
     new Umanit\TranslationBundle\UmanitTranslationBundle(),
@@ -28,8 +28,8 @@ Configure your available locales and, optionally, the default one:
 
 ```yaml
 umanit_translation:
-    locales: [en, fr, ja]
-    default_locale: en
+  locales: [en, fr, ja]
+  default_locale: en
 ```
 
 That's it!
@@ -40,18 +40,18 @@ You will need to add extra stylesheets and JavaScript to your admin interface:
 
 ```yaml
 sonata_admin:
-    assets:
-        extra_stylesheets:
-            - 'bundles/umanittranslation/css/admin-sonata.css'
-        extra_javascripts:
-            - 'bundles/umanittranslation/js/admin-filters.js'
+  assets:
+    extra_stylesheets:
+      - 'bundles/umanittranslation/css/admin-sonata.css'
+    extra_javascripts:
+      - 'bundles/umanittranslation/js/admin-filters.js'
 ```
 
 ## Usage
 
 ### Make your entity translatable
 
-Implement `Umanit\TranslationBundle\Doctrine\TranslatableInterface` and use the trait 
+Implement `Umanit\TranslationBundle\Doctrine\TranslatableInterface` and use the trait
 `Umanit\TranslationBundle\Doctrine\ModelTranslatableTrait`on an entity you want to make translatable.
 ```php
 <?php
@@ -89,14 +89,14 @@ attribute.
 
 ## Options
 
-Usually, you don't wan't to get **all** fields of your entity to be cloned. Some should be shared throughout all 
+Usually, you don't wan't to get **all** fields of your entity to be cloned. Some should be shared throughout all
 translations, others should be emptied in a new translation. Two special attributes are provided in order to
 solve this.
 
 **SharedAmongstTranslations**
 
-Using this attribute will make the value of your field identical throughout all translations: if you update this 
-field in any translation, all the others will be synchronized. 
+Using this attribute will make the value of your field identical throughout all translations: if you update this
+field in any translation, all the others will be synchronized.
 If the attribute is a relation to a translatable entity, it will associate the correct translation to each language.
 
 **Note :** `ManyToMany` associations are not supported with `SharedAmongstTranslations` yet.
@@ -165,23 +165,23 @@ Add this to your `config.yml` file:
 ```yaml
 # Doctrine Configuration
 doctrine:
-    orm:
-        filters:
-            # ...
-            umanit_translation_locale_filter:
-                class:   'Umanit\TranslationBundle\Doctrine\Filter\LocaleFilter'
-                enabled: true
+  orm:
+    filters:
+      # ...
+      umanit_translation_locale_filter:
+        class:   'Umanit\TranslationBundle\Doctrine\Filter\LocaleFilter'
+        enabled: true
 ```  
 
 #### (Optional) Disable the filter for a specific firewall
 
 Usually you'll need to administrate your contents.
-For doing so, you can disable the filter by configuring the disabled_firewalls option. 
+For doing so, you can disable the filter by configuring the disabled_firewalls option.
 
 ```yaml
 umanit_translation:
-    # ...
-    disabled_firewalls: ['admin']
+  # ...
+  disabled_firewalls: ['admin']
 ```
 
 ## Advanced usage
@@ -203,8 +203,8 @@ If you want to define a default locale for the admin, configure the `default_loc
 
 ```yaml
 umanit_translation:
-    # ...
-    default_locale: en
+  # ...
+  default_locale: en
 ```
 The admin will then show only the english contents on the list view.
 
@@ -219,4 +219,4 @@ activated and can be manually triggered to display existing objects for the desi
 
 ## Integration with DoctrineSingletonBundle
 
-The bundle will automatically works with the [Doctrine Singleton Bundle](https://github.com/umanit/doctrine-singleton-bundle). If your singleton has the TranslatableInterface, it will be possible to get one instance per locale. 
+The bundle will automatically work with the [Doctrine Singleton Bundle](https://github.com/umanit/doctrine-singleton-bundle). If your singleton implements the TranslatableInterface, it will be possible to get one instance per locale. 

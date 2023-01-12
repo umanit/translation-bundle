@@ -2,8 +2,8 @@
 
 namespace Umanit\TranslationBundle\Translation\Handlers;
 
-use Doctrine\Common\Annotations\Reader;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Mapping\ManyToOne;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Umanit\TranslationBundle\Translation\Args\TranslationArgs;
 use Umanit\TranslationBundle\Translation\EntityTranslator;
@@ -11,66 +11,33 @@ use Umanit\TranslationBundle\Utils\AttributeHelper;
 
 /**
  * Handles translation of ManyToOne relations.
- *
- * @author Arthur Guigand <aguigand@umanit.fr>
  */
 class BidirectionalManyToOneHandler implements TranslationHandlerInterface
 {
-    /**
-     * @var AttributeHelper
-     */
-    private $annotationHelper;
+    private AttributeHelper $attributeHelper;
+    private EntityManagerInterface $em;
+    private PropertyAccessorInterface $propertyAccessor;
+    private EntityTranslator $translator;
 
-    /**
-     * @var Reader
-     */
-    private $reader;
-
-    /**
-     * @var EntityManagerInterface
-     */
-    private $em;
-
-    /**
-     * @var PropertyAccessorInterface
-     */
-    private $propertyAccessor;
-    /**
-     * @var EntityTranslator
-     */
-    private $translator;
-
-    /**
-     * BidirectionalManyToOneHandler constructor.
-     *
-     * @param AttributeHelper           $annotationHelper
-     * @param Reader                    $reader
-     * @param EntityManagerInterface    $em
-     * @param PropertyAccessorInterface $propertyAccessor
-     * @param EntityTranslator          $translator
-     */
     public function __construct(
-        AttributeHelper $annotationHelper,
-        Reader $reader,
+        AttributeHelper $attributeHelper,
         EntityManagerInterface $em,
         PropertyAccessorInterface $propertyAccessor,
         EntityTranslator $translator
     ) {
-        $this->annotationHelper = $annotationHelper;
-        $this->reader           = $reader;
-        $this->em               = $em;
+        $this->attributeHelper = $attributeHelper;
+        $this->em = $em;
         $this->propertyAccessor = $propertyAccessor;
-        $this->translator       = $translator;
+        $this->translator = $translator;
     }
 
     public function supports(TranslationArgs $args): bool
     {
-        if ($args->getProperty() && $this->annotationHelper->isManyToOne($args->getProperty())) {
-            $propAnnotations = $this->reader->getPropertyAnnotations($args->getProperty());
-            foreach ($propAnnotations as $propAnnotation) {
-                if (property_exists($propAnnotation, 'inversedBy') && null !== $propAnnotation->inversedBy) {
-                    return true;
-                }
+        if ($args->getProperty() && $this->attributeHelper->isManyToOne($args->getProperty())) {
+            $arguments = $args->getProperty()->getAttributes(ManyToOne::class)[0]->getArguments();
+
+            if (array_key_exists('inversedBy', $arguments) && null !== $arguments['inversedBy']) {
+                return true;
             }
         }
 
@@ -79,16 +46,18 @@ class BidirectionalManyToOneHandler implements TranslationHandlerInterface
 
     public function handleSharedAmongstTranslations(TranslationArgs $args)
     {
-        $data    = $args->getDataToBeTranslated();
+        $data = $args->getDataToBeTranslated();
         $message =
             '%class%::%prop% is a Bidirectional ManyToOne, it cannot be shared '.
             'amongst translations. Either remove the @SharedAmongstTranslation '.
             'annotation or choose another association type.';
 
-        throw new \ErrorException(strtr($message, [
-            '%class%' => \get_class($data),
-            '%prop%'  => $args->getProperty()->name,
-        ]));
+        throw new \ErrorException(
+            strtr($message, [
+                '%class%' => \get_class($data),
+                '%prop%'  => $args->getProperty()->name,
+            ])
+        );
     }
 
     public function handleEmptyOnTranslate(TranslationArgs $args)
@@ -99,11 +68,11 @@ class BidirectionalManyToOneHandler implements TranslationHandlerInterface
     public function translate(TranslationArgs $args)
     {
         // $data is the child association
-        $clone           = clone $args->getDataToBeTranslated();
+        $clone = clone $args->getDataToBeTranslated();
         $parentFieldName = null;
 
         // Get the correct parent association with the fieldName
-        $fieldName    = $args->getProperty()->name;
+        $fieldName = $args->getProperty()->name;
         $associations = $this->em->getClassMetadata(\get_class($clone))->getAssociationMappings();
 
         foreach ($associations as $key => $association) {

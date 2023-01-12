@@ -11,6 +11,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Option\SortOrder;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Factory\AdminContextFactory;
@@ -54,9 +55,7 @@ abstract class AbstractTranslatableCRUDController extends AbstractCrudController
         yield FormField::addPanel()->hideOnIndex();
         yield TextField::new('tuuid')->onlyOnIndex();
 
-        $localeField = LocaleField::new('locale')
-                                  ->includeOnly($this->locales)
-        ;
+        $localeField = LocaleField::new('locale')->includeOnly($this->locales);
 
         if (Crud::PAGE_EDIT === $pageName) {
             $localeField->setDisabled();
@@ -69,7 +68,7 @@ abstract class AbstractTranslatableCRUDController extends AbstractCrudController
     {
         return $crud
             ->setPageTitle(Action::EDIT, new TranslatableMessage('admin.manage_version'))
-            ->setDefaultSort(['id' => 'ASC', 'tuuid' => 'ASC'])
+            ->setDefaultSort(['tuuid' => SortOrder::ASC, 'id' => SortOrder::ASC])
         ;
     }
 
@@ -116,7 +115,7 @@ abstract class AbstractTranslatableCRUDController extends AbstractCrudController
         $request = $context->getRequest();
         $locale = $request->query->get('locale');
         $translatedEntity = null === $locale ? $entity : $this->em->getRepository($this::getEntityFqcn())->findOneBy([
-            'tuuid'  => $entity->getTuuid(),
+            'tuuid' => $entity->getTuuid(),
             'locale' => $locale,
         ]);
 
@@ -129,15 +128,20 @@ abstract class AbstractTranslatableCRUDController extends AbstractCrudController
         }
 
         // Request can't be modified without creating a new context
-        return parent::edit($this->updateContext(
-            $request,
-            $translatedEntity,
-            $context
-        ));
+        return parent::edit(
+            $this->updateContext(
+                $request,
+                $translatedEntity,
+                $context
+            )
+        );
     }
 
-    private function updateContext(Request &$request, TranslatableInterface $entity, AdminContext $context): AdminContext
-    {
+    private function updateContext(
+        Request &$request,
+        TranslatableInterface $entity,
+        AdminContext $context
+    ): AdminContext {
         // Updates entity ID in query
         $request->query->set(EA::ENTITY_ID, $entity->getId());
 
@@ -145,7 +149,11 @@ abstract class AbstractTranslatableCRUDController extends AbstractCrudController
         $context = $this->adminContextFactory->create(
             $request,
             $this->controllerFactory->getDashboardControllerInstance($context->getDashboardControllerFqcn(), $request),
-            $this->controllerFactory->getCrudControllerInstance($request->query->get(EA::CRUD_CONTROLLER_FQCN), $request->query->get(EA::CRUD_ACTION), $request)
+            $this->controllerFactory->getCrudControllerInstance(
+                $request->query->get(EA::CRUD_CONTROLLER_FQCN),
+                $request->query->get(EA::CRUD_ACTION),
+                $request
+            )
         );
 
         // Translation is done, back to the "edit" action

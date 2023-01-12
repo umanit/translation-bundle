@@ -2,11 +2,8 @@
 
 namespace Umanit\TranslationBundle\Event;
 
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
-/**
- * @author Arthur Guigand <aguigand@umanit.fr>
- */
 class TranslateEvent extends Event
 {
     /**

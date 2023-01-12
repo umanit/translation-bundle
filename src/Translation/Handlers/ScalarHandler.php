@@ -6,8 +6,6 @@ use Umanit\TranslationBundle\Translation\Args\TranslationArgs;
 
 /**
  * Handles scalar type translation.
- *
- * @author Arthur Guigand <aguigand@umanit.fr>
  */
 class ScalarHandler implements TranslationHandlerInterface
 {

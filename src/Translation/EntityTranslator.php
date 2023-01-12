@@ -8,9 +8,6 @@ use Umanit\TranslationBundle\Translation\Args\TranslationArgs;
 use Umanit\TranslationBundle\Translation\Handlers\TranslationHandlerInterface;
 use Umanit\TranslationBundle\Utils\AttributeHelper;
 
-/**
- * @author Arthur Guigand <aguigand@umanit.fr>
- */
 class EntityTranslator
 {
     protected array $locales;
@@ -50,11 +47,13 @@ class EntityTranslator
 
                     if ($this->attributeHelper->isEmptyOnTranslate($args->getProperty())) {
                         if (!$this->attributeHelper->isNullable($args->getProperty())) {
-                            throw new \LogicException(sprintf(
-                                'The property %s::%s can not use the EmptyOnTranslate attribute because it is not nullable.',
-                                $args->getProperty()->class,
-                                $args->getProperty()->name
-                            ));
+                            throw new \LogicException(
+                                sprintf(
+                                    'The property %s::%s can not use the EmptyOnTranslate attribute because it is not nullable.',
+                                    $args->getProperty()->class,
+                                    $args->getProperty()->name
+                                )
+                            );
                         }
 
                         return $handler->handleEmptyOnTranslate($args);
@@ -71,7 +70,7 @@ class EntityTranslator
     /**
      * Service call
      */
-    public function addTranslationHandler(TranslationHandlerInterface $handler, $priority = null)
+    public function addTranslationHandler(TranslationHandlerInterface $handler, $priority = null): void
     {
         if (null === $priority) {
             $this->handlers[] = $handler;

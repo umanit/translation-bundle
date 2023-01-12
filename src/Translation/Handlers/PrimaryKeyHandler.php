@@ -7,24 +7,19 @@ use Umanit\TranslationBundle\Utils\AttributeHelper;
 
 /**
  * Handles translation of primary keys.
- *
- * @author Arthur Guigand <aguigand@umanit.fr>
  */
 class PrimaryKeyHandler implements TranslationHandlerInterface
 {
-    /**
-     * @var AttributeHelper
-     */
-    private $annotationHelper;
+    private AttributeHelper $attributeHelper;
 
-    public function __construct(AttributeHelper $annotationHelper)
+    public function __construct(AttributeHelper $attributeHelper)
     {
-        $this->annotationHelper = $annotationHelper;
+        $this->attributeHelper = $attributeHelper;
     }
 
     public function supports(TranslationArgs $args): bool
     {
-        return null !== $args->getProperty() && $this->annotationHelper->isId($args->getProperty());
+        return null !== $args->getProperty() && $this->attributeHelper->isId($args->getProperty());
     }
 
     public function handleSharedAmongstTranslations(TranslationArgs $args)

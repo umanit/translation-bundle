@@ -2,7 +2,6 @@
 
 namespace Umanit\TranslationBundle\Translation\Handlers;
 
-use Doctrine\Common\Annotations\Reader;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
@@ -13,24 +12,19 @@ use Umanit\TranslationBundle\Utils\AttributeHelper;
 
 /**
  * Handles translation of OneToMany relations.
- *
- * @author Arthur Guigand <aguigand@umanit.fr>
  */
 class BidirectionalOneToManyHandler implements TranslationHandlerInterface
 {
     private AttributeHelper $attributeHelper;
-    private Reader $reader;
     private EntityTranslator $translator;
     private EntityManagerInterface $em;
 
     public function __construct(
         AttributeHelper $attributeHelper,
-        Reader $reader,
         EntityTranslator $translator,
         EntityManagerInterface $em
     ) {
         $this->attributeHelper = $attributeHelper;
-        $this->reader = $reader;
         $this->translator = $translator;
         $this->em = $em;
     }
@@ -56,10 +50,12 @@ class BidirectionalOneToManyHandler implements TranslationHandlerInterface
             'amongst translations. Either remove the SharedAmongstTranslation '.
             'attribute or choose another association type.';
 
-        throw new \ErrorException(strtr($message, [
-            '%class%' => \get_class($data),
-            '%prop%'  => $args->getProperty()->name,
-        ]));
+        throw new \ErrorException(
+            strtr($message, [
+                '%class%' => \get_class($data),
+                '%prop%'  => $args->getProperty()->name,
+            ])
+        );
     }
 
     public function handleEmptyOnTranslate(TranslationArgs $args)
@@ -86,10 +82,9 @@ class BidirectionalOneToManyHandler implements TranslationHandlerInterface
             $reflection->setAccessible(true);
 
             // Translate the item
-            $subTranslationArgs =
-                (new TranslationArgs($item, $args->getSourceLocale(), $args->getTargetLocale()))
-                    ->setTranslatedParent($newOwner)
-                    ->setProperty($reflection)
+            $subTranslationArgs = (new TranslationArgs($item, $args->getSourceLocale(), $args->getTargetLocale()))
+                ->setTranslatedParent($newOwner)
+                ->setProperty($reflection)
             ;
 
             $itemTrans = $this->translator->processTranslation($subTranslationArgs);

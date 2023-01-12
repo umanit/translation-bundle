@@ -8,8 +8,6 @@ use Umanit\TranslationBundle\Doctrine\Model\TranslatableInterface;
 
 /**
  * Filters translatable contents by the current locale.
- *
- * @author Arthur Guigand <aguigand@umanit.fr>
  */
 class LocaleFilter extends SQLFilter
 {
@@ -23,15 +21,7 @@ class LocaleFilter extends SQLFilter
         $this->locale = $locale;
     }
 
-    /**
-     * @inheritdoc.
-     *
-     * @param ClassMetadata $targetEntity
-     * @param string        $targetTableAlias
-     *
-     * @return string
-     */
-    public function addFilterConstraint(ClassMetadata $targetEntity, $targetTableAlias)
+    public function addFilterConstraint(ClassMetadata $targetEntity, $targetTableAlias): string
     {
         if (null === $this->locale) {
             return '';

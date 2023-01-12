@@ -4,8 +4,6 @@ namespace Umanit\TranslationBundle\Translation\Args;
 
 /**
  * Translation args DTO.
- *
- * @author Arthur Guigand <aguigand@umanit.fr>
  */
 class TranslationArgs
 {

@@ -8,9 +8,6 @@ use Twig\Extension\GlobalsInterface;
 use Twig\TwigTest;
 use Umanit\TranslationBundle\Doctrine\Model\TranslatableInterface;
 
-/**
- * @author Arthur Guigand <aguigand@umanit.fr>
- */
 class UmanitTranslationExtension extends AbstractExtension implements GlobalsInterface
 {
     private array $locales;
@@ -36,5 +33,4 @@ class UmanitTranslationExtension extends AbstractExtension implements GlobalsInt
             'locales' => $this->locales,
         ];
     }
-
 }

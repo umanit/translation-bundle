@@ -12,8 +12,6 @@ use Umanit\TranslationBundle\Doctrine\Filter\LocaleFilter;
 
 /**
  * Configure the LocaleFilter as it's not a service but has dependencies.
- *
- * @author Arthur Guigand <aguigand@umanit.fr>
  */
 class LocaleFilterConfigurator implements EventSubscriberInterface
 {
@@ -28,11 +26,6 @@ class LocaleFilterConfigurator implements EventSubscriberInterface
         $this->firewallMap = $firewallMap;
     }
 
-    /**
-     * @inheritdoc
-     *
-     * @return array
-     */
     public static function getSubscribedEvents()
     {
         return [KernelEvents::REQUEST => [['onKernelRequest', 2]]];

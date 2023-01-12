@@ -11,9 +11,6 @@ use Umanit\TranslationBundle\Doctrine\Model\TranslatableInterface;
 use Umanit\TranslationBundle\Translation\Args\TranslationArgs;
 use Umanit\TranslationBundle\Translation\EntityTranslator;
 
-/**
- * @author Arthur Guigand <aguigand@umanit.fr>
- */
 class TranslatableEventSubscriber implements Common\EventSubscriber
 {
     private ?string $defaultLocale;
@@ -90,7 +87,7 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
      */
     public function postUpdate(ORM\Event\LifecycleEventArgs $args)
     {
-        if (\in_array($args->getEntity(), $this->alreadySyncedEntities, true)) {
+        if (\in_array($args->getObject(), $this->alreadySyncedEntities, true)) {
             return;
         }
 
@@ -110,7 +107,7 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
      */
     public function setDefaultValues(ORM\Event\LifecycleEventArgs $args)
     {
-        $translatable = $args->getEntity();
+        $translatable = $args->getObject();
 
         if ($translatable instanceof TranslatableInterface && null === $translatable->getLocale()) {
             $translatable->setLocale($this->defaultLocale);
@@ -126,10 +123,10 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
      */
     public function removeAllTranslations(ORM\Event\LifecycleEventArgs $args)
     {
-        $translatable = $args->getEntity();
+        $translatable = $args->getObject();
 
         if ($translatable instanceof TranslatableInterface) {
-            $em = $args->getEntityManager();
+            $em = $args->getObjectManager();
             // Gets all translations
             $repo = $em->getRepository(\get_class($translatable));
 
@@ -150,10 +147,10 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
      */
     public function updateTranslations(ORM\Event\LifecycleEventArgs $args)
     {
-        $translatable = $args->getEntity();
+        $translatable = $args->getObject();
 
         if ($translatable instanceof TranslatableInterface) {
-            $em = $args->getEntityManager();
+            $em = $args->getObjectManager();
             // Gets all translations
             $repo = $em->getRepository(\get_class($translatable));
 
@@ -167,10 +164,10 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
 
             foreach ($translations as $translation) {
                 $translation->setTranslations($translationsArray);
-                $args->getEntityManager()->persist($translation);
+                $args->getObjectManager()->persist($translation);
             }
 
-            $args->getEntityManager()->flush();
+            $args->getObjectManager()->flush();
         }
     }
 
@@ -181,7 +178,7 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
      */
     protected function synchronizeTranslatableSharedField(ORM\Event\LifecycleEventArgs $args)
     {
-        $translatable = $args->getEntity();
+        $translatable = $args->getObject();
         $this->alreadySyncedEntities[] = $translatable;
 
         // Only synchronize TranslatableInterface
@@ -189,7 +186,7 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
             return;
         }
 
-        $em = $args->getEntityManager();
+        $em = $args->getObjectManager();
         $properties = $em->getClassMetadata(\get_class($translatable))->getReflectionProperties();
 
         $sharedAmongstTranslationsProperties = array_filter($properties, function ($property) {
@@ -202,7 +199,7 @@ class TranslatableEventSubscriber implements Common\EventSubscriber
         }
 
         $propertyAccessor = PropertyAccess::createPropertyAccessor();
-        $em = $args->getEntityManager();
+        $em = $args->getObjectManager();
         $translations = $em
             ->getRepository(\get_class($translatable))
             ->findBy(['tuuid' => $translatable->getTuuid()])
