@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Wrong service declaration for the `TranslatableCRUDController` has been fixed
+
 ## 3.0.0 - 2023-01-12
 
 ### Added
