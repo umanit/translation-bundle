@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 3.0.1 - 2023-02-02
+
 ### Fixed
 
 - Wrong service declaration for the `TranslatableCRUDController` has been fixed
@@ -30,4 +32,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Drops support of PHP versions older than 8.0
 - Removes dev requirement of `symfony/var-dumper`
 
-[Unreleased]: https://github.com/umanit/translation-bundle/compare/3.0.0...HEAD
+[Unreleased]: https://github.com/umanit/translation-bundle/compare/3.0.1...HEAD
+
+[3.0.1]: https://github.com/umanit/translation-bundle/compare/3.0.0...3.0.1
