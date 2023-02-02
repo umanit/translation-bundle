@@ -6,6 +6,10 @@ sonata_admin:
                 - Umanit\TranslationBundle\Doctrine\Model\TranslatableInterface
 
 services:
+    _defaults:
+        autowire: false
+        autoconfigure: false
+
     umanit_translation.admin.extension.translatable_admin_extension:
         class: Umanit\TranslationBundle\Admin\Sonata\Extension\TranslatableAdminExtension
         arguments: ['%umanit_translation.locales%', '%umanit_translation.default_locale%']
@@ -17,5 +21,14 @@ services:
         arguments:
             $translator: '@umanit_translation.translation.entity_translator'
             $em: '@doctrine.orm.entity_manager'
+        calls:
+            - [setContainer, ['@Psr\Container\ContainerInterface']]
         tags:
-            - { name: controller.service_arguments }
+            - { name: 'controller.service_arguments' }
+            - { name: 'container.service_subscriber' }
+        autoconfigure: true
+
+    Umanit\TranslationBundle\Controller\Sonata\TranslatableCRUDController:
+        alias: umanit_translation.controller.translatable_crudcontroller
+        public: true
+
