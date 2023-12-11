@@ -27,6 +27,7 @@ class TranslatableOneToOneUnidirectionalTest extends AbstractBaseTest
         /** @var TranslatableOneToOneUnidirectional $translation */
         $translation = $this->translator->translate($entity, self::TARGET_LOCALE);
 
+        $this->em->persist($translation);
         $this->em->flush();
         $this->assertNotEquals($associatedEntity, $translation->getSimple());
         $this->assertAttributeContains(self::TARGET_LOCALE, 'locale', $translation->getSimple());

@@ -56,8 +56,6 @@ class TranslatableEntityHandler implements TranslationHandlerInterface
 
         $clone->setLocale($args->getTargetLocale());
 
-        $this->em->persist($clone);
-
         return $clone;
     }
 }

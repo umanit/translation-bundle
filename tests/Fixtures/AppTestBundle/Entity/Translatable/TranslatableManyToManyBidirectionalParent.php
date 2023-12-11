@@ -29,6 +29,7 @@ class TranslatableManyToManyBidirectionalParent implements TranslatableInterface
      *
      * @ORM\ManyToMany(
      *     targetEntity="AppTestBundle\Entity\Translatable\TranslatableManyToManyBidirectionalChild",
+     *     cascade={"persist"},
      *     mappedBy="simpleParents"
      * )
      */
@@ -39,6 +40,7 @@ class TranslatableManyToManyBidirectionalParent implements TranslatableInterface
      *
      * @ORM\ManyToMany(
      *     targetEntity="AppTestBundle\Entity\Translatable\TranslatableManyToManyBidirectionalChild",
+     *     cascade={"persist"},
      *     mappedBy="emptyParents"
      * )
      * @ORM\JoinTable(name="empty_translatablemanytomanybidirectionalchild_translatablemanytomanybidirectionalparent")
