@@ -1,5 +1,5 @@
 {
-    "name": "umanit/translation-bundle",
+    "name": "mcadorel/translation-bundle",
     "description": "Manages Doctrine translations",
     "type": "symfony-bundle",
     "keywords": [
@@ -7,7 +7,7 @@
         "doctrine",
         "translation"
     ],
-    "homepage": "https://github.com/umanit/translation-bundle",
+    "homepage": "https://github.com/mcadorel/translation-bundle",
     "license": "MIT",
     "authors": [
         {
