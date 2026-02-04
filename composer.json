@@ -20,10 +20,10 @@
         "doctrine/doctrine-bundle": ">=1.6",
         "doctrine/orm": ">=2.9",
         "ramsey/uuid": ">=3.7",
-        "symfony/framework-bundle": "^4.4|^5.2|^6.0",
-        "symfony/yaml": "^4.4|^5.2|^6.0",
-        "symfony/security-bundle": "^4.4|^5.2|^6.0",
-        "symfony/property-access": "^4.4|^5.2|^6.0",
+        "symfony/framework-bundle": "^4.4|^5.2|^6.0|^7.0",
+        "symfony/yaml": "^4.4|^5.2|^6.0|^7.0",
+        "symfony/security-bundle": "^4.4|^5.2|^6.0|^7.0",
+        "symfony/property-access": "^4.4|^5.2|^6.0|^7.0",
         "twig/twig": ">=2.7"
     },
     "minimum-stability": "stable",
@@ -33,7 +33,7 @@
         }
     },
     "require-dev": {
-        "symfony/phpunit-bridge": "^4.4|^5.2|^6.0",
+        "symfony/phpunit-bridge": "^4.4|^5.2|^6.0|^7.0",
         "phpunit/phpunit": ">=6.5",
         "jakub-onderka/php-parallel-lint": "^1.0"
     }

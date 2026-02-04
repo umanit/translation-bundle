@@ -11,7 +11,7 @@ use Umanit\TranslationBundle\Doctrine\Model\TranslatableInterface;
  */
 class LocaleFilter extends SQLFilter
 {
-    protected ?string $locale;
+    protected ?string $locale = null;
 
     /**
      * Dependency injection.
