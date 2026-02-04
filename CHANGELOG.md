@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.0.3] - 2026-02-04
+
 ### Added
 
 - Adds support of Symfony 7
@@ -42,7 +44,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Drops support of PHP versions older than 8.0
 - Removes dev requirement of `symfony/var-dumper`
 
-[Unreleased]: https://github.com/umanit/translation-bundle/compare/3.0.2...HEAD
+[Unreleased]: https://github.com/umanit/translation-bundle/compare/3.0.3...HEAD
+
+[3.0.3] https://github.com/umanit/translation-bundle/compare/3.0.2...3.0.3
 
 [3.0.2] https://github.com/umanit/translation-bundle/compare/3.0.1...3.0.2
 
