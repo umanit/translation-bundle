@@ -27,6 +27,7 @@ class TranslatableManyToOneEntityTranslationTest extends AbstractBaseTest
         /** @var TranslatableManyToOne $translation */
         $translation = $this->translator->translate($entity, self::TARGET_LOCALE);
 
+        $this->em->persist($translation);
         $this->em->flush();
         $this->assertNotEquals($associatedEntity, $translation->getSimple());
         $this->assertAttributeContains(self::TARGET_LOCALE, 'locale', $translation->getSimple());
@@ -41,6 +42,7 @@ class TranslatableManyToOneEntityTranslationTest extends AbstractBaseTest
         $this->em->persist($associatedEntity);
 
         $translatedAssociatedEntity = $this->translator->translate($associatedEntity, self::TARGET_LOCALE);
+        $this->em->persist($translatedAssociatedEntity);
 
         $entity =
             (new TranslatableManyToOne())
@@ -52,6 +54,7 @@ class TranslatableManyToOneEntityTranslationTest extends AbstractBaseTest
         /** @var TranslatableManyToOne $translation */
         $translation = $this->translator->translate($entity, self::TARGET_LOCALE);
 
+        $this->em->persist($translation);
         $this->em->flush();
         $this->assertNotEquals($associatedEntity, $translation->getSimple());
         $this->assertEquals($translatedAssociatedEntity, $translation->getSimple());
